@@ -452,6 +452,21 @@ namespace LambdaLang {
             ast = expresion();
         }
 
+        private StringBuilder toString(Nodo n, StringBuilder prefix, bool isTail, StringBuilder sb) {
+            if (n.Right != null) {
+                toString(n.Right, new StringBuilder().Append(prefix).Append(isTail ? "│   " : "    "), false, sb);
+            }
+            sb.Append(prefix).Append(isTail ? "└── " : "┌── ").Append(n.Tag.ToString()).Append("\n");
+            if (n.Left != null) {
+                toString(n.Left, new StringBuilder().Append(prefix).Append(isTail ? "    " : "│   "), true, sb);
+            }
+            return sb;
+        }
+
+        internal String toString() {
+            return toString(ast, new StringBuilder(), true, new StringBuilder()).ToString();
+        }
+
         bool _evalOnlyOneSymbol = false;
 
         Nodo ast = null;
@@ -994,6 +1009,10 @@ namespace LambdaLang {
 
         public object Value {
             get { return _value; }
+        }
+
+        public override string ToString() {
+            return _tokenType.ToString() + (_value != null ? " [" + _value.ToString() + "]" : "");
         }
     }
 

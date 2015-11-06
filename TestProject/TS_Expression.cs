@@ -609,9 +609,19 @@ namespace TestProject {
             Assert.AreEqual(3.0, exp.Calculate());
         }
 
+        [TestMethod]
+        public void Test_lambda_07() {
+            Expression exp = new Expression();
+            exp.SetExpression("(f = lambda v 2+3), 9");
+            Console.WriteLine();
+            Console.WriteLine(exp.toString());
+            Console.WriteLine();
+            Assert.AreEqual(9.0, exp.Calculate());
+        }
+
         [TestMethod,
         Ignore] // lambda not implemented yet.
-        public void Test_lambda_06() {
+        public void Test_lambda_08() {
             Expression exp = new Expression();
             exp.SetExpression("f = lambda v 2+v");
             Assert.AreEqual(3.0, exp.Calculate());
@@ -619,7 +629,7 @@ namespace TestProject {
 
         [TestMethod,
         Ignore] // lambda not implemented yet.
-        public void Test_lambda_07() {
+        public void Test_lambda_09() {
             Expression exp = new Expression();
             exp.SetExpression("f = lambda v 2+v, f(3)");
             Assert.AreEqual(5.0, exp.Calculate());
