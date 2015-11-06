@@ -574,42 +574,49 @@ namespace TestProject {
         #region lambda expressions
 
         [TestMethod]
-        public void Test_lambda_01() {
-            Expression exp = new Expression();
-            exp.SetExpression("v=3, (lambda 2+v)()");
-            Assert.AreEqual(5.0, exp.Calculate());
-        }
-
-        [TestMethod]
-        public void Test_lambda_02() {
+        public void Test_lambda_10() {
             Expression exp = new Expression();
             exp.SetExpression("3, 2");
             Assert.AreEqual(2.0, exp.Calculate());
         }
 
         [TestMethod]
-        public void Test_lambda_03() {
+        public void Test_lambda_11() {
             Expression exp = new Expression();
             exp.SetExpression("3, 2, 5");
             Assert.AreEqual(5.0, exp.Calculate());
         }
 
         [TestMethod]
-        public void Test_lambda_04() {
+        public void Test_lambda_12() {
             Expression exp = new Expression();
             exp.SetExpression("a = 3");
             Assert.AreEqual(3.0, exp.Calculate());
         }
 
         [TestMethod]
-        public void Test_lambda_05() {
+        public void Test_lambda_13() {
             Expression exp = new Expression();
             exp.SetExpression("a = 3, 5, a");
             Assert.AreEqual(3.0, exp.Calculate());
         }
 
         [TestMethod]
-        public void Test_lambda_07() {
+        public void Test_lambda_01() {
+            Expression exp = new Expression();
+            exp.SetExpression("(lambda 2+3)()");
+            Assert.AreEqual(5.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_02() {
+            Expression exp = new Expression();
+            exp.SetExpression("v=3, (lambda 2+v)()");
+            Assert.AreEqual(5.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_03() {
             Expression exp = new Expression();
             exp.SetExpression("(f = lambda 2+3), 9");
             Console.WriteLine();
@@ -619,7 +626,7 @@ namespace TestProject {
         }
 
         [TestMethod]
-        public void Test_lambda_08() {
+        public void Test_lambda_04() {
             Expression exp = new Expression();
             exp.SetExpression("(f = lambda 2+3), f()");
             Console.WriteLine();
@@ -629,7 +636,7 @@ namespace TestProject {
         }
 
         [TestMethod]
-        public void Test_lambda_09() {
+        public void Test_lambda_05() {
             Expression exp = new Expression();
             exp.SetExpression("(f = lambda 2+v), (v = 3), f()");
             Assert.AreEqual(5.0, exp.Calculate());

@@ -313,7 +313,7 @@ namespace LambdaLang {
                     #endregion
 
                     case TokenType.eval:
-                        var lambda = getValue(t.Value.ToString(), locals) as Nodo;
+                        var lambda = pila.Pop() as Nodo;
                         if (lambda != null) {
                             var reslambda = CalculateNPI2((new RecorreArbol()).PostOrden(lambda, null), locals);
                             pila.Push(reslambda);
@@ -324,12 +324,6 @@ namespace LambdaLang {
                         locals.Add(t.Value.ToString(), vallocal);
                         break;
                     case TokenType.lambda:
-                        pila.Push(t.Value);
-                        break;
-                    case TokenType.lambdahead:
-                        pila.Push(t.Value);
-                        break;
-                    case TokenType.lambdabody:
                         pila.Push(t.Value);
                         break;
 
@@ -693,16 +687,29 @@ namespace LambdaLang {
             return f;
         }
 
+        Nodo expresion_evaluada() {
+            Nodo nizq = factor();
+            if (currenttoken.TokenType == TokenType.lparen && lookaheadone().TokenType == TokenType.rparen) {
+                nexttoken();
+                expect(TokenType.rparen);
+                nexttoken();
+                var op = new Terminal(TokenType.eval);
+                Nodo n = new Nodo(op, nizq, null);
+                return n;
+            } else
+                return nizq;
+        }
+
         Nodo factor_negado() {
             Nodo nizq = null;
             if (currenttoken.TokenType == TokenType.not) {
                 Terminal op = currenttoken;
                 nexttoken();
-                nizq = factor();
+                nizq = expresion_evaluada();
                 Nodo n = new Nodo(op, nizq, null);
                 return n;
             } else
-                return factor();
+                return expresion_evaluada();
         }
 
         Nodo termino() {
@@ -778,12 +785,6 @@ namespace LambdaLang {
                 return whentrue;
         }
 
-        Nodo expr_lambda_bind() {
-            var l = expresion_lambda();
-            nexttoken();
-            return new Nodo(new Terminal(TokenType.eval), expresion(), l);
-        }
-
         Nodo expresion_lambda() {
             var op = currenttoken;
             nexttoken();
@@ -810,22 +811,11 @@ namespace LambdaLang {
             return new Nodo(op, l, r);
         }
 
-        Nodo eval_named_lambda(string s) {
-            nexttoken();
-            expect(TokenType.lparen);
-            var op = new Terminal(TokenType.eval, s);
-            nexttoken();
-            expect(TokenType.rparen);
-            return new Nodo(op);
-        }
-
         Nodo expresion_single() {
             if (currenttoken.TokenType == TokenType.ident) {
                 var s = currenttoken.Value.ToString();
                 if (lookaheadone().TokenType == TokenType.assig) {
                     return asignacion(s);
-                } else if (lookaheadone().TokenType == TokenType.lparen) {
-                    return eval_named_lambda(s);
                 } else {
                     return expresion_cond();
                 }
@@ -935,8 +925,6 @@ namespace LambdaLang {
         jmp,
         label,
         lambda,
-        lambdahead,
-        lambdabody,
         eval,
         identlocal,
         comma,
