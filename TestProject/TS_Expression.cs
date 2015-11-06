@@ -619,9 +619,6 @@ namespace TestProject {
         public void Test_lambda_03() {
             Expression exp = new Expression();
             exp.SetExpression("(f = lambda 2+3), 9");
-            Console.WriteLine();
-            Console.WriteLine(exp.toString());
-            Console.WriteLine();
             Assert.AreEqual(9.0, exp.Calculate());
         }
 
