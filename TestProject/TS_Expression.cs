@@ -656,7 +656,6 @@ namespace TestProject {
             Assert.AreEqual(7.0, exp.Calculate());
         }
 
-
         #endregion
 
         #region cadenas
