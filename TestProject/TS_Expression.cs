@@ -573,11 +573,10 @@ namespace TestProject {
 
         #region lambda expressions
 
-        [TestMethod,
-        Ignore] // lambda not implemented yet.
+        [TestMethod]
         public void Test_lambda_01() {
             Expression exp = new Expression();
-            exp.SetExpression("lambda v 2+v (3)");
+            exp.SetExpression("v=3, (lambda 2+v)()");
             Assert.AreEqual(5.0, exp.Calculate());
         }
 
@@ -612,26 +611,27 @@ namespace TestProject {
         [TestMethod]
         public void Test_lambda_07() {
             Expression exp = new Expression();
-            exp.SetExpression("(f = lambda v 2+3), 9");
+            exp.SetExpression("(f = lambda 2+3), 9");
             Console.WriteLine();
             Console.WriteLine(exp.toString());
             Console.WriteLine();
             Assert.AreEqual(9.0, exp.Calculate());
         }
 
-        [TestMethod,
-        Ignore] // lambda not implemented yet.
+        [TestMethod]
         public void Test_lambda_08() {
             Expression exp = new Expression();
-            exp.SetExpression("f = lambda v 2+v");
-            Assert.AreEqual(3.0, exp.Calculate());
+            exp.SetExpression("(f = lambda 2+3), f()");
+            Console.WriteLine();
+            Console.WriteLine(exp.toString());
+            Console.WriteLine();
+            Assert.AreEqual(5.0, exp.Calculate());
         }
 
-        [TestMethod,
-        Ignore] // lambda not implemented yet.
+        [TestMethod]
         public void Test_lambda_09() {
             Expression exp = new Expression();
-            exp.SetExpression("f = lambda v 2+v, f(3)");
+            exp.SetExpression("(f = lambda 2+v), (v = 3), f()");
             Assert.AreEqual(5.0, exp.Calculate());
         }
 

@@ -111,7 +111,7 @@ namespace LambdaLang {
             } else {
                 postorden = (IEnumerable<object>) this.terminalList;
             }
-            return CalculateNPI2(postorden);
+            return CalculateNPI2(postorden, null);
         }
 
         /// <summary>
@@ -128,13 +128,16 @@ namespace LambdaLang {
 
         #region evaluacion.
 
-        private object CalculateNPI2(IEnumerable<object> proveedor) {
+        private object CalculateNPI2(IEnumerable<object> proveedor, Dictionary<string, object> locals) {
             // los Convert.ToDouble son necesarios porque es posible que alguna
             // de las propiedades de objetos utilizados devuelvan int long o float.
             // asi nos aseguramos que los calculos se hagan siempre con double.
 
-            Stack<object> pila = new Stack<object>();
-            Stack<Dictionary<string, object>> locals = new Stack<Dictionary<string, object>>();
+            var pila = new Stack<object>();
+            if (locals == null)
+                locals = new Dictionary<string, object>();
+            else
+                locals = new Dictionary<string, object>(locals);
 
             double a, b, res;
             string sa, sb, str;
@@ -310,17 +313,24 @@ namespace LambdaLang {
                     #endregion
 
                     case TokenType.eval:
-                        locals.Pop();
+                        var lambda = getValue(t.Value.ToString(), locals) as Nodo;
+                        if (lambda != null) {
+                            var reslambda = CalculateNPI2((new RecorreArbol()).PostOrden(lambda, null), locals);
+                            pila.Push(reslambda);
+                        }
                         break;
                     case TokenType.identlocal:
                         var vallocal = pila.Pop();
-                        var d = new Dictionary<string, object>() {
-                            { t.Value.ToString(), vallocal }
-                        };
-                        locals.Push(d);
+                        locals.Add(t.Value.ToString(), vallocal);
                         break;
                     case TokenType.lambda:
-                        // var lam = pila.Pop();
+                        pila.Push(t.Value);
+                        break;
+                    case TokenType.lambdahead:
+                        pila.Push(t.Value);
+                        break;
+                    case TokenType.lambdabody:
+                        pila.Push(t.Value);
                         break;
 
                     case TokenType.comma:
@@ -355,11 +365,10 @@ namespace LambdaLang {
 
         #region aux. p/ manejo de espacio de nombres.
 
-        private object getValue(string name, Stack<Dictionary<string, object>> locals) {
+        private object getValue(string name, Dictionary<string, object> locals) {
             if (locals.Count > 0) {
-                var currentframe = locals.Peek();
-                if (currentframe != null && currentframe.ContainsKey(name)) {
-                    return currentframe[name];
+                if (locals != null && locals.ContainsKey(name)) {
+                    return locals[name];
                 }
             }
 
@@ -778,11 +787,8 @@ namespace LambdaLang {
         Nodo expresion_lambda() {
             var op = currenttoken;
             nexttoken();
-            expect(TokenType.ident);
-            var head = new Terminal(TokenType.identlocal, currenttoken.Value.ToString());
-            nexttoken();
-            var body = expresion();
-            return new Nodo(op, new Nodo(head), body);
+            var body = new Terminal(TokenType.lambda, expresion());
+            return new Nodo(body);
         }
 
         Nodo expresion_list() {
@@ -809,9 +815,8 @@ namespace LambdaLang {
             expect(TokenType.lparen);
             var op = new Terminal(TokenType.eval, s);
             nexttoken();
-            var l = expresion_single();
             expect(TokenType.rparen);
-            return new Nodo(op, l, new Nodo(new Terminal(TokenType.NIL)));
+            return new Nodo(op);
         }
 
         Nodo expresion_single() {
@@ -930,6 +935,8 @@ namespace LambdaLang {
         jmp,
         label,
         lambda,
+        lambdahead,
+        lambdabody,
         eval,
         identlocal,
         comma,
