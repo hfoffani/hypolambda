@@ -788,7 +788,7 @@ namespace LambdaLang {
         Nodo expresion_lambda() {
             var op = currenttoken;
             nexttoken();
-            var body = new Terminal(TokenType.lambda, expresion());
+            var body = new Terminal(TokenType.lambda, expresion_single());
             return new Nodo(body);
         }
 

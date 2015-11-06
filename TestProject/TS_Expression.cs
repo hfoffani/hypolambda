@@ -642,6 +642,21 @@ namespace TestProject {
             Assert.AreEqual(5.0, exp.Calculate());
         }
 
+        [TestMethod]
+        public void Test_lambda_06() {
+            Expression exp = new Expression();
+            exp.SetExpression("f = lambda 2+v, v = 3, f()");
+            Assert.AreEqual(5.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_07() {
+            Expression exp = new Expression();
+            exp.SetExpression("f = lambda (y=4, y+v), v = 3, f()");
+            Assert.AreEqual(7.0, exp.Calculate());
+        }
+
+
         #endregion
 
         #region cadenas
