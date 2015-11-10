@@ -560,6 +560,10 @@ namespace LambdaLang {
                     continue;
                 }
                 switch (input[0]) {
+                    case ':':
+                        terminales.Add(new Terminal(TokenType.colon, lnum, cpos));
+                        input = input.Substring(1); cpos += 1;
+                        continue;
                     case '+':
                         terminales.Add(new Terminal(TokenType.plus, lnum, cpos));
                         input = input.Substring(1); cpos += 1;
@@ -822,6 +826,8 @@ namespace LambdaLang {
         Nodo expresion_lambda() {
             var op = currenttoken;
             nexttoken();
+            expect(TokenType.colon);
+            nexttoken();
             var body = new Terminal(TokenType.lambda, expresion_single(), currenttoken.LN, currenttoken.CP);
             return new Nodo(body);
         }
@@ -959,6 +965,7 @@ namespace LambdaLang {
         jmp,
         label,
         lambda,
+        colon,
         eval,
         identlocal,
         comma,

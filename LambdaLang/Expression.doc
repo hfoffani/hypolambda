@@ -65,7 +65,7 @@ sólo se evalúa Y (y no X) si CONDICION es falsa.</para>
                     |   single_exp == single_exp
                     |   single_exp != single_exp
 
-        lambdaexp :=    lambda single_exp
+        lambdaexp :=    lambda : single_exp
     </code>
 </para>
 
