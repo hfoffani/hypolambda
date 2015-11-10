@@ -56,12 +56,12 @@ namespace LambdaLang {
         public Expression() {
             this.symbolTable = new Dictionary<string, object>();
 
-            this.reservedwords.Add("not",  new Terminal(TokenType.not));
-            this.reservedwords.Add("and",  new Terminal(TokenType.and));
-            this.reservedwords.Add("or",   new Terminal(TokenType.or));
-            this.reservedwords.Add("if",   new Terminal(TokenType.iff));
-            this.reservedwords.Add("else", new Terminal(TokenType.els));
-            this.reservedwords.Add("lambda", new Terminal(TokenType.lambda));
+            this.reservedwords.Add("not",  new Terminal(TokenType.not, 0, 0));
+            this.reservedwords.Add("and", new Terminal(TokenType.and, 0, 0));
+            this.reservedwords.Add("or", new Terminal(TokenType.or, 0, 0));
+            this.reservedwords.Add("if", new Terminal(TokenType.iff, 0, 0));
+            this.reservedwords.Add("else", new Terminal(TokenType.els, 0, 0));
+            this.reservedwords.Add("lambda", new Terminal(TokenType.lambda, 0, 0));
         }
         #endregion
 
@@ -491,6 +491,9 @@ namespace LambdaLang {
 
         void Lexer(string input) {
 
+            int lnum = 1;
+            int cpos = 1;
+
             terminales = new List<Terminal>();
 
             Match m;
@@ -508,7 +511,7 @@ namespace LambdaLang {
                         token += input[p];
                         p++;
                     }
-                    terminales.Add(new Terminal(TokenType.str, token));
+                    terminales.Add(new Terminal(TokenType.str, token, lnum, cpos));
                     input = input.Substring(p + 1); // el +1 saltea el ultimo "
                     continue;
                 }
@@ -523,7 +526,7 @@ namespace LambdaLang {
                         string root = getRootSymbol(token);
                         if (!this.symbolTable.ContainsKey(root))
                             this.symbolTable.Add(root, null);
-                        terminales.Add(new Terminal(TokenType.ident, token));
+                        terminales.Add(new Terminal(TokenType.ident, token, lnum, cpos));
                     }
                     input = input.Substring(token.Length);
                     continue;
@@ -532,92 +535,92 @@ namespace LambdaLang {
                 if (m.Success && m.Index == 0) {
                     token = m.Groups[0].Value;
                     double cte = double.Parse(token, System.Globalization.CultureInfo.InvariantCulture);
-                    terminales.Add(new Terminal(TokenType.number, cte));
+                    terminales.Add(new Terminal(TokenType.number, cte, lnum, cpos));
                     input = input.Substring(token.Length);
                     continue;
                 }
                 switch (input[0]) {
                     case '+':
-                        terminales.Add(new Terminal(TokenType.plus));
+                        terminales.Add(new Terminal(TokenType.plus, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case '-':
-                        terminales.Add(new Terminal(TokenType.minus));
+                        terminales.Add(new Terminal(TokenType.minus, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case '*':
-                        terminales.Add(new Terminal(TokenType.times));
+                        terminales.Add(new Terminal(TokenType.times, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case '/':
-                        terminales.Add(new Terminal(TokenType.slash));
+                        terminales.Add(new Terminal(TokenType.slash, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case '%':
-                        terminales.Add(new Terminal(TokenType.perc));
+                        terminales.Add(new Terminal(TokenType.perc, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case '(':
-                        terminales.Add(new Terminal(TokenType.lparen));
+                        terminales.Add(new Terminal(TokenType.lparen, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case ')':
-                        terminales.Add(new Terminal(TokenType.rparen));
+                        terminales.Add(new Terminal(TokenType.rparen, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case '{':
-                        terminales.Add(new Terminal(TokenType.lcurly));
+                        terminales.Add(new Terminal(TokenType.lcurly, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case '}':
-                        terminales.Add(new Terminal(TokenType.rcurly));
+                        terminales.Add(new Terminal(TokenType.rcurly, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case ',':
-                        terminales.Add(new Terminal(TokenType.comma));
+                        terminales.Add(new Terminal(TokenType.comma, lnum, cpos));
                         input = input.Substring(1);
                         continue;
                     case '!':
                         switch (input[1]) {
                             case '=':
-                                terminales.Add(new Terminal(TokenType.neq));
+                                terminales.Add(new Terminal(TokenType.neq, lnum, cpos));
                                 input = input.Substring(2);
                                 continue;
                             default:
-                                terminales.Add(new Terminal(TokenType.not));
+                                terminales.Add(new Terminal(TokenType.not, lnum, cpos));
                                 input = input.Substring(1);
                                 continue;
                         }
                     case '>':
                         switch (input[1]) {
                             case '=':
-                                terminales.Add(new Terminal(TokenType.gteq));
+                                terminales.Add(new Terminal(TokenType.gteq, lnum, cpos));
                                 input = input.Substring(2);
                                 continue;
                             default:
-                                terminales.Add(new Terminal(TokenType.gt));
+                                terminales.Add(new Terminal(TokenType.gt, lnum, cpos));
                                 input = input.Substring(1);
                                 continue;
                         }
                     case '<':
                         switch (input[1]) {
                             case '=':
-                                terminales.Add(new Terminal(TokenType.lteq));
+                                terminales.Add(new Terminal(TokenType.lteq, lnum, cpos));
                                 input = input.Substring(2);
                                 continue;
                             default:
-                                terminales.Add(new Terminal(TokenType.lt));
+                                terminales.Add(new Terminal(TokenType.lt, lnum, cpos));
                                 input = input.Substring(1);
                                 continue;
                         }
                     case '=':
                         switch (input[1]) {
                             case '=':
-                                terminales.Add(new Terminal(TokenType.eq));
+                                terminales.Add(new Terminal(TokenType.eq, lnum, cpos));
                                 input = input.Substring(2);
                                 continue;
                             default:
-                                terminales.Add(new Terminal(TokenType.assig));
+                                terminales.Add(new Terminal(TokenType.assig, lnum, cpos));
                                 input = input.Substring(1);
                                 continue;
                         }
@@ -633,7 +636,7 @@ namespace LambdaLang {
 
         void nexttoken() {
             if (reader >= this.terminales.Count)
-                currenttoken = new Terminal(TokenType.NIL);
+                currenttoken = new Terminal(TokenType.NIL, currenttoken.LN, currenttoken.CP);
             else {
                 currenttoken = terminales[reader++];
             }
@@ -643,7 +646,7 @@ namespace LambdaLang {
 
         Terminal lookaheadone() {
             if (reader >= this.terminales.Count)
-                return new Terminal(TokenType.NIL);
+                return new Terminal(TokenType.NIL, currenttoken.LN, currenttoken.CP);
             else {
                 return terminales[reader];
             }
@@ -701,7 +704,7 @@ namespace LambdaLang {
                 nexttoken();
                 expect(TokenType.rparen);
                 nexttoken();
-                var op = new Terminal(TokenType.eval);
+                var op = new Terminal(TokenType.eval, currenttoken.LN, currenttoken.CP);
                 Nodo n = new Nodo(op, nizq, null);
                 return n;
             } else
@@ -781,9 +784,9 @@ namespace LambdaLang {
                 nexttoken();
                 Nodo whenfalse = expresion_cond();
 
-                var n = new Nodo(new Terminal(TokenType.iff),
-                    and_or_ast(new Terminal(TokenType.or),
-                        and_or_ast(new Terminal(TokenType.and),
+                var n = new Nodo(new Terminal(TokenType.iff, currenttoken.LN, currenttoken.CP),
+                    and_or_ast(new Terminal(TokenType.or, currenttoken.LN, currenttoken.CP),
+                        and_or_ast(new Terminal(TokenType.and, currenttoken.LN, currenttoken.CP),
                             condition,
                             whentrue),
                         whenfalse),
@@ -796,7 +799,7 @@ namespace LambdaLang {
         Nodo expresion_lambda() {
             var op = currenttoken;
             nexttoken();
-            var body = new Terminal(TokenType.lambda, expresion_single());
+            var body = new Terminal(TokenType.lambda, expresion_single(), currenttoken.LN, currenttoken.CP);
             return new Nodo(body);
         }
 
@@ -804,7 +807,7 @@ namespace LambdaLang {
             var f = expresion_single();
             if (currenttoken.TokenType == TokenType.comma) {
                 nexttoken();
-                return new Nodo(new Terminal(TokenType.comma), f, expresion_list());
+                return new Nodo(new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP), f, expresion_list());
             } else
                 return f;
         }
@@ -812,9 +815,9 @@ namespace LambdaLang {
         Nodo asignacion(string s) {
             nexttoken();
             expect(TokenType.assig);
-            var op = new Terminal(TokenType.assig, s);
+            var op = new Terminal(TokenType.assig, s, currenttoken.LN, currenttoken.CP);
             nexttoken();
-            var r = new Nodo(new Terminal(TokenType.identlocal, s));
+            var r = new Nodo(new Terminal(TokenType.identlocal, s, currenttoken.LN, currenttoken.CP));
             var l = expresion_single();
             return new Nodo(op, l, r);
         }
@@ -839,7 +842,7 @@ namespace LambdaLang {
         }
 
         private Terminal nilterminal() {
-            return new Terminal(TokenType.NIL, null);
+            return new Terminal(TokenType.NIL, null, currenttoken.LN, currenttoken.CP);
         }
 
         private Nodo and_or_ast(Terminal op, Nodo nizq, Nodo nder) {
@@ -850,20 +853,20 @@ namespace LambdaLang {
                     n = new Nodo(op,
                         nizq,
                         new Nodo(nilterminal(),
-                            new Nodo(new Terminal(TokenType.jmpzero, lbljmpzero)),
+                            new Nodo(new Terminal(TokenType.jmpzero, lbljmpzero, currenttoken.LN, currenttoken.CP)),
                             new Nodo(nilterminal(),
                                 nder,
-                                new Nodo(new Terminal(TokenType.label, lbljmpzero)))));
+                                new Nodo(new Terminal(TokenType.label, lbljmpzero, currenttoken.LN, currenttoken.CP)))));
                     break;
                 case TokenType.or:
                     var lbljmpnotz = Guid.NewGuid().ToString();
                     n = new Nodo(op,
                         nizq,
                         new Nodo(nilterminal(),
-                            new Nodo(new Terminal(TokenType.jmpnotz, lbljmpnotz)),
+                            new Nodo(new Terminal(TokenType.jmpnotz, lbljmpnotz, currenttoken.LN, currenttoken.CP)),
                             new Nodo(nilterminal(),
                                 nder,
-                                new Nodo(new Terminal(TokenType.label, lbljmpnotz)))));
+                                new Nodo(new Terminal(TokenType.label, lbljmpnotz, currenttoken.LN, currenttoken.CP)))));
                     break;
             }
             return n;
@@ -994,28 +997,39 @@ namespace LambdaLang {
 
     [Serializable]
     class Terminal {
-        object _value = null;
-        TokenType _tokenType;
 
-        public Terminal(TokenType tokenType) {
-            this._tokenType = tokenType;
+        public Terminal(TokenType tokenType, int linenumber, int position) {
+            this.TokenType = tokenType;
+            this.Value = null;
         }
 
-        public Terminal(TokenType tokenType, object value) {
-            this._tokenType = tokenType;
-            this._value = value;
+        public Terminal(TokenType tokenType, object value, int linenumber, int position) {
+            this.TokenType = tokenType;
+            this.Value = value;
         }
 
         public TokenType TokenType {
-            get { return this._tokenType; }
+            get;
+            private set;
         }
 
         public object Value {
-            get { return _value; }
+            get;
+            private set;
+        }
+
+        internal int LN {
+            get;
+            private set;
+        }
+
+        internal int CP {
+            get;
+            private set;
         }
 
         public override string ToString() {
-            return _tokenType.ToString() + (_value != null ? " [" + _value.ToString() + "]" : "");
+            return this.TokenType.ToString() + (this.Value != null ? " [" + this.Value.ToString() + "]" : "");
         }
     }
 
