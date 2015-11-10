@@ -123,10 +123,10 @@
   <data name="Expression_ZeroDivisionError" xml:space="preserve">
     <value>Division by zero error, nearby line {0} position {1}.</value>
   </data>
-  <data name="factor__syntax_error" xml:space="preserve">
+  <data name="Expression_Syntax_error" xml:space="preserve">
     <value>Syntax error in factor nearby line {0} position {1}.</value>
   </data>
-  <data name="Unexpected_symbol__Waits_for__0___comes__1_" xml:space="preserve">
+  <data name="Expression_Unexpected_symbol_Waits_for_comes" xml:space="preserve">
     <value>Unexpected symbol. Waits for {0} comes {1} nearby line {2} position {3}.</value>
   </data>
   <data name="Expression_MaxRecursionDepth" xml:space="preserve">

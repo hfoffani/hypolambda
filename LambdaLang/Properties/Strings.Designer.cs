@@ -79,29 +79,29 @@ namespace LambdaLang.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Division by zero error, nearby line {0} position {1}..
-        /// </summary>
-        internal static string Expression_ZeroDivisionError {
-            get {
-                return ResourceManager.GetString("Expression_ZeroDivisionError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Syntax error in factor nearby line {0} position {1}..
         /// </summary>
-        internal static string factor__syntax_error {
+        internal static string Expression_Syntax_error {
             get {
-                return ResourceManager.GetString("factor__syntax_error", resourceCulture);
+                return ResourceManager.GetString("Expression_Syntax_error", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unexpected symbol. Waits for {0} comes {1} nearby line {2} position {3}..
         /// </summary>
-        internal static string Unexpected_symbol__Waits_for__0___comes__1_ {
+        internal static string Expression_Unexpected_symbol_Waits_for_comes {
             get {
-                return ResourceManager.GetString("Unexpected_symbol__Waits_for__0___comes__1_", resourceCulture);
+                return ResourceManager.GetString("Expression_Unexpected_symbol_Waits_for_comes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Division by zero error, nearby line {0} position {1}..
+        /// </summary>
+        internal static string Expression_ZeroDivisionError {
+            get {
+                return ResourceManager.GetString("Expression_ZeroDivisionError", resourceCulture);
             }
         }
     }

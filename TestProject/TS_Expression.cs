@@ -795,9 +795,8 @@ f()
             Expression exp = new Expression();
             var prog = @"
 factorial = lambda ( (
-    u = v,
     v = v - 1,
-    u * factorial()
+    (v+1) * factorial()
     ) if v > 1 else 1
 ),
 v = 4,

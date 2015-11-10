@@ -681,7 +681,7 @@ namespace LambdaLang {
         void expect(TokenType s) {
             if (currenttoken.TokenType != s) {
                 string msg = string.Format(
-                    Properties.Strings.Unexpected_symbol__Waits_for__0___comes__1_,
+                    Properties.Strings.Expression_Unexpected_symbol_Waits_for_comes,
                     s, currenttoken.TokenType, currenttoken.LN, currenttoken.CP);
                 error(msg);
             }
@@ -712,7 +712,7 @@ namespace LambdaLang {
                     expect(TokenType.rcurly);
                     break;
                 default:
-                    var msg = string.Format(Properties.Strings.factor__syntax_error,
+                    var msg = string.Format(Properties.Strings.Expression_Syntax_error,
                         currenttoken.LN, currenttoken.CP);
                     error(msg);
                     break;
