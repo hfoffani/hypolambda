@@ -132,6 +132,18 @@ Algunos ejemplos en Python de expresiones permitidas con los resultados de la ev
 &gt;&gt;&gt; expr.Solve()
 "AB"
 &gt;&gt;&gt;
+&gt;&gt;&gt; expr = ECC.Lib.Expression("""
+factorial_of_v = lambda ( (
+    v = v - 1,
+    (v+1) * factorial_of_v()
+    ) if v > 1 else 1
+),
+v = 4,
+factorial_of_v()
+""")
+&gt;&gt;&gt; expr.Calculate()
+24.0
+&gt;&gt;&gt;
 </code>
 También es posible usar variables en la fórmula. La clase permite cambiar el objeto
 enlazado y volver a recalcular el nuevo resultado reusando la fórmula previamente

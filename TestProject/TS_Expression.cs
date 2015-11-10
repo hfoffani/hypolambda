@@ -791,16 +791,16 @@ f()
         }
 
         [TestMethod]
-        public void Test_lambda_35() {
+        public void Test_lambda_factorial() {
             Expression exp = new Expression();
             var prog = @"
-factorial = lambda ( (
+factorial_of_v = lambda ( (
     v = v - 1,
-    (v+1) * factorial()
+    (v+1) * factorial_of_v()
     ) if v > 1 else 1
 ),
 v = 4,
-factorial()
+factorial_of_v()
 ";
             exp.SetExpression(prog);
             Assert.AreEqual(24.0, exp.Calculate());
