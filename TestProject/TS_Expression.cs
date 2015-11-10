@@ -668,6 +668,158 @@ f()
             Assert.AreEqual(7.0, exp.Calculate());
         }
 
+        [TestMethod]
+        public void Test_lambda_21() {
+            Expression exp = new Expression();
+            var prog = @"
+u = 3,
+v = (u+1, 5),
+v
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(5.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_22() {
+            Expression exp = new Expression();
+            var prog = @"
+u = 3,
+v = (4 if u < 2 else 5),
+v
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(5.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_23() {
+            Expression exp = new Expression();
+            var prog = @"
+u = 3,
+v = (u if u > 0 else 5),
+v
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(3.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_24() {
+            Expression exp = new Expression();
+            var prog = @"
+f = lambda (
+    v = (u - 1 if u > 0 else u),
+    v
+),
+u = 3,
+f()
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(2.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_30() {
+            Expression exp = new Expression();
+            var prog = @"
+f = lambda (
+    v = (v - 1 if v > 0 else v)
+),
+v = 3,
+f()
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(2.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_31() {
+            Expression exp = new Expression();
+            var prog = @"
+v = 3,
+(v = v - 1) if v > 3 else 1,
+v
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(3.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_32() {
+            Expression exp = new Expression();
+            var prog = @"
+f = lambda (
+    v - 1
+),
+v = 3,
+(v = f()) if v > 3 else 1,
+v
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(3.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_33() {
+            Expression exp = new Expression();
+            var prog = @"
+f = lambda (
+    v = v - 1
+),
+v = 3,
+f() if v > 3 else 1,
+v
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(3.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_34() {
+            Expression exp = new Expression();
+            var prog = @"
+f = lambda (
+    (v = v - 1) if v > 0 else v),
+    f() if v > 0 else 5
+),
+v = 3,
+f()
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(5.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_35() {
+            Expression exp = new Expression();
+            var prog = @"
+factorial = lambda ( (
+    u = v,
+    v = v - 1,
+    u * factorial()
+    ) if v > 1 else 1
+),
+v = 4,
+factorial()
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(24.0, exp.Calculate());
+        }
+
+        [TestMethod, ExpectedException(typeof(StackOverflowException))]
+        public void Test_lambda_40() {
+            Expression exp = new Expression();
+            var prog = @"
+f = lambda (
+    f()
+),
+f()
+";
+            exp.SetExpression(prog);
+            exp.Calculate();
+        }
+
         #endregion
 
         #region cadenas

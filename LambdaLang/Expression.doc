@@ -45,26 +45,27 @@ sólo se evalúa Y (y no X) si CONDICION es falsa.</para>
                         variable
                     |   constant
                     |   ( expression )
-                    |   lambdaexp ( expression )
+                    |   variable = single_exp
+                    |   lambdaexp ()
                     |   condition
-                    |   expression * expression
-                    |   expression / expression
-                    |   expression + expression
-                    |   expression - expression
-                    |   expression if condition else expression
+                    |   single_exp * single_exp
+                    |   single_exp / single_exp
+                    |   single_exp + single_exp
+                    |   single_exp - single_exp
+                    |   single_exp if condition else single_exp
 
-        condition :=    expression
+        condition :=    single_exp
                     |   condition and condition
                     |   condition or condition
                     |   not condition
-                    |   expression &gt; expression
-                    |   expression &gt;= expression
-                    |   expression &lt; expression
-                    |   expression &lt;= expression
-                    |   expression == expression
-                    |   expression != expression
+                    |   single_exp &gt; single_exp
+                    |   single_exp &gt;= single_exp
+                    |   single_exp &lt; single_exp
+                    |   single_exp &lt;= single_exp
+                    |   single_exp == single_exp
+                    |   single_exp != single_exp
 
-        lambdaexp :=    lambda variable expression
+        lambdaexp :=    lambda single_exp
     </code>
 </para>
 

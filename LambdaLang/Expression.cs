@@ -111,7 +111,7 @@ namespace LambdaLang {
             } else {
                 postorden = (IEnumerable<object>) this.terminalList;
             }
-            return CalculateNPI2(postorden, null);
+            return CalculateNPI2(postorden, null, 0);
         }
 
         /// <summary>
@@ -128,10 +128,13 @@ namespace LambdaLang {
 
         #region evaluacion.
 
-        private object CalculateNPI2(IEnumerable<object> proveedor, Dictionary<string, object> locals) {
+        private object CalculateNPI2(IEnumerable<object> proveedor, Dictionary<string, object> locals, int stackFrames) {
             // los Convert.ToDouble son necesarios porque es posible que alguna
             // de las propiedades de objetos utilizados devuelvan int long o float.
             // asi nos aseguramos que los calculos se hagan siempre con double.
+
+            if (stackFrames > 500)
+                throw new StackOverflowException("Maximum recursion depth reached.");
 
             var pila = new Stack<object>();
             if (locals == null)
@@ -315,13 +318,18 @@ namespace LambdaLang {
                     case TokenType.eval:
                         var lambda = pila.Pop() as Nodo;
                         if (lambda != null) {
-                            var reslambda = CalculateNPI2((new RecorreArbol()).PostOrden(lambda, null), locals);
+                            var reslambda = CalculateNPI2((new RecorreArbol()).PostOrden(lambda, null), locals, stackFrames+1);
                             pila.Push(reslambda);
                         }
                         break;
                     case TokenType.identlocal:
                         var vallocal = pila.Pop();
-                        locals.Add(t.Value.ToString(), vallocal);
+                        var valname = t.Value.ToString();
+                        if (locals.ContainsKey(valname)) {
+                            locals[valname] = vallocal;
+                        } else {
+                            locals.Add(valname, vallocal);
+                        }
                         break;
                     case TokenType.lambda:
                         pila.Push(t.Value);
