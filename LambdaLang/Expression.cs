@@ -823,9 +823,37 @@ namespace LambdaLang {
                 return whentrue;
         }
 
+        List<string> name_list() {
+            var names = new List<string>();
+            if (currenttoken.TokenType == TokenType.ident) {
+                names.Add(currenttoken.Value.ToString());
+                nexttoken();
+                if (currenttoken.TokenType == TokenType.comma) {
+                    nexttoken();
+                    names.AddRange(name_list());
+                }
+            }
+            return names;
+        }
+
+        List<string> name_list_parens() {
+            var rparen = false;
+            if (currenttoken.TokenType == TokenType.lparen) {
+                rparen = true;
+                nexttoken();
+            }
+            var nl = name_list();
+            if (rparen) {
+                expect(TokenType.rparen);
+                nexttoken();
+            }
+            return nl;
+        }
+
         Nodo expresion_lambda() {
             var op = currenttoken;
             nexttoken();
+            var nl = name_list_parens();
             expect(TokenType.colon);
             nexttoken();
             var body = new Terminal(TokenType.lambda, expresion_single(), currenttoken.LN, currenttoken.CP);

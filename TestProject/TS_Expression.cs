@@ -791,6 +791,39 @@ f()
         }
 
         [TestMethod]
+        public void Test_lambda_36() {
+            Expression exp = new Expression();
+            var prog = "f = lambda a: (44), f()";
+            exp.SetExpression(prog);
+            Assert.AreEqual(44.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_37() {
+            Expression exp = new Expression();
+            var prog = "f = lambda a,b: (44), f()";
+            exp.SetExpression(prog);
+            Assert.AreEqual(44.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_38() {
+            Expression exp = new Expression();
+            var prog = "f = lambda (a): (44), f()";
+            exp.SetExpression(prog);
+            Assert.AreEqual(44.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_39() {
+            Expression exp = new Expression();
+            var prog = "f = lambda (a,b): (44), f()";
+            exp.SetExpression(prog);
+            Assert.AreEqual(44.0, exp.Calculate());
+        }
+
+
+        [TestMethod]
         public void Test_lambda_factorial() {
             Expression exp = new Expression();
             var prog = @"
@@ -806,7 +839,7 @@ factorial_of_v()
             Assert.AreEqual(24.0, exp.Calculate());
         }
 
-#endregion
+        #endregion
 
         #region Errors
 
