@@ -502,7 +502,19 @@ namespace LambdaLang {
             Match m;
             string token;
             while (true) {
-                input = input.TrimStart();
+                // input = input.TrimStart();
+                {
+                    int p = 0;
+                    while (p < input.Length && char.IsWhiteSpace(input[p])) {
+                        cpos += 1;
+                        if (input[p] == '\n') {
+                            lnum += 1;
+                            cpos = 1;
+                        }
+                        p++;
+                    };
+                    input = input.Substring(p);
+                }
                 if (input.Length == 0)
                     break;
                 if (input[0] == '\"') {
@@ -511,8 +523,13 @@ namespace LambdaLang {
                     while (p < input.Length && input[p] != '\"') {
                         if (input[p] == '\\' && input[p + 1] == '\"')
                             p++;
+                        if (input[p] == '\n') {
+                            lnum += 1;
+                            cpos = 1;
+                        }
                         token += input[p];
                         p++;
+                        cpos += 1;
                     }
                     terminales.Add(new Terminal(TokenType.str, token, lnum, cpos));
                     input = input.Substring(p + 1); // el +1 saltea el ultimo "
@@ -531,7 +548,7 @@ namespace LambdaLang {
                             this.symbolTable.Add(root, null);
                         terminales.Add(new Terminal(TokenType.ident, token, lnum, cpos));
                     }
-                    input = input.Substring(token.Length);
+                    input = input.Substring(token.Length); cpos += token.Length;
                     continue;
                 }
                 m = reNums.Match(input);
@@ -539,92 +556,92 @@ namespace LambdaLang {
                     token = m.Groups[0].Value;
                     double cte = double.Parse(token, System.Globalization.CultureInfo.InvariantCulture);
                     terminales.Add(new Terminal(TokenType.number, cte, lnum, cpos));
-                    input = input.Substring(token.Length);
+                    input = input.Substring(token.Length); cpos += token.Length;
                     continue;
                 }
                 switch (input[0]) {
                     case '+':
                         terminales.Add(new Terminal(TokenType.plus, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case '-':
                         terminales.Add(new Terminal(TokenType.minus, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case '*':
                         terminales.Add(new Terminal(TokenType.times, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case '/':
                         terminales.Add(new Terminal(TokenType.slash, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case '%':
                         terminales.Add(new Terminal(TokenType.perc, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case '(':
                         terminales.Add(new Terminal(TokenType.lparen, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case ')':
                         terminales.Add(new Terminal(TokenType.rparen, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case '{':
                         terminales.Add(new Terminal(TokenType.lcurly, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case '}':
                         terminales.Add(new Terminal(TokenType.rcurly, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case ',':
                         terminales.Add(new Terminal(TokenType.comma, lnum, cpos));
-                        input = input.Substring(1);
+                        input = input.Substring(1); cpos += 1;
                         continue;
                     case '!':
                         switch (input[1]) {
                             case '=':
                                 terminales.Add(new Terminal(TokenType.neq, lnum, cpos));
-                                input = input.Substring(2);
+                                input = input.Substring(2); cpos += 2;
                                 continue;
                             default:
                                 terminales.Add(new Terminal(TokenType.not, lnum, cpos));
-                                input = input.Substring(1);
+                                input = input.Substring(1); cpos += 1;
                                 continue;
                         }
                     case '>':
                         switch (input[1]) {
                             case '=':
                                 terminales.Add(new Terminal(TokenType.gteq, lnum, cpos));
-                                input = input.Substring(2);
+                                input = input.Substring(2); cpos += 2;
                                 continue;
                             default:
                                 terminales.Add(new Terminal(TokenType.gt, lnum, cpos));
-                                input = input.Substring(1);
+                                input = input.Substring(1); cpos += 1;
                                 continue;
                         }
                     case '<':
                         switch (input[1]) {
                             case '=':
                                 terminales.Add(new Terminal(TokenType.lteq, lnum, cpos));
-                                input = input.Substring(2);
+                                input = input.Substring(2); cpos += 2;
                                 continue;
                             default:
                                 terminales.Add(new Terminal(TokenType.lt, lnum, cpos));
-                                input = input.Substring(1);
+                                input = input.Substring(1); cpos += 1;
                                 continue;
                         }
                     case '=':
                         switch (input[1]) {
                             case '=':
                                 terminales.Add(new Terminal(TokenType.eq, lnum, cpos));
-                                input = input.Substring(2);
+                                input = input.Substring(2); cpos += 2;
                                 continue;
                             default:
                                 terminales.Add(new Terminal(TokenType.assig, lnum, cpos));
-                                input = input.Substring(1);
+                                input = input.Substring(1); cpos += 1;
                                 continue;
                         }
                 }
@@ -1012,6 +1029,8 @@ namespace LambdaLang {
         public Terminal(TokenType tokenType, object value, int linenumber, int position) {
             this.TokenType = tokenType;
             this.Value = value;
+            this.LN = linenumber;
+            this.CP = position;
         }
 
         public TokenType TokenType {
