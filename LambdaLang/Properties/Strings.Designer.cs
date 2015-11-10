@@ -70,7 +70,16 @@ namespace LambdaLang.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Division by zero error..
+        ///   Looks up a localized string similar to Maximum recursion depth reached, nearby line {0} position {1}..
+        /// </summary>
+        internal static string Expression_MaxRecursionDepth {
+            get {
+                return ResourceManager.GetString("Expression_MaxRecursionDepth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Division by zero error, nearby line {0} position {1}..
         /// </summary>
         internal static string Expression_ZeroDivisionError {
             get {
@@ -79,7 +88,7 @@ namespace LambdaLang.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Syntax error in factor..
+        ///   Looks up a localized string similar to Syntax error in factor nearby line {0} position {1}..
         /// </summary>
         internal static string factor__syntax_error {
             get {
@@ -88,7 +97,7 @@ namespace LambdaLang.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unexpected symbol. Waits for {0} comes {1}.
+        ///   Looks up a localized string similar to Unexpected symbol. Waits for {0} comes {1} nearby line {2} position {3}..
         /// </summary>
         internal static string Unexpected_symbol__Waits_for__0___comes__1_ {
             get {

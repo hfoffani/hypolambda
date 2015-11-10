@@ -807,8 +807,12 @@ factorial()
             Assert.AreEqual(24.0, exp.Calculate());
         }
 
+#endregion
+
+        #region Errors
+
         [TestMethod, ExpectedException(typeof(StackOverflowException))]
-        public void Test_lambda_40() {
+        public void Test_error_40() {
             Expression exp = new Expression();
             var prog = @"
 f = lambda (
@@ -818,6 +822,84 @@ f()
 ";
             exp.SetExpression(prog);
             exp.Calculate();
+        }
+
+        [TestMethod]
+        public void Test_error_41() {
+            var error = string.Format(
+                "Maximum recursion depth reached, nearby line {0} position {1}.", 2, 3);
+
+            Expression exp = new Expression();
+            var prog = @"
+f = lambda (
+    f()
+),
+f()
+";
+            exp.SetExpression(prog);
+            try {
+                exp.Calculate();
+            } catch (StackOverflowException ex) {
+                Assert.AreEqual(error, ex.Message);
+                return;
+            }
+            Assert.Fail();
+        }
+
+        [TestMethod]
+        public void Test_error_42() {
+            var error = string.Format(
+                "Division by zero error, nearby line {0} position {1}.", 2, 3);
+
+            Expression exp = new Expression();
+            var prog = @"
+v = 3,
+u = 0,
+v/u
+";
+            exp.SetExpression(prog);
+            exp.Calculate();
+            Assert.AreEqual(error, exp.LastError);
+        }
+
+        [TestMethod]
+        public void Test_error_43() {
+            var error = string.Format(
+                "Unexpected symbol. Waits for {0} comes {1} nearby line {2} position {3}.", "X","Y", 2, 3);
+
+            Expression exp = new Expression();
+            var prog = @"
+v = 3,
+u = 0,
+3 if v pepe 0
+";
+            try {
+                exp.SetExpression(prog);
+            } catch (ApplicationException ex) {
+                Assert.AreEqual(error, ex.Message);
+                return;
+            }
+            Assert.Fail();
+        }
+
+        [TestMethod]
+        public void Test_error_44() {
+            var error = string.Format(
+                "Syntax error in factor nearby line {0} position {1}.", 2, 3);
+
+            Expression exp = new Expression();
+            var prog = @"
+v = 3,
+u = 0,
+v + u,
+";
+            try {
+                exp.SetExpression(prog);
+            } catch (ApplicationException ex) {
+                Assert.AreEqual(error, ex.Message);
+                return;
+            }
+            Assert.Fail();
         }
 
         #endregion

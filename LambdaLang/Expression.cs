@@ -133,9 +133,6 @@ namespace LambdaLang {
             // de las propiedades de objetos utilizados devuelvan int long o float.
             // asi nos aseguramos que los calculos se hagan siempre con double.
 
-            if (stackFrames > 500)
-                throw new StackOverflowException("Maximum recursion depth reached.");
-
             var pila = new Stack<object>();
             if (locals == null)
                 locals = new Dictionary<string, object>();
@@ -147,6 +144,11 @@ namespace LambdaLang {
             string ignoreuptolabel = "";
 
             foreach (Terminal t in proveedor) {
+
+                if (stackFrames > 500) {
+                    LastError = string.Format(Properties.Strings.Expression_MaxRecursionDepth, t.LN, t.CP);
+                    throw new StackOverflowException(LastError);
+                }
 
                 #region jump ppmente dicho
                 if (ignoreuptolabel != "") {
@@ -213,8 +215,9 @@ namespace LambdaLang {
                     case TokenType.slash:
                         b = Convert.ToDouble(pila.Pop());
                         a = Convert.ToDouble(pila.Pop());
-                        if (b == 0.0)
-                            LastError = Properties.Strings.Expression_ZeroDivisionError;
+                        if (b == 0.0) {
+                            LastError = string.Format(Properties.Strings.Expression_ZeroDivisionError, t.LN, t.CP);
+                        }
                         res = a / b;
                         pila.Push(res);
                         break;
@@ -661,7 +664,8 @@ namespace LambdaLang {
         void expect(TokenType s) {
             if (currenttoken.TokenType != s) {
                 string msg = string.Format(
-                    Properties.Strings.Unexpected_symbol__Waits_for__0___comes__1_, s, currenttoken.TokenType);
+                    Properties.Strings.Unexpected_symbol__Waits_for__0___comes__1_,
+                    s, currenttoken.TokenType, currenttoken.LN, currenttoken.CP);
                 error(msg);
             }
         }
@@ -691,7 +695,9 @@ namespace LambdaLang {
                     expect(TokenType.rcurly);
                     break;
                 default:
-                    error(Properties.Strings.factor__syntax_error);
+                    var msg = string.Format(Properties.Strings.factor__syntax_error,
+                        currenttoken.LN, currenttoken.CP);
+                    error(msg);
                     break;
             }
             nexttoken();
