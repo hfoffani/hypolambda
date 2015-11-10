@@ -855,9 +855,12 @@ namespace LambdaLang {
             nexttoken();
             var nl = name_list_parens();
             expect(TokenType.colon);
+            // var head1 = new Terminal(TokenType.lambdahead, nl, currenttoken.LN, currenttoken.CP);
             nexttoken();
             var body = new Terminal(TokenType.lambda, expresion_single(), currenttoken.LN, currenttoken.CP);
             return new Nodo(body);
+            // var body2 = new Terminal(TokenType.lambdabody, expresion_single(), currenttoken.LN, currenttoken.CP);
+            // return new Nodo(op, new Nodo(head1), new Nodo(body2));
         }
 
         Nodo expresion_list() {
@@ -993,6 +996,8 @@ namespace LambdaLang {
         jmp,
         label,
         lambda,
+        lambdahead,
+        lambdabody,
         colon,
         eval,
         identlocal,
