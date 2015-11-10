@@ -826,7 +826,7 @@ f()
         [TestMethod]
         public void Test_error_41() {
             var error = string.Format(
-                "Maximum recursion depth reached, nearby line {0} position {1}.", 3, 5);
+                "Maximum recursion depth reached nearby line {0} position {1}.", 3, 5);
 
             Expression exp = new Expression();
             var prog = @"
@@ -848,7 +848,7 @@ f()
         [TestMethod]
         public void Test_error_42() {
             var error = string.Format(
-                "Division by zero error, nearby line {0} position {1}.", 4, 2);
+                "Division by zero error nearby line {0} position {1}.", 4, 2);
 
             Expression exp = new Expression();
             var prog = @"
@@ -884,7 +884,7 @@ u = 0,
         [TestMethod]
         public void Test_error_44() {
             var error = string.Format(
-                "Syntax error in factor nearby line {0} position {1}.", 4, 6);
+                "Syntax error nearby line {0} position {1}.", 4, 6);
 
             Expression exp = new Expression();
             var prog = @"

@@ -70,7 +70,7 @@ namespace LambdaLang.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Maximum recursion depth reached, nearby line {0} position {1}..
+        ///   Looks up a localized string similar to Maximum recursion depth reached nearby line {0} position {1}..
         /// </summary>
         internal static string Expression_MaxRecursionDepth {
             get {
@@ -79,7 +79,7 @@ namespace LambdaLang.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Syntax error in factor nearby line {0} position {1}..
+        ///   Looks up a localized string similar to Syntax error nearby line {0} position {1}..
         /// </summary>
         internal static string Expression_Syntax_error {
             get {
@@ -97,7 +97,7 @@ namespace LambdaLang.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Division by zero error, nearby line {0} position {1}..
+        ///   Looks up a localized string similar to Division by zero error nearby line {0} position {1}..
         /// </summary>
         internal static string Expression_ZeroDivisionError {
             get {
