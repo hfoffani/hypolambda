@@ -1024,13 +1024,14 @@ namespace LambdaLang {
         public Terminal(TokenType tokenType, int linenumber, int position) {
             this.TokenType = tokenType;
             this.Value = null;
-        }
-
-        public Terminal(TokenType tokenType, object value, int linenumber, int position) {
-            this.TokenType = tokenType;
-            this.Value = value;
             this.LN = linenumber;
             this.CP = position;
+        }
+
+        public Terminal(TokenType tokenType, object value, int linenumber, int position)
+            : this(tokenType, linenumber, position) {
+
+            this.Value = value;
         }
 
         public TokenType TokenType {

@@ -849,7 +849,7 @@ f()
         [TestMethod]
         public void Test_error_42() {
             var error = string.Format(
-                "Division by zero error, nearby line {0} position {1}.", 4, 3);
+                "Division by zero error, nearby line {0} position {1}.", 4, 2);
 
             Expression exp = new Expression();
             var prog = @"
