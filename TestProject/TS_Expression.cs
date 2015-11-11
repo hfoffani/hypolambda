@@ -605,6 +605,9 @@ namespace TestProject {
         public void Test_lambda_01() {
             Expression exp = new Expression();
             exp.SetExpression("(lambda: 2+3)()");
+            Console.WriteLine();
+            Console.WriteLine(exp.toString());
+            Console.WriteLine();
             Assert.AreEqual(5.0, exp.Calculate());
         }
 

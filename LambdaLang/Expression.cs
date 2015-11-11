@@ -319,9 +319,17 @@ namespace LambdaLang {
                     #endregion
 
                     case TokenType.eval:
-                        var lambda = pila.Pop() as Nodo;
+                        var lambda = pila.Pop() as lambdastruct;
                         if (lambda != null) {
-                            var reslambda = CalculateNPI2((new RecorreArbol()).PostOrden(lambda, null), locals, stackFrames+1);
+                            RecorreArbol r = new RecorreArbol();
+                            var postorden = r.PostOrden(lambda.Body, null);
+#if DEBUG
+                            postorden = postorden.ToList();
+                            Console.WriteLine();
+                            Console.WriteLine(toString(lambda.Body));
+                            Console.WriteLine();
+#endif
+                            var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
                             pila.Push(reslambda);
                         }
                         break;
@@ -334,8 +342,18 @@ namespace LambdaLang {
                             locals.Add(valname, vallocal);
                         }
                         break;
-                    case TokenType.lambda:
+
+                    case TokenType.lambdahead:
                         pila.Push(t.Value);
+                        break;
+                    case TokenType.lambdabody:
+                        pila.Push(t.Value);
+                        break;
+                    case TokenType.lambda:
+                        var ls = new lambdastruct();
+                        ls.Body = pila.Pop() as Nodo;
+                        ls.Head = pila.Pop() as string[];
+                        pila.Push(ls);
                         break;
 
                     case TokenType.comma:
@@ -353,6 +371,11 @@ namespace LambdaLang {
                 return pila.Pop();
             else
                 return 0.0;
+        }
+
+        class lambdastruct {
+            internal string[] Head;
+            internal Nodo Body;
         }
 
         private bool truthvalue(object value) {
@@ -477,8 +500,12 @@ namespace LambdaLang {
             return sb;
         }
 
-        internal String toString() {
+        private String toString(Nodo n) {
             return toString(ast, new StringBuilder(), true, new StringBuilder()).ToString();
+        }
+
+        internal String toString() {
+            return toString(ast);
         }
 
         bool _evalOnlyOneSymbol = false;
@@ -855,12 +882,12 @@ namespace LambdaLang {
             nexttoken();
             var nl = name_list_parens();
             expect(TokenType.colon);
-            // var head1 = new Terminal(TokenType.lambdahead, nl, currenttoken.LN, currenttoken.CP);
+            var head1 = new Terminal(TokenType.lambdahead, nl.ToArray(), currenttoken.LN, currenttoken.CP);
             nexttoken();
-            var body = new Terminal(TokenType.lambda, expresion_single(), currenttoken.LN, currenttoken.CP);
-            return new Nodo(body);
-            // var body2 = new Terminal(TokenType.lambdabody, expresion_single(), currenttoken.LN, currenttoken.CP);
-            // return new Nodo(op, new Nodo(head1), new Nodo(body2));
+            // var body = new Terminal(TokenType.lambda, expresion_single(), currenttoken.LN, currenttoken.CP);
+            // return new Nodo(body);
+            var body2 = new Terminal(TokenType.lambdabody, expresion_single(), currenttoken.LN, currenttoken.CP);
+            return new Nodo(op, new Nodo(head1), new Nodo(body2));
         }
 
         Nodo expresion_list() {
