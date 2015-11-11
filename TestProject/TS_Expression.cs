@@ -70,11 +70,10 @@ namespace TestProject {
             exp.SetExpression("(2+*5.0");
         }
 
-        // hacemos SetExpression con un solo parametro.
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Prueba25_TestRecursiveDescent() {
             Expression exp = new Expression();
-            // exp.SetExpression("(A+B)*5", true);
+            exp.SetExpression("(A+B)*5", true);
             Aux y = new Aux();
             y.A = 2;
             y.B = 1;
@@ -143,7 +142,7 @@ namespace TestProject {
 
         #region expresiones logicas cadenas
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Prueba40_TestRecursiveDescent() {
             Expression exp = new Expression();
             exp.SetExpression("A>B");
@@ -161,7 +160,7 @@ namespace TestProject {
             Assert.AreEqual(0.0, exp.Calculate());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Prueba42_TestRecursiveDescent() {
             Expression exp = new Expression();
             exp.SetExpression("A<B");
@@ -170,7 +169,7 @@ namespace TestProject {
             Assert.AreEqual(0.0, exp.Calculate());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Prueba43_TestRecursiveDescent() {
             Expression exp = new Expression();
             exp.SetExpression("A>=B");
@@ -188,7 +187,7 @@ namespace TestProject {
             Assert.AreEqual(1.0, exp.Calculate());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Prueba46_TestRecursiveDescent() {
             Expression exp = new Expression();
             exp.SetExpression("(A<B)");
@@ -197,7 +196,7 @@ namespace TestProject {
             Assert.AreEqual(0.0, exp.Calculate());
         }
 
-        [TestMethod, Ignore]
+        [TestMethod]
         public void Prueba47_TestRecursiveDescent() {
             Expression exp = new Expression();
             exp.SetExpression("not (A<B)");

@@ -255,24 +255,48 @@ namespace LambdaLang {
                         }
                         break;
                     case TokenType.gt:
-                        b = Convert.ToDouble(pila.Pop());
-                        a = Convert.ToDouble(pila.Pop());
-                        pila.Push((a > b ? 1.0 : 0.0));
+                        if (pila.Peek() is string) {
+                            sb = (string)pila.Pop();
+                            sa = (string)pila.Pop();
+                            pila.Push((sb.CompareTo(sa) > 0 ? 1.0 : 0.0));
+                        } else {
+                            b = Convert.ToDouble(pila.Pop());
+                            a = Convert.ToDouble(pila.Pop());
+                            pila.Push((a > b ? 1.0 : 0.0));
+                        }
                         break;
                     case TokenType.gteq:
-                        b = Convert.ToDouble(pila.Pop());
-                        a = Convert.ToDouble(pila.Pop());
-                        pila.Push((a >= b ? 1.0 : 0.0));
+                        if (pila.Peek() is string) {
+                            sb = (string)pila.Pop();
+                            sa = (string)pila.Pop();
+                            pila.Push((sb.CompareTo(sa) >= 0 ? 1.0 : 0.0));
+                        } else {
+                            b = Convert.ToDouble(pila.Pop());
+                            a = Convert.ToDouble(pila.Pop());
+                            pila.Push((a >= b ? 1.0 : 0.0));
+                        }
                         break;
                     case TokenType.lt:
-                        b = Convert.ToDouble(pila.Pop());
-                        a = Convert.ToDouble(pila.Pop());
-                        pila.Push((a < b ? 1.0 : 0.0));
+                        if (pila.Peek() is string) {
+                            sb = (string)pila.Pop();
+                            sa = (string)pila.Pop();
+                            pila.Push((sb.CompareTo(sa) < 0 ? 1.0 : 0.0));
+                        } else {
+                            b = Convert.ToDouble(pila.Pop());
+                            a = Convert.ToDouble(pila.Pop());
+                            pila.Push((a < b ? 1.0 : 0.0));
+                        }
                         break;
                     case TokenType.lteq:
-                        b = Convert.ToDouble(pila.Pop());
-                        a = Convert.ToDouble(pila.Pop());
-                        pila.Push((a <= b ? 1.0 : 0.0));
+                        if (pila.Peek() is string) {
+                            sb = (string)pila.Pop();
+                            sa = (string)pila.Pop();
+                            pila.Push((sb.CompareTo(sa) <= 0 ? 1.0 : 0.0));
+                        } else {
+                            b = Convert.ToDouble(pila.Pop());
+                            a = Convert.ToDouble(pila.Pop());
+                            pila.Push((a <= b ? 1.0 : 0.0));
+                        }
                         break;
 
                     #endregion
