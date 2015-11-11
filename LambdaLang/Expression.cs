@@ -319,7 +319,7 @@ namespace LambdaLang {
                     #endregion
 
                     case TokenType.eval:
-                        var lambda = pila.Pop() as lambdastruct;
+                        var lambda = pila.Pop() as lambdatuple;
                         if (lambda != null) {
                             RecorreArbol r = new RecorreArbol();
                             var postorden = r.PostOrden(lambda.Body, null);
@@ -350,7 +350,7 @@ namespace LambdaLang {
                         pila.Push(t.Value);
                         break;
                     case TokenType.lambda:
-                        var ls = new lambdastruct();
+                        var ls = new lambdatuple();
                         ls.Body = pila.Pop() as Nodo;
                         ls.Head = pila.Pop() as string[];
                         pila.Push(ls);
@@ -373,7 +373,7 @@ namespace LambdaLang {
                 return 0.0;
         }
 
-        class lambdastruct {
+        class lambdatuple {
             internal string[] Head;
             internal Nodo Body;
         }
