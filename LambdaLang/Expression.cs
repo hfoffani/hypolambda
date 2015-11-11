@@ -407,9 +407,9 @@ namespace LambdaLang {
                 return 0.0;
         }
 
-        private object lambdaeval(lambdatuple lambda, List<Dictionary<string, object>> locals, List<object> binds, int stackFrames) {
+        private object lambdaeval(lambdatuple lambda, List<Dictionary<string, object>> locals, IList<object> binds, int stackFrames) {
             if (lambda.Builtin != null) {
-                return _bultins[lambda.Builtin](binds);
+                return _bultins[lambda.Builtin](binds, this, locals, stackFrames);
             } else {
                 var newscope = new Dictionary<string, object>();
                 for (int j = 0; j < lambda.Head.Length; j++) {
@@ -432,20 +432,31 @@ namespace LambdaLang {
             }
         }
 
-        Dictionary<string, Func<List<object>, object>> _bultins = new Dictionary<string, Func<List<object>, object>>() {
-            { "print", binds => {
-                    var s = String.Join(" ", binds.Select(x => x.ToString()));
-                    Console.WriteLine(s);
-                    return s;
-                } },
-            { "first", binds => {
-                    var l = binds[0] as IList<object>;
-                    return l[0];
-                } },
-            { "rest", binds => {
-                    var l = binds[0] as IList<object>;
-                    return l.Skip(1).ToList();
-                } },
+        Dictionary<string, Func<IList<object>, Expression, List<Dictionary<string, object>>, int, object>>
+            _bultins = new Dictionary<string, Func<IList<object>, Expression, List<Dictionary<string, object>>, int, object>>() {
+
+            { "print", (binds,d,_,__) => {
+                var s = String.Join(" ", binds.Select(x => x.ToString()));
+                Console.WriteLine(s);
+                return s; } },
+            { "first", (binds,d,_,__) => {
+                var l = binds[0] as IList<object>;
+                return l[0]; } },
+            { "rest", (binds,d,_,__) => {
+                var l = binds[0] as IList<object>;
+                return l.Skip(1).ToList(); } },
+            { "__add1__", (binds,d,_,__) => {
+                return ((double)binds[0]) + 1.0; } },
+            { "map", (binds,exp,_,__) => {
+                var l = binds[0] as lambdatuple;
+                var mapped = binds
+                    .Skip(1)
+                    .Cast<List<object>>()
+                    .Transpose()
+                    .Select(p => exp.lambdaeval(l, _, p, __))
+                    .ToList();
+                return mapped; } },
+
         };
 
         class lambdatuple {
@@ -1244,6 +1255,20 @@ namespace LambdaLang {
 
         public override string ToString() {
             return this.TokenType.ToString() + (this.Value != null ? " [" + this.Value.ToString() + "]" : "");
+        }
+    }
+
+    static class myext {
+        public static IEnumerable<IList<T>> Transpose<T>(this IEnumerable<IEnumerable<T>> source) {
+            var enumerators = source.Select(e => e.GetEnumerator()).ToArray();
+            try {
+                while (enumerators.All(e => e.MoveNext())) {
+                    yield return enumerators.Select(e => e.Current).ToArray();
+                }
+            } finally {
+                foreach (var enumerator in enumerators)
+                    enumerator.Dispose();
+            }
         }
     }
 

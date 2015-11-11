@@ -1214,6 +1214,33 @@ v + u;
             Assert.AreEqual(5.0, s);
         }
 
+        [TestMethod]
+        public void Test_builtins_13() {
+            var exp = new Expression();
+            exp.SetExpression("__add1__(4)");
+            var s = exp.Calculate();
+            Assert.AreEqual(5.0, s);
+        }
+
+        [TestMethod]
+        public void Test_builtins_14() {
+            var exp = new Expression();
+            exp.SetExpression("map(__add1__, [3,4,5])");
+            var l = exp.Solve() as IList<object>;
+            Assert.IsNotNull(l);
+            Assert.AreEqual(3, l.Count);
+        }
+
+        [TestMethod]
+        public void Test_builtins_15() {
+            var exp = new Expression();
+            exp.SetExpression("add=lambda (a,b): a+b; map(add,[3,4,5],[2,3,4])");
+            var l = exp.Solve() as IList<object>;
+            Assert.IsNotNull(l);
+            Assert.AreEqual(3, l.Count);
+        }
+
+
         #endregion
 
         #region serializacion
