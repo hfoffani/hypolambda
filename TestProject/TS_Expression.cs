@@ -983,6 +983,18 @@ v + u;
             exp.SetExpression("3, 2");
         }
 
+        [TestMethod, ExpectedException(typeof(ApplicationException))]
+        public void Test_error_46() {
+            Expression exp = new Expression();
+            exp.SetExpression("f(3; 2)");
+        }
+
+        [TestMethod, ExpectedException(typeof(ApplicationException))]
+        public void Test_error_47() {
+            Expression exp = new Expression();
+            exp.SetExpression("f(a = 2)");
+        }
+
         #endregion
 
         #region cadenas

@@ -816,7 +816,7 @@ namespace LambdaLang {
         }
 
         Nodo build_list() {
-            var f = expresion_single();
+            var f = expresion_lambda();
             if (currenttoken.TokenType == TokenType.comma) {
                 nexttoken();
                 return new Nodo(new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP), f, build_list());
@@ -958,16 +958,18 @@ namespace LambdaLang {
         }
 
         Nodo expresion_lambda() {
-            var op = currenttoken;
-            nexttoken();
-            var nl = name_list_parens();
-            expect(TokenType.colon);
-            var head1 = new Terminal(TokenType.lambdahead, nl.ToArray(), currenttoken.LN, currenttoken.CP);
-            nexttoken();
-            // var body = new Terminal(TokenType.lambda, expresion_single(), currenttoken.LN, currenttoken.CP);
-            // return new Nodo(body);
-            var body2 = new Terminal(TokenType.lambdabody, expresion_single(), currenttoken.LN, currenttoken.CP);
-            return new Nodo(op, new Nodo(head1), new Nodo(body2));
+            if (currenttoken.TokenType == TokenType.lambda) {
+                var op = currenttoken;
+                nexttoken();
+                var nl = name_list_parens();
+                expect(TokenType.colon);
+                var head = new Terminal(TokenType.lambdahead, nl.ToArray(), currenttoken.LN, currenttoken.CP);
+                nexttoken();
+                var body = new Terminal(TokenType.lambdabody, expresion_lambda(), currenttoken.LN, currenttoken.CP);
+                return new Nodo(op, new Nodo(head), new Nodo(body));
+            } else {
+                return expresion_cond();
+            }
         }
 
         Nodo expresion_list() {
@@ -984,7 +986,8 @@ namespace LambdaLang {
                 return f;
         }
 
-        Nodo asignacion(string s) {
+        Nodo asignacion() {
+            var s = currenttoken.Value.ToString();
             nexttoken();
             expect(TokenType.assig);
             var op = new Terminal(TokenType.assig, s, currenttoken.LN, currenttoken.CP);
@@ -995,17 +998,10 @@ namespace LambdaLang {
         }
 
         Nodo expresion_single() {
-            if (currenttoken.TokenType == TokenType.ident) {
-                var s = currenttoken.Value.ToString();
-                if (lookaheadone().TokenType == TokenType.assig) {
-                    return asignacion(s);
-                } else {
-                    return expresion_cond();
-                }
-            } else if (currenttoken.TokenType == TokenType.lambda) {
-                return expresion_lambda();
+            if (currenttoken.TokenType == TokenType.ident && lookaheadone().TokenType == TokenType.assig) {
+                return asignacion();
             } else {
-                return expresion_cond();
+                return expresion_lambda();
             }
         }
 
