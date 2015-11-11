@@ -133,8 +133,9 @@ namespace TestProject {
         public void Prueba31_TestRecursiveDescent() {
             Expression exp = new Expression();
             exp.SetExpression("t2.Ticks - t1.Ticks");
-            exp.SymbolTable["t1"] = System.DateTime.Now;
-            exp.SymbolTable["t2"] = System.DateTime.Now;
+            var now = System.DateTime.Now;
+            exp.SymbolTable["t1"] = now;
+            exp.SymbolTable["t2"] = now;
             Assert.AreEqual(0.0, exp.Calculate());
         }
 
