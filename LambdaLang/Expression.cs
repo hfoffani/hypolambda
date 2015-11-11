@@ -323,8 +323,9 @@ namespace LambdaLang {
 
                     case TokenType.eval:
                         var lambda = pila.Pop() as lambdatuple;
+                        var binds = pila.Pop() as List<object>;
                         if (lambda != null) {
-                            var reslambda = lambdaeval(lambda, locals, stackFrames);
+                            var reslambda = lambdaeval(lambda, locals, binds, stackFrames);
                             pila.Push(reslambda);
                         }
                         break;
@@ -352,7 +353,22 @@ namespace LambdaLang {
                         pila.Push(ls);
                         break;
 
+                    case TokenType.list:
+                        pila.Push(new List<object>());
+                        break;
+
                     case TokenType.comma:
+                        var tail = pila.Pop();
+                        var head = pila.Pop();
+                        var li = new List<object>();
+                        if (tail is List<object>) {
+                            li.AddRange((List<object>)tail);
+                        }
+                        li.Insert(0, head);
+                        pila.Push(li);
+                        break;
+
+                    case TokenType.semicolon:
                         var oc = pila.Pop(); pila.Pop();
                         pila.Push(oc);
                         break;
@@ -370,17 +386,22 @@ namespace LambdaLang {
                 return 0.0;
         }
 
-        private object lambdaeval(lambdatuple lambda, List<Dictionary<string, object>> locals, int stackFrames) {
+        private object lambdaeval(lambdatuple lambda, List<Dictionary<string, object>> locals, List<object> binds, int stackFrames) {
             RecorreArbol r = new RecorreArbol();
             var postorden = r.PostOrden(lambda.Body, null);
-            object nul = null;
-            var newscope = lambda.Head.Select(k => new { k, nul }).ToDictionary(t => t.k, t => t.nul);
+
+            var newscope = new Dictionary<string, object>();
+            for (int j = 0; j < lambda.Head.Length; j++) {
+                if (j < binds.Count) {
+                    newscope.Add(lambda.Head[j], binds[j]);
+                }
+            }
             locals.Add(newscope);
 #if DEBUG
             postorden = postorden.ToList();
-            Console.WriteLine();
-            Console.WriteLine(toString(lambda.Body));
-            Console.WriteLine();
+            //Console.WriteLine();
+            //Console.WriteLine(toString(lambda.Body));
+            //Console.WriteLine();
 #endif
             var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
             locals.RemoveAt(locals.Count - 1);
@@ -645,6 +666,10 @@ namespace LambdaLang {
                         terminales.Add(new Terminal(TokenType.comma, lnum, cpos));
                         input = input.Substring(1); cpos += 1;
                         continue;
+                    case ';':
+                        terminales.Add(new Terminal(TokenType.semicolon, lnum, cpos));
+                        input = input.Substring(1); cpos += 1;
+                        continue;
                     case '!':
                         switch (input[1]) {
                             case '=':
@@ -766,14 +791,34 @@ namespace LambdaLang {
             return f;
         }
 
+        Nodo build_list() {
+            var f = expresion_single();
+            if (currenttoken.TokenType == TokenType.comma) {
+                nexttoken();
+                return new Nodo(new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP), f, build_list());
+            } else {
+                var empty = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
+                var oplist = new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP);
+                return new Nodo(oplist, f, new Nodo(empty));
+            }
+        }
+
         Nodo expresion_evaluada() {
             Nodo nizq = factor();
-            if (currenttoken.TokenType == TokenType.lparen && lookaheadone().TokenType == TokenType.rparen) {
+            if (currenttoken.TokenType == TokenType.lparen) {
+                var tl = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
+                var bindings = new Nodo(tl);
                 nexttoken();
+                if (currenttoken.TokenType != TokenType.rparen) {
+                    //var empty = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
+                    //var oplist = new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP);
+                    //bindings = new Nodo(oplist, build_list(), new Nodo(empty));
+                    bindings = build_list();
+                }
                 expect(TokenType.rparen);
                 nexttoken();
                 var op = new Terminal(TokenType.eval, currenttoken.LN, currenttoken.CP);
-                Nodo n = new Nodo(op, nizq, null);
+                Nodo n = new Nodo(op, bindings, nizq);
                 return n;
             } else
                 return nizq;
@@ -906,9 +951,9 @@ namespace LambdaLang {
 
         Nodo expresion_list() {
             var f = expresion_single();
-            if (currenttoken.TokenType == TokenType.comma) {
+            if (currenttoken.TokenType == TokenType.semicolon) {
                 nexttoken();
-                return new Nodo(new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP), f, expresion_list());
+                return new Nodo(new Terminal(TokenType.semicolon, currenttoken.LN, currenttoken.CP), f, expresion_list());
             } else
                 return f;
         }
@@ -1040,9 +1085,11 @@ namespace LambdaLang {
         lambdahead,
         lambdabody,
         colon,
+        list,
         eval,
         identlocal,
         comma,
+        semicolon,
         assig,
         NIL
     }

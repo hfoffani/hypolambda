@@ -576,14 +576,14 @@ namespace TestProject {
         [TestMethod]
         public void Test_lambda_10() {
             Expression exp = new Expression();
-            exp.SetExpression("3, 2");
+            exp.SetExpression("3; 2");
             Assert.AreEqual(2.0, exp.Calculate());
         }
 
         [TestMethod]
         public void Test_lambda_11() {
             Expression exp = new Expression();
-            exp.SetExpression("3, 2, 5");
+            exp.SetExpression("3; 2; 5");
             Assert.AreEqual(5.0, exp.Calculate());
         }
 
@@ -597,7 +597,7 @@ namespace TestProject {
         [TestMethod]
         public void Test_lambda_13() {
             Expression exp = new Expression();
-            exp.SetExpression("a = 3, 5, a");
+            exp.SetExpression("a = 3; 5; a");
             Assert.AreEqual(3.0, exp.Calculate());
         }
 
@@ -614,21 +614,21 @@ namespace TestProject {
         [TestMethod]
         public void Test_lambda_02() {
             Expression exp = new Expression();
-            exp.SetExpression("v=3, (lambda: 2+v)()");
+            exp.SetExpression("v=3; (lambda: 2+v)()");
             Assert.AreEqual(5.0, exp.Calculate());
         }
 
         [TestMethod]
         public void Test_lambda_03() {
             Expression exp = new Expression();
-            exp.SetExpression("(f = lambda: 2+3), 9");
+            exp.SetExpression("(f = lambda: 2+3); 9");
             Assert.AreEqual(9.0, exp.Calculate());
         }
 
         [TestMethod]
         public void Test_lambda_04() {
             Expression exp = new Expression();
-            exp.SetExpression("(f = lambda: 2+3), f()");
+            exp.SetExpression("(f = lambda: 2+3); f()");
             Console.WriteLine();
             Console.WriteLine(exp.toString());
             Console.WriteLine();
@@ -638,21 +638,21 @@ namespace TestProject {
         [TestMethod]
         public void Test_lambda_05() {
             Expression exp = new Expression();
-            exp.SetExpression("(f = lambda: 2+v), (v = 3), f()");
+            exp.SetExpression("(f = lambda: 2+v); (v = 3); f()");
             Assert.AreEqual(5.0, exp.Calculate());
         }
 
         [TestMethod]
         public void Test_lambda_06() {
             Expression exp = new Expression();
-            exp.SetExpression("f = lambda: 2+v, v = 3, f()");
+            exp.SetExpression("f = lambda: 2+v; v = 3; f()");
             Assert.AreEqual(5.0, exp.Calculate());
         }
 
         [TestMethod]
         public void Test_lambda_07() {
             Expression exp = new Expression();
-            exp.SetExpression("f = lambda: (y=4, y+v), v = 3, f()");
+            exp.SetExpression("f = lambda: (y=4; y+v); v = 3; f()");
             Assert.AreEqual(7.0, exp.Calculate());
         }
 
@@ -661,10 +661,10 @@ namespace TestProject {
             Expression exp = new Expression();
             var prog = @"
 f = lambda: (
-    y = 4,
+    y = 4;
     y + v
-),
-v = 3,
+);
+v = 3;
 f()
 ";
             exp.SetExpression(prog);
@@ -675,8 +675,8 @@ f()
         public void Test_lambda_21() {
             Expression exp = new Expression();
             var prog = @"
-u = 3,
-v = (u+1, 5),
+u = 3;
+v = (u+1; 5);
 v
 ";
             exp.SetExpression(prog);
@@ -687,8 +687,8 @@ v
         public void Test_lambda_22() {
             Expression exp = new Expression();
             var prog = @"
-u = 3,
-v = (4 if u < 2 else 5),
+u = 3;
+v = (4 if u < 2 else 5);
 v
 ";
             exp.SetExpression(prog);
@@ -699,8 +699,8 @@ v
         public void Test_lambda_23() {
             Expression exp = new Expression();
             var prog = @"
-u = 3,
-v = (u if u > 0 else 5),
+u = 3;
+v = (u if u > 0 else 5);
 v
 ";
             exp.SetExpression(prog);
@@ -712,10 +712,10 @@ v
             Expression exp = new Expression();
             var prog = @"
 f = lambda: (
-    v = (u - 1 if u > 0 else u),
+    v = (u - 1 if u > 0 else u);
     v
-),
-u = 3,
+);
+u = 3;
 f()
 ";
             exp.SetExpression(prog);
@@ -728,8 +728,8 @@ f()
             var prog = @"
 f = lambda: (
     v = (v - 1 if v > 0 else v)
-),
-v = 3,
+);
+v = 3;
 f()
 ";
             exp.SetExpression(prog);
@@ -740,8 +740,8 @@ f()
         public void Test_lambda_31() {
             Expression exp = new Expression();
             var prog = @"
-v = 3,
-(v = v - 1) if v > 3 else 1,
+v = 3;
+(v = v - 1) if v > 3 else 1;
 v
 ";
             exp.SetExpression(prog);
@@ -754,9 +754,9 @@ v
             var prog = @"
 f = lambda: (
     v - 1
-),
-v = 3,
-(v = f()) if v > 3 else 1,
+);
+v = 3;
+(v = f()) if v > 3 else 1;
 v
 ";
             exp.SetExpression(prog);
@@ -769,9 +769,9 @@ v
             var prog = @"
 f = lambda: (
     v = v - 1
-),
-v = 3,
-f() if v > 3 else 1,
+);
+v = 3;
+f() if v > 3 else 1;
 v
 ";
             exp.SetExpression(prog);
@@ -783,10 +783,10 @@ v
             Expression exp = new Expression();
             var prog = @"
 f = lambda: (
-    (v = v - 1) if v > 0 else v),
+    (v = v - 1) if v > 0 else v);
     f() if v > 0 else 5
-),
-v = 3,
+);
+v = 3;
 f()
 ";
             exp.SetExpression(prog);
@@ -796,7 +796,7 @@ f()
         [TestMethod]
         public void Test_lambda_36() {
             Expression exp = new Expression();
-            var prog = "f = lambda a: (44), f()";
+            var prog = "f = lambda a: (44); f()";
             exp.SetExpression(prog);
             Assert.AreEqual(44.0, exp.Calculate());
         }
@@ -804,7 +804,7 @@ f()
         [TestMethod]
         public void Test_lambda_37() {
             Expression exp = new Expression();
-            var prog = "f = lambda a,b: (44), f()";
+            var prog = "f = lambda a,b: (44); f()";
             exp.SetExpression(prog);
             Assert.AreEqual(44.0, exp.Calculate());
         }
@@ -812,7 +812,7 @@ f()
         [TestMethod]
         public void Test_lambda_38() {
             Expression exp = new Expression();
-            var prog = "f = lambda (a): (44), f()";
+            var prog = "f = lambda (a): (44); f()";
             exp.SetExpression(prog);
             Assert.AreEqual(44.0, exp.Calculate());
         }
@@ -820,24 +820,47 @@ f()
         [TestMethod]
         public void Test_lambda_39() {
             Expression exp = new Expression();
-            var prog = "f = lambda (a,b): (44), f()";
+            var prog = "f = lambda (a,b): (44); f()";
             exp.SetExpression(prog);
             Assert.AreEqual(44.0, exp.Calculate());
         }
 
+        [TestMethod]
+        public void Test_lambda_40() {
+            Expression exp = new Expression();
+            var prog = "f = lambda (a,b,c): (44); f(4,5,6)";
+            exp.SetExpression(prog);
+            Assert.AreEqual(44.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_41() {
+            Expression exp = new Expression();
+            var prog = "f = lambda (a,b,c): (a+b+c); f(4,5,6)";
+            exp.SetExpression(prog);
+            Assert.AreEqual(15.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_factorial_of_v() {
+            Expression exp = new Expression();
+            var prog = @"
+factorial_of_v = lambda: ( (
+    v = v - 1;
+    (v+1) * factorial_of_v()
+    ) if v > 1 else 1
+);
+v = 4;
+factorial_of_v()
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(24.0, exp.Calculate());
+        }
 
         [TestMethod]
         public void Test_lambda_factorial() {
             Expression exp = new Expression();
-            var prog = @"
-factorial_of_v = lambda: ( (
-    v = v - 1,
-    (v+1) * factorial_of_v()
-    ) if v > 1 else 1
-),
-v = 4,
-factorial_of_v()
-";
+            var prog = "f = lambda (v): ( (v*f(v-1)) if v > 1 else 1 ); f(4)";
             exp.SetExpression(prog);
             Assert.AreEqual(24.0, exp.Calculate());
         }
@@ -852,7 +875,7 @@ factorial_of_v()
             var prog = @"
 f = lambda: (
     f()
-),
+);
 f()
 ";
             exp.SetExpression(prog);
@@ -862,13 +885,13 @@ f()
         [TestMethod]
         public void Test_error_41() {
             var error = string.Format(
-                "Maximum recursion depth reached nearby line {0} position {1}.", 3, 5);
+                "Maximum recursion depth reached nearby line {0} position {1}.", 3, 6);
 
             Expression exp = new Expression();
             var prog = @"
 f = lambda: (
     f()
-),
+);
 f()
 ";
             exp.SetExpression(prog);
@@ -888,8 +911,8 @@ f()
 
             Expression exp = new Expression();
             var prog = @"
-v = 3,
-u = 0,
+v = 3;
+u = 0;
 v/u
 ";
             exp.SetExpression(prog);
@@ -904,8 +927,8 @@ v/u
 
             Expression exp = new Expression();
             var prog = @"
-v = 3,
-u = 0,
+v = 3;
+u = 0;
 3 if v pepe 0
 ";
             try {
@@ -924,9 +947,9 @@ u = 0,
 
             Expression exp = new Expression();
             var prog = @"
-v = 3,
-u = 0,
-v + u,
+v = 3;
+u = 0;
+v + u;
 ";
             try {
                 exp.SetExpression(prog);
