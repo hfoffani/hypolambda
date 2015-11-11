@@ -629,9 +629,6 @@ namespace TestProject {
         public void Test_lambda_04() {
             Expression exp = new Expression();
             exp.SetExpression("(f = lambda: 2+3); f()");
-            Console.WriteLine();
-            Console.WriteLine(exp.toString());
-            Console.WriteLine();
             Assert.AreEqual(5.0, exp.Calculate());
         }
 
@@ -978,6 +975,12 @@ v + u;
                 return;
             }
             Assert.Fail();
+        }
+
+        [TestMethod, ExpectedException(typeof(ApplicationException))]
+        public void Test_error_45() {
+            Expression exp = new Expression();
+            exp.SetExpression("3, 2");
         }
 
         #endregion

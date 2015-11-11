@@ -834,9 +834,6 @@ namespace LambdaLang {
                 var bindings = new Nodo(tl);
                 nexttoken();
                 if (currenttoken.TokenType != TokenType.rparen) {
-                    //var empty = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
-                    //var oplist = new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP);
-                    //bindings = new Nodo(oplist, build_list(), new Nodo(empty));
                     bindings = build_list();
                 }
                 expect(TokenType.rparen);
@@ -978,6 +975,11 @@ namespace LambdaLang {
             if (currenttoken.TokenType == TokenType.semicolon) {
                 nexttoken();
                 return new Nodo(new Terminal(TokenType.semicolon, currenttoken.LN, currenttoken.CP), f, expresion_list());
+            } else if (currenttoken.TokenType == TokenType.comma) {
+                var msg = string.Format(Properties.Strings.Expression_Syntax_error,
+                    currenttoken.LN, currenttoken.CP);
+                error(msg);
+                return null;
             } else
                 return f;
         }
