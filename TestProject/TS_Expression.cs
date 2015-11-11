@@ -866,6 +866,26 @@ factorial_of_v()
             Assert.AreEqual(24.0, exp.Calculate());
         }
 
+        [TestMethod]
+        public void Test_lambda_factorial_2() {
+            Expression exp = new Expression();
+            var prog = "f = lambda v: (v*f(v-1)) if v > 1 else 1; f(4)";
+            exp.SetExpression(prog);
+            Assert.AreEqual(24.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_factorial_fmt() {
+            Expression exp = new Expression();
+            var prog = @"
+f = lambda x:
+    (x*f(x-1)) if x > 1 else 1;
+f(4)
+";
+            exp.SetExpression(prog);
+            Assert.AreEqual(24.0, exp.Calculate());
+        }
+
         #endregion
 
         #region Errors
