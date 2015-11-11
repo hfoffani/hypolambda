@@ -128,16 +128,17 @@ namespace LambdaLang {
 
         #region evaluacion.
 
-        private object CalculateNPI2(IEnumerable<object> proveedor, Dictionary<string, object> locals, int stackFrames) {
+        private object CalculateNPI2(IEnumerable<object> proveedor, List<Dictionary<string, object>> locals, int stackFrames) {
             // los Convert.ToDouble son necesarios porque es posible que alguna
             // de las propiedades de objetos utilizados devuelvan int long o float.
             // asi nos aseguramos que los calculos se hagan siempre con double.
 
             var pila = new Stack<object>();
-            if (locals == null)
-                locals = new Dictionary<string, object>();
-            else
-                locals = new Dictionary<string, object>(locals);
+            if (locals == null) {
+                locals = new List<Dictionary<string, object>>();
+                locals.Add(new Dictionary<string, object>());
+            }
+            var currentscope = locals[locals.Count-1];
 
             double a, b, res;
             string sa, sb, str;
@@ -331,10 +332,10 @@ namespace LambdaLang {
                     case TokenType.identlocal:
                         var vallocal = pila.Pop();
                         var valname = t.Value.ToString();
-                        if (locals.ContainsKey(valname)) {
-                            locals[valname] = vallocal;
+                        if (currentscope.ContainsKey(valname)) {
+                            currentscope[valname] = vallocal;
                         } else {
-                            locals.Add(valname, vallocal);
+                            currentscope.Add(valname, vallocal);
                         }
                         break;
 
@@ -369,9 +370,12 @@ namespace LambdaLang {
                 return 0.0;
         }
 
-        private object lambdaeval(lambdatuple lambda, Dictionary<string, object> locals, int stackFrames) {
+        private object lambdaeval(lambdatuple lambda, List<Dictionary<string, object>> locals, int stackFrames) {
             RecorreArbol r = new RecorreArbol();
             var postorden = r.PostOrden(lambda.Body, null);
+            object nul = null;
+            var newscope = lambda.Head.Select(k => new { k, nul }).ToDictionary(t => t.k, t => t.nul);
+            locals.Add(newscope);
 #if DEBUG
             postorden = postorden.ToList();
             Console.WriteLine();
@@ -379,6 +383,7 @@ namespace LambdaLang {
             Console.WriteLine();
 #endif
             var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
+            locals.RemoveAt(locals.Count - 1);
             return reslambda;
         }
 
@@ -402,10 +407,10 @@ namespace LambdaLang {
 
         #region aux. p/ manejo de espacio de nombres.
 
-        private object getValue(string name, Dictionary<string, object> locals) {
-            if (locals.Count > 0) {
-                if (locals != null && locals.ContainsKey(name)) {
-                    return locals[name];
+        private object getValue(string name, List<Dictionary<string, object>> locals) {
+            for (var i = locals.Count; i --> 0 ;) {
+                if (locals[i].ContainsKey(name)) {
+                    return locals[i][name];
                 }
             }
 
