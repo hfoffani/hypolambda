@@ -318,21 +318,16 @@ namespace LambdaLang {
 
                     #endregion
 
+                    #region Turing
+
                     case TokenType.eval:
                         var lambda = pila.Pop() as lambdatuple;
                         if (lambda != null) {
-                            RecorreArbol r = new RecorreArbol();
-                            var postorden = r.PostOrden(lambda.Body, null);
-#if DEBUG
-                            postorden = postorden.ToList();
-                            Console.WriteLine();
-                            Console.WriteLine(toString(lambda.Body));
-                            Console.WriteLine();
-#endif
-                            var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
+                            var reslambda = lambdaeval(lambda, locals, stackFrames);
                             pila.Push(reslambda);
                         }
                         break;
+
                     case TokenType.identlocal:
                         var vallocal = pila.Pop();
                         var valname = t.Value.ToString();
@@ -365,12 +360,26 @@ namespace LambdaLang {
                         pila.Push(getValue(t.Value.ToString(), locals));
                         break;
 
+                    #endregion
                 }
             }
             if (pila.Count > 0)
                 return pila.Pop();
             else
                 return 0.0;
+        }
+
+        private object lambdaeval(lambdatuple lambda, Dictionary<string, object> locals, int stackFrames) {
+            RecorreArbol r = new RecorreArbol();
+            var postorden = r.PostOrden(lambda.Body, null);
+#if DEBUG
+            postorden = postorden.ToList();
+            Console.WriteLine();
+            Console.WriteLine(toString(lambda.Body));
+            Console.WriteLine();
+#endif
+            var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
+            return reslambda;
         }
 
         class lambdatuple {
