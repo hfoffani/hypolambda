@@ -694,6 +694,14 @@ namespace LambdaLang {
                         terminales.Add(new Terminal(TokenType.semicolon, lnum, cpos));
                         input = input.Substring(1); cpos += 1;
                         continue;
+                    case '[':
+                        terminales.Add(new Terminal(TokenType.lbrac, lnum, cpos));
+                        input = input.Substring(1); cpos += 1;
+                        continue;
+                    case ']':
+                        terminales.Add(new Terminal(TokenType.rbrac, lnum, cpos));
+                        input = input.Substring(1); cpos += 1;
+                        continue;
                     case '!':
                         switch (input[1]) {
                             case '=':
@@ -792,6 +800,11 @@ namespace LambdaLang {
                     break;
                 case TokenType.str:
                     f = new Nodo(currenttoken);
+                    break;
+                case TokenType.lbrac:
+                    nexttoken();
+                    f = build_list();
+                    expect(TokenType.rbrac);
                     break;
                 case TokenType.lparen:
                     nexttoken();
@@ -1112,6 +1125,8 @@ namespace LambdaLang {
         identlocal,
         comma,
         semicolon,
+        lbrac,
+        rbrac,
         assig,
         NIL
     }

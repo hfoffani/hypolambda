@@ -1177,6 +1177,20 @@ v + u;
 
         #endregion
 
+        #region Lists
+
+        [TestMethod]
+        public void Test_list_10() {
+            Expression exp = new Expression();
+            exp.SetExpression("l = [1,2,3]");
+            Console.WriteLine(exp.toString());
+            var l = exp.Solve() as IList<object>;
+
+            Assert.IsNotNull(l);
+            Assert.AreEqual(3, l.Count);
+        }
+        #endregion
+
         #region serializacion
 
         /// <summary>
