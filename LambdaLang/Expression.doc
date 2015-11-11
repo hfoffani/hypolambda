@@ -32,7 +32,15 @@ conditional_expression</a>). La expresión condicional sólo evalúa lo estricta
 necesario; es decir, sólo se evalúa X (y no Y) si CONDICION es verdadero y viceversa,
 sólo se evalúa Y (y no X) si CONDICION es falsa.</para>
 
-<para>
+    <para>
+        Las funciones lambda no permiten la aplicación parcial de argumentos.
+    </para>
+    <para>
+        La recursividad terminal no está optimizada por lo que hay un límite en
+        la cantidad de invocaciones.
+    </para>
+
+    <para>
     Syntax in BNF.
     <code>
         expression :=   list_exprs
