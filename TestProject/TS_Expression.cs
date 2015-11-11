@@ -1209,7 +1209,7 @@ v + u;
         [TestMethod]
         public void Test_builtins_12() {
             var exp = new Expression();
-            exp.SetExpression("first( tail( tail( [3,4,5] )))");
+            exp.SetExpression("first( rest( rest( [3,4,5] )))");
             var s = exp.Calculate();
             Assert.AreEqual(5.0, s);
         }

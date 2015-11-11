@@ -439,11 +439,11 @@ namespace LambdaLang {
                     return s;
                 } },
             { "first", binds => {
-                    var l = binds as IList<object>;
+                    var l = binds[0] as IList<object>;
                     return l[0];
                 } },
             { "rest", binds => {
-                    var l = binds as IList<object>;
+                    var l = binds[0] as IList<object>;
                     return l.Skip(1).ToList();
                 } },
         };
