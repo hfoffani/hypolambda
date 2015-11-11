@@ -382,13 +382,10 @@ namespace LambdaLang {
                         break;
 
                     case TokenType.comma:
-                        var tail = pila.Pop();
+                        var tail = pila.Pop() as List<object>;
                         var head = pila.Pop();
                         var li = new List<object>();
-                        if (tail is List<object>) {
-                            li.AddRange((List<object>)tail);
-                        }
-                        li.Insert(0, head);
+                        li.Add(head); li.AddRange(tail);
                         pila.Push(li);
                         break;
 
@@ -411,28 +408,48 @@ namespace LambdaLang {
         }
 
         private object lambdaeval(lambdatuple lambda, List<Dictionary<string, object>> locals, List<object> binds, int stackFrames) {
-            RecorreArbol r = new RecorreArbol();
-            var postorden = r.PostOrden(lambda.Body, null);
-
-            var newscope = new Dictionary<string, object>();
-            for (int j = 0; j < lambda.Head.Length; j++) {
-                if (j < binds.Count) {
-                    newscope.Add(lambda.Head[j], binds[j]);
+            if (lambda.Builtin != null) {
+                return _bultins[lambda.Builtin](binds);
+            } else {
+                var newscope = new Dictionary<string, object>();
+                for (int j = 0; j < lambda.Head.Length; j++) {
+                    if (j < binds.Count) {
+                        newscope.Add(lambda.Head[j], binds[j]);
+                    }
                 }
-            }
-            locals.Add(newscope);
+                locals.Add(newscope);
+                RecorreArbol r = new RecorreArbol();
+                var postorden = r.PostOrden(lambda.Body, null);
 #if DEBUG
-            postorden = postorden.ToList();
-            //Console.WriteLine();
-            //Console.WriteLine(toString(lambda.Body));
-            //Console.WriteLine();
+                postorden = postorden.ToList();
+                //Console.WriteLine();
+                //Console.WriteLine(toString(lambda.Body));
+                //Console.WriteLine();
 #endif
-            var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
-            locals.RemoveAt(locals.Count - 1);
-            return reslambda;
+                var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
+                locals.RemoveAt(locals.Count - 1);
+                return reslambda;
+            }
         }
 
+        Dictionary<string, Func<List<object>, object>> _bultins = new Dictionary<string, Func<List<object>, object>>() {
+            { "print", binds => {
+                    var s = String.Join(" ", binds.Select(x => x.ToString()));
+                    Console.WriteLine(s);
+                    return s;
+                } },
+            { "first", binds => {
+                    var l = binds as IList<object>;
+                    return l[0];
+                } },
+            { "rest", binds => {
+                    var l = binds as IList<object>;
+                    return l.Skip(1).ToList();
+                } },
+        };
+
         class lambdatuple {
+            internal string Builtin;
             internal string[] Head;
             internal Nodo Body;
         }
@@ -457,6 +474,12 @@ namespace LambdaLang {
                 if (locals[i].ContainsKey(name)) {
                     return locals[i][name];
                 }
+            }
+
+            if (_bultins.ContainsKey(name)) {
+                var bi = new lambdatuple();
+                bi.Builtin = name;
+                return bi;
             }
 
             if (this._evalOnlyOneSymbol && !name.StartsWith("this.")) {

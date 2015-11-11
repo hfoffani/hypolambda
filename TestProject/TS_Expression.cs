@@ -1177,7 +1177,7 @@ v + u;
 
         #endregion
 
-        #region Lists
+        #region Lists & builtins
 
         [TestMethod]
         public void Test_list_10() {
@@ -1189,6 +1189,31 @@ v + u;
             Assert.IsNotNull(l);
             Assert.AreEqual(3, l.Count);
         }
+
+        [TestMethod]
+        public void Test_builtins_10() {
+            var exp = new Expression();
+            exp.SetExpression("print(4,5,6)");
+            var s = exp.Solve() as string;
+            Assert.AreEqual("4 5 6", s);
+        }
+
+        [TestMethod]
+        public void Test_builtins_11() {
+            var exp = new Expression();
+            exp.SetExpression("first( [3,4,5] )");
+            var s = exp.Calculate();
+            Assert.AreEqual(3.0, s);
+        }
+
+        [TestMethod]
+        public void Test_builtins_12() {
+            var exp = new Expression();
+            exp.SetExpression("first( tail( tail( [3,4,5] )))");
+            var s = exp.Calculate();
+            Assert.AreEqual(5.0, s);
+        }
+
         #endregion
 
         #region serializacion
