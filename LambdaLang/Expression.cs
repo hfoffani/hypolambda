@@ -27,7 +27,6 @@ namespace LambdaLang {
         #region Fields
 
         private Dictionary<string, object> symbolTable;
-        private List<Terminal> terminalList = new List<Terminal>();
 
         private static string REGEX_VARS = @"[\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}_][\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}_\p{Nd}\.]*";
         private static string REGEX_NUMS = @"[\p{Nd}][\.\p{Nd}]*";
@@ -101,17 +100,14 @@ namespace LambdaLang {
         /// un <see cref="System.String"/></returns>
         public object Solve() {
             LastError = "";
-            IEnumerable<object> postorden = null;
+            IList<Terminal> postorden = null;
             if (ast != null) {
                 RecorreArbol r = new RecorreArbol();
-                postorden = r.PostOrden(ast, null);
-#if DEBUG
-                postorden = postorden.ToList();
-#endif
+                postorden = r.PostOrden(ast, null).ToList();
+                return CalculateNPI2(postorden, null, 0);
             } else {
-                postorden = (IEnumerable<object>) this.terminalList;
+                throw new ApplicationException("Can't execute a non valid program.");
             }
-            return CalculateNPI2(postorden, null, 0);
         }
 
         /// <summary>
@@ -128,7 +124,7 @@ namespace LambdaLang {
 
         #region evaluacion.
 
-        private object CalculateNPI2(IEnumerable<object> proveedor, List<Dictionary<string, object>> locals, int stackFrames) {
+        private object CalculateNPI2(IList<Terminal> proveedor, List<Dictionary<string, object>> locals, int stackFrames) {
             // los Convert.ToDouble son necesarios porque es posible que alguna
             // de las propiedades de objetos utilizados devuelvan int long o float.
             // asi nos aseguramos que los calculos se hagan siempre con double.
@@ -144,7 +140,7 @@ namespace LambdaLang {
             string sa, sb, str;
             string ignoreuptolabel = "";
 
-            foreach (Terminal t in proveedor) {
+            foreach (var t in proveedor) {
 
                 if (stackFrames > 500) {
                     LastError = string.Format(Properties.Strings.Expression_MaxRecursionDepth, t.LN, t.CP);
@@ -419,13 +415,7 @@ namespace LambdaLang {
                 }
                 locals.Add(newscope);
                 RecorreArbol r = new RecorreArbol();
-                var postorden = r.PostOrden(lambda.Body, null);
-#if DEBUG
-                postorden = postorden.ToList();
-                //Console.WriteLine();
-                //Console.WriteLine(toString(lambda.Body));
-                //Console.WriteLine();
-#endif
+                var postorden = r.PostOrden(lambda.Body, null).ToList();
                 var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
                 locals.RemoveAt(locals.Count - 1);
                 return reslambda;
@@ -597,7 +587,7 @@ namespace LambdaLang {
             return toString(ast, new StringBuilder(), true, new StringBuilder()).ToString();
         }
 
-        internal String toString() {
+        internal String prettyPrintAST() {
             return toString(ast);
         }
 
@@ -1167,21 +1157,21 @@ namespace LambdaLang {
 
     [Serializable]
     class Nodo {
-        private object o;
+        private Terminal o;
         private Nodo izq;
         private Nodo der;
 
-        public Nodo(object o) {
+        public Nodo(Terminal o) {
             this.o = o;
         }
 
-        public Nodo(object o, Nodo izq, Nodo der) {
+        public Nodo(Terminal o, Nodo izq, Nodo der) {
             this.o = o;
             this.izq = izq;
             this.der = der;
         }
 
-        public object Tag {
+        public Terminal Tag {
             get { return this.o; }
         }
 
@@ -1196,13 +1186,7 @@ namespace LambdaLang {
 
     class RecorreArbol {
 
-        public List<object> GetListaPostOrden(Nodo root) {
-            // l = new List<object>();
-            return PostOrden(root, null).ToList();
-            // return l;
-        }
-
-        public IEnumerable<object> PostOrden(Nodo root, Action<object> visiting) {
+        public IEnumerable<Terminal> PostOrden(Nodo root, Action<object> visiting) {
             if (root != null) {
                 foreach (var l in PostOrden(root.Left, visiting))
                     yield return l;

@@ -606,7 +606,7 @@ namespace TestProject {
             Expression exp = new Expression();
             exp.SetExpression("(lambda: 2+3)()");
             Console.WriteLine();
-            Console.WriteLine(exp.toString());
+            Console.WriteLine(exp.prettyPrintAST());
             Console.WriteLine();
             Assert.AreEqual(5.0, exp.Calculate());
         }
@@ -1183,7 +1183,7 @@ v + u;
         public void Test_list_10() {
             Expression exp = new Expression();
             exp.SetExpression("l = [1,2,3]");
-            Console.WriteLine(exp.toString());
+            Console.WriteLine(exp.prettyPrintAST());
             var l = exp.Solve() as IList<object>;
 
             Assert.IsNotNull(l);
