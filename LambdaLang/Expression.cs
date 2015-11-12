@@ -242,7 +242,17 @@ namespace LambdaLang {
                     #region operadores de comparacion
 
                     case TokenType.eq:
-                        if (pila.Peek() is string) {
+                        if (pila.Peek() is IList<object>) {
+                            var lb = (IList<object>)pila.Pop();
+                            var la = (IList<object>)pila.Pop();
+                            if (la.Count != lb.Count) pila.Push(0.0);
+                            else {
+                                var areeq = 1.0;
+                                for (int i = 0; i < la.Count; i++)
+                                    if (!la[i].Equals(lb[i])) areeq = 0.0;
+                                pila.Push(areeq);
+                            }
+                        } else if (pila.Peek() is string) {
                             sb = (string)pila.Pop();
                             sa = (string)pila.Pop();
                             pila.Push((sa == sb ? 1.0 : 0.0));
@@ -253,7 +263,17 @@ namespace LambdaLang {
                         }
                         break;
                     case TokenType.neq:
-                        if (pila.Peek() is string) {
+                        if (pila.Peek() is IList<object>) {
+                            var lb = (IList<object>)pila.Pop();
+                            var la = (IList<object>)pila.Pop();
+                            if (la.Count != lb.Count) pila.Push(1.0);
+                            else {
+                                var areneq = 0.0;
+                                for (int i = 0; i < la.Count; i++)
+                                    if (!la[i].Equals(lb[i])) areneq = 1.0;
+                                pila.Push(areneq);
+                            }
+                        } else if (pila.Peek() is string) {
                             sb = (string)pila.Pop();
                             sa = (string)pila.Pop();
                             pila.Push((sa != sb ? 1.0 : 0.0));
@@ -427,6 +447,7 @@ namespace LambdaLang {
                     }
                 }
                 locals.Add(newscope);
+
                 // lambda.Body should be a piece of pcode to avoid PostOrden.
                 RecorreArbol r = new RecorreArbol();
                 var postorden = r.PostOrden(lambda.Body, null).ToList();
@@ -439,17 +460,17 @@ namespace LambdaLang {
         Dictionary<string, Func<IList<object>, Expression, List<Dictionary<string, object>>, int, object>>
             _bultins = new Dictionary<string, Func<IList<object>, Expression, List<Dictionary<string, object>>, int, object>>() {
 
-            { "print", (binds,d,_,__) => {
+            { "print", (binds,exp,_,__) => {
                 var s = String.Join(" ", binds.Select(x => x.ToString()));
                 Console.WriteLine(s);
                 return s; } },
-            { "first", (binds,d,_,__) => {
+            { "first", (binds,exp,_,__) => {
                 var l = binds[0] as IList<object>;
                 return l[0]; } },
-            { "rest", (binds,d,_,__) => {
+            { "rest", (binds,exp,_,__) => {
                 var l = binds[0] as IList<object>;
                 return l.Skip(1).ToList(); } },
-            { "__add1__", (binds,d,_,__) => {
+            { "__add1__", (binds,exp,_,__) => {
                 return ((double)binds[0]) + 1.0; } },
             { "map", (binds,exp,_,__) => {
                 var l = binds[0] as lambdatuple;
