@@ -566,7 +566,7 @@ namespace LambdaLang {
         /// </param>
         internal void SetExpression(string expStr, bool evalOnlyOneSymbol) {
             this._evalOnlyOneSymbol = evalOnlyOneSymbol;
-            Lexer(expStr);
+            terminales = Lexer(expStr).ToList();
             reader = 0;
             nexttoken();
             ast = expresion();
@@ -602,12 +602,12 @@ namespace LambdaLang {
 
         #region lexer
 
-        void Lexer(string input) {
+        IEnumerable<Terminal> Lexer(string input) {
 
             int lnum = 1;
             int cpos = 1;
 
-            terminales = new List<Terminal>();
+            // terminales = new List<Terminal>();
 
             Match m;
             string token;
@@ -641,7 +641,7 @@ namespace LambdaLang {
                         p++;
                         cpos += 1;
                     }
-                    terminales.Add(new Terminal(TokenType.str, token, lnum, cpos));
+                    yield return new Terminal(TokenType.str, token, lnum, cpos);
                     input = input.Substring(p + 1); // el +1 saltea el ultimo "
                     continue;
                 }
@@ -650,13 +650,13 @@ namespace LambdaLang {
                     token = m.Groups[0].Value;
                     if (reservedwords.ContainsKey(token)) {
                         // palabras reservadas
-                        terminales.Add(reservedwords[token]);
+                        yield return reservedwords[token];
                     } else {
                         // variables.
                         string root = getRootSymbol(token);
                         if (!this.symbolTable.ContainsKey(root))
                             this.symbolTable.Add(root, null);
-                        terminales.Add(new Terminal(TokenType.ident, token, lnum, cpos));
+                        yield return new Terminal(TokenType.ident, token, lnum, cpos);
                     }
                     input = input.Substring(token.Length); cpos += token.Length;
                     continue;
@@ -665,108 +665,108 @@ namespace LambdaLang {
                 if (m.Success && m.Index == 0) {
                     token = m.Groups[0].Value;
                     double cte = double.Parse(token, System.Globalization.CultureInfo.InvariantCulture);
-                    terminales.Add(new Terminal(TokenType.number, cte, lnum, cpos));
+                    yield return new Terminal(TokenType.number, cte, lnum, cpos);
                     input = input.Substring(token.Length); cpos += token.Length;
                     continue;
                 }
                 switch (input[0]) {
                     case ':':
-                        terminales.Add(new Terminal(TokenType.colon, lnum, cpos));
+                        yield return new Terminal(TokenType.colon, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '+':
-                        terminales.Add(new Terminal(TokenType.plus, lnum, cpos));
+                        yield return new Terminal(TokenType.plus, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '-':
-                        terminales.Add(new Terminal(TokenType.minus, lnum, cpos));
+                        yield return new Terminal(TokenType.minus, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '*':
-                        terminales.Add(new Terminal(TokenType.times, lnum, cpos));
+                        yield return new Terminal(TokenType.times, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '/':
-                        terminales.Add(new Terminal(TokenType.slash, lnum, cpos));
+                        yield return new Terminal(TokenType.slash, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '%':
-                        terminales.Add(new Terminal(TokenType.perc, lnum, cpos));
+                        yield return new Terminal(TokenType.perc, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '(':
-                        terminales.Add(new Terminal(TokenType.lparen, lnum, cpos));
+                        yield return new Terminal(TokenType.lparen, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case ')':
-                        terminales.Add(new Terminal(TokenType.rparen, lnum, cpos));
+                        yield return new Terminal(TokenType.rparen, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '{':
-                        terminales.Add(new Terminal(TokenType.lcurly, lnum, cpos));
+                        yield return new Terminal(TokenType.lcurly, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '}':
-                        terminales.Add(new Terminal(TokenType.rcurly, lnum, cpos));
+                        yield return new Terminal(TokenType.rcurly, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case ',':
-                        terminales.Add(new Terminal(TokenType.comma, lnum, cpos));
+                        yield return new Terminal(TokenType.comma, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case ';':
-                        terminales.Add(new Terminal(TokenType.semicolon, lnum, cpos));
+                        yield return new Terminal(TokenType.semicolon, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '[':
-                        terminales.Add(new Terminal(TokenType.lbrac, lnum, cpos));
+                        yield return new Terminal(TokenType.lbrac, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case ']':
-                        terminales.Add(new Terminal(TokenType.rbrac, lnum, cpos));
+                        yield return new Terminal(TokenType.rbrac, lnum, cpos);
                         input = input.Substring(1); cpos += 1;
                         continue;
                     case '!':
                         switch (input[1]) {
                             case '=':
-                                terminales.Add(new Terminal(TokenType.neq, lnum, cpos));
+                                yield return new Terminal(TokenType.neq, lnum, cpos);
                                 input = input.Substring(2); cpos += 2;
                                 continue;
                             default:
-                                terminales.Add(new Terminal(TokenType.not, lnum, cpos));
+                                yield return new Terminal(TokenType.not, lnum, cpos);
                                 input = input.Substring(1); cpos += 1;
                                 continue;
                         }
                     case '>':
                         switch (input[1]) {
                             case '=':
-                                terminales.Add(new Terminal(TokenType.gteq, lnum, cpos));
+                                yield return new Terminal(TokenType.gteq, lnum, cpos);
                                 input = input.Substring(2); cpos += 2;
                                 continue;
                             default:
-                                terminales.Add(new Terminal(TokenType.gt, lnum, cpos));
+                                yield return new Terminal(TokenType.gt, lnum, cpos);
                                 input = input.Substring(1); cpos += 1;
                                 continue;
                         }
                     case '<':
                         switch (input[1]) {
                             case '=':
-                                terminales.Add(new Terminal(TokenType.lteq, lnum, cpos));
+                                yield return new Terminal(TokenType.lteq, lnum, cpos);
                                 input = input.Substring(2); cpos += 2;
                                 continue;
                             default:
-                                terminales.Add(new Terminal(TokenType.lt, lnum, cpos));
+                                yield return new Terminal(TokenType.lt, lnum, cpos);
                                 input = input.Substring(1); cpos += 1;
                                 continue;
                         }
                     case '=':
                         switch (input[1]) {
                             case '=':
-                                terminales.Add(new Terminal(TokenType.eq, lnum, cpos));
+                                yield return new Terminal(TokenType.eq, lnum, cpos);
                                 input = input.Substring(2); cpos += 2;
                                 continue;
                             default:
-                                terminales.Add(new Terminal(TokenType.assig, lnum, cpos));
+                                yield return new Terminal(TokenType.assig, lnum, cpos);
                                 input = input.Substring(1); cpos += 1;
                                 continue;
                         }
