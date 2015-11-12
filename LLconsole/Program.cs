@@ -8,9 +8,6 @@ namespace LLconsole {
     /// Evaluates LambdaLang program.
     /// </summary>
     /// <remarks>
-    /// comparar listas. agregar a lista. lista vacía.
-    /// que los operadores se puedan usar como nombre de función.
-    /// que el call use proveedores.
     /// ejemplo de tail call.
     /// pasar a git.
     /// pasar a NUnit.

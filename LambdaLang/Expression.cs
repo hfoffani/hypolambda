@@ -156,10 +156,12 @@ namespace LambdaLang {
             for (int poster = 0; poster < proveedor.Count; poster++) {
                 var t = proveedor[poster];
 
+                #region check recursion depth.
                 if (stackFrames > 500) {
                     LastError = string.Format(Properties.Strings.Expression_MaxRecursionDepth, t.LN, t.CP);
                     throw new StackOverflowException(LastError);
                 }
+                #endregion
 
                 #region jump ppmente dicho
                 if (ignoreuptolabel != "") {
@@ -493,7 +495,7 @@ namespace LambdaLang {
             { "__add1__", (binds,exp,_,__) => {
                 return ((double)binds[0]) + 1.0; } },
             { "map", (binds,exp,_,__) => {
-                var l = binds[0] as lambdatuple;
+                var l = getfunc(binds[0]);
                 var mapped = binds
                     .Skip(1)
                     .Cast<List<object>>()
@@ -501,8 +503,24 @@ namespace LambdaLang {
                     .Select(p => exp.lambdaeval(l, _, p, __))
                     .ToList();
                 return mapped; } },
-
         };
+
+        static lambdatuple getfunc(object lambda) {
+            if (lambda is string) {
+                var op = (string)lambda;
+                if (!binary_operators.ContainsKey(op))
+                    throw new ApplicationException("Unknown operator");
+                var l = new lambdatuple();
+                l.Body = new List<Terminal>();
+                l.Body.Add( new Terminal(TokenType.ident, "__1__", 0,0) );
+                l.Body.Add( new Terminal(TokenType.ident, "__2__", 0,0) );
+                l.Body.Add( new Terminal(binary_operators[op], 0, 0));
+                l.Head = new string[] { "__1__", "__2__" };
+                return l;
+            } else {
+                return lambda as lambdatuple;
+            }
+        }
 
         class lambdatuple {
             internal string Builtin;
@@ -804,6 +822,21 @@ namespace LambdaLang {
             }
         }
 
+        static Dictionary<string, TokenType> binary_operators = new Dictionary<string, TokenType>() { 
+            { "+", TokenType.plus },
+            { "-", TokenType.minus },
+            { "*", TokenType.times },
+            { "/", TokenType.slash },
+            { "%", TokenType.perc },
+            { "!=", TokenType.neq },
+            { "!", TokenType.not },
+            { ">=", TokenType.gteq },
+            { ">", TokenType.gt },
+            { "<=",TokenType.lteq },
+            { "<", TokenType.lt },
+            { "==",TokenType.eq },
+            { "=",TokenType.assig },
+        };
         #endregion
 
         #region parser pp/ dicho.

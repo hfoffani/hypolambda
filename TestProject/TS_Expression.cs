@@ -1248,6 +1248,13 @@ v + u;
             Assert.AreEqual(1.0, s);
         }
 
+        [TestMethod]
+        public void Test_builtins_16() {
+            var exp = new Expression();
+            exp.SetExpression("map(\"-\",[3,4,5],[2,3,4]) == [1,1,1]");
+            var s = exp.Calculate();
+            Assert.AreEqual(1.0, s);
+        }
 
         #endregion
 
