@@ -78,9 +78,19 @@ namespace LambdaLang {
         #region Public Methods
 
         /// <summary>
-        /// Obtains the last error message.
+        /// Inicializa la expresión.
         /// </summary>
-        public string LastError { get; private set; }
+        /// <remarks>
+        /// <para>Hace un análsis sintáctico recursivo descendente
+        /// construyendo un árbol sintáctico (AST) y generando un PCODE.
+        /// Completa la
+        /// tabla de símbolos <see cref="Expression.SymbolTable"/></para>
+        /// <include file='Expression.doc' path='ExpressionSintax' />
+        /// </remarks>
+        /// <param name="expStr">Expresion.</param>
+        public void SetExpression(string expStr) {
+            this.SetExpression(expStr, false);
+        }
 
         /// <summary>
         /// Calcula el resultado de la expresión numérica.
@@ -115,6 +125,12 @@ namespace LambdaLang {
                 if (t.TokenType == TokenType.ident)
                     yield return t.Value.ToString();
         }
+
+        /// <summary>
+        /// Obtains the last error message.
+        /// </summary>
+        public string LastError { get; private set; }
+
         #endregion
 
         #region HMF recursivo descendente
@@ -411,6 +427,7 @@ namespace LambdaLang {
                     }
                 }
                 locals.Add(newscope);
+                // lambda.Body should be a piece of pcode to avoid PostOrden.
                 RecorreArbol r = new RecorreArbol();
                 var postorden = r.PostOrden(lambda.Body, null).ToList();
                 var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
@@ -532,35 +549,6 @@ namespace LambdaLang {
 
         #region analisis sintactico.
 
-        /// <summary>
-        /// Inicializa la expresión.
-        /// </summary>
-        /// <remarks>
-        /// <para>Hace un análsis sintáctico recursivo descendente
-        /// construyendo un árbol sintáctico (AST) y la
-        /// tabla de símbolos <see cref="Expression.SymbolTable"/></para>
-        /// <include file='Expression.doc' path='ExpressionSintax' />
-        /// </remarks>
-        /// <param name="expStr">Expresion.</param>
-        public void SetExpression(string expStr) {
-            this.SetExpression(expStr, false);
-        }
-
-        /// <summary>
-        /// Inicializa la expresión.
-        /// </summary>
-        /// <remarks>
-        /// <para>Hace un análsis sintáctico recursivo descendente
-        /// construyendo un árbol sintáctico (AST) y la
-        /// tabla de símbolos <see cref="Expression.SymbolTable"/>.
-        /// Si el parámetro <c>evalOnlyOneSymbol</c> va en <c>true</c> entonces la tabla de símbolos
-        /// contendrá un solo objeto con clave "this".</para>
-        /// <include file='Expression.doc' path='ExpressionSintax' />
-        /// </remarks>
-        /// <param name="expStr">Expresion.</param>
-        /// <param name="evalOnlyOneSymbol">Si la expresión es de sólo un símbolo y cuyos nombres
-        /// representan propiedades y no objetos, va en <c>true</c>. Caso contrario, <c>false</c>.
-        /// </param>
         internal void SetExpression(string expStr, bool evalOnlyOneSymbol) {
             this._evalOnlyOneSymbol = evalOnlyOneSymbol;
             var lexerStream = Lexer(expStr);
@@ -1088,31 +1076,6 @@ namespace LambdaLang {
 
         #endregion
 
-        /// <summary> Function to set a table from a string </summary>
-        /// <param name="tableStr"> input string </param>
-        public static Dictionary<double, double> GetTableFromString(string tableStr) {
-            Dictionary<double, double> tableDict = new Dictionary<double, double>();
-            char[] lineSep = new char[1];
-            lineSep[0] = ';';
-            char[] fieldSep = new char[1];
-            fieldSep[0] = ':';
-
-            double key;
-            double val;
-            string[] lines = tableStr.Split(lineSep);
-            try {
-                foreach (string line in lines) {
-                    string[] fields = line.Split(fieldSep);
-                    var f0 = fields[0].Trim().ToLower();
-                    if (f0 == "max") { key = double.MaxValue; } else { key = double.Parse(fields[0], System.Globalization.CultureInfo.InvariantCulture); }
-                    val = double.Parse(fields[1], System.Globalization.CultureInfo.InvariantCulture);
-                    tableDict.Add(key, val);
-                }
-                return tableDict;
-            } catch (Exception e) {
-                throw new ApplicationException(Properties.Strings.Cant_parse_table, e);
-            }
-        }
     }
 
     #region HMF classes
