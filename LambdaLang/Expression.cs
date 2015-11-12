@@ -846,7 +846,11 @@ namespace LambdaLang {
                     break;
                 case TokenType.lbrac:
                     nexttoken();
-                    f = build_list();
+                    if (currenttoken.TokenType == TokenType.rbrac) {
+                        var empty = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
+                        f = new Nodo(empty);
+                    } else
+                        f = build_list();
                     expect(TokenType.rbrac);
                     break;
                 case TokenType.lparen:
