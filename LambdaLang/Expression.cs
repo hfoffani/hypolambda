@@ -111,7 +111,7 @@ namespace LambdaLang {
         /// Devuelve la lista de identificadores de la expresión.
         /// </summary>
         public IEnumerable<string> GetIdentifiers() {
-            foreach (var t in lexerStream)
+            foreach (var t in pcode)
                 if (t.TokenType == TokenType.ident)
                     yield return t.Value.ToString();
         }
@@ -563,9 +563,8 @@ namespace LambdaLang {
         /// </param>
         internal void SetExpression(string expStr, bool evalOnlyOneSymbol) {
             this._evalOnlyOneSymbol = evalOnlyOneSymbol;
-            lexerStream = Lexer(expStr).ToList();
-            reader = 0;
-            nexttoken();
+            var lexerStream = Lexer(expStr);
+            nexttoken(lexerStream.GetEnumerator());
             ast = expresion();
             var r = new RecorreArbol();
             pcode = r.PostOrden(ast, null).ToList();
@@ -583,21 +582,22 @@ namespace LambdaLang {
         }
 
         private String toString(Nodo n) {
-            return toString(ast, new StringBuilder(), true, new StringBuilder()).ToString();
+            return toString(n, new StringBuilder(), true, new StringBuilder()).ToString();
         }
 
         internal String prettyPrintAST() {
+            if (ast == null)
+                throw new ApplicationException("No current AST. Must compile before.");
             return toString(ast);
         }
 
         bool _evalOnlyOneSymbol = false;
 
+        [NonSerialized]
         Nodo ast = null;
+
         IList<Terminal> pcode = null;
         Dictionary<string, Terminal> reservedwords = new Dictionary<string, Terminal>();
-
-        int reader;
-        List<Terminal> lexerStream;
 
         #region lexer
 
@@ -778,23 +778,29 @@ namespace LambdaLang {
         #endregion
 
         #region parser pp/ dicho.
+        [NonSerialized]
+        IEnumerator<Terminal> enu;
 
-        void nexttoken() {
-            if (reader >= this.lexerStream.Count)
-                currenttoken = new Terminal(TokenType.NIL, currenttoken.LN, currenttoken.CP);
-            else {
-                currenttoken = lexerStream[reader++];
-            }
-            // para debug
-            // Debug.WriteLine(currenttoken.TokenType.ToString());
+        void nexttoken(IEnumerator<Terminal> enumerator) {
+            enu = enumerator;
+            if (enu.MoveNext())
+                lookaheadtoken = enu.Current;
+            else
+                lookaheadtoken = new Terminal(TokenType.NIL, 0, 0);
+            nexttoken();
         }
 
+        void nexttoken() {
+            currenttoken = lookaheadtoken;
+            if (enu.MoveNext())
+                lookaheadtoken = enu.Current;
+            else
+                lookaheadtoken = new Terminal(TokenType.NIL, currenttoken.LN, currenttoken.CP);
+        }
+        [NonSerialized]
+        Terminal lookaheadtoken = null;
         Terminal lookaheadone() {
-            if (reader >= this.lexerStream.Count)
-                return new Terminal(TokenType.NIL, currenttoken.LN, currenttoken.CP);
-            else {
-                return lexerStream[reader];
-            }
+            return lookaheadtoken;
         }
 
         void error(string msg) {
