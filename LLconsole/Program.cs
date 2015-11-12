@@ -10,7 +10,7 @@ namespace LLconsole {
                 var exp = new LambdaLang.Expression();
                 exp.SetExpression(program);
                 var res = exp.Solve();
-                Console.WriteLine(">>> " + res.ToString());
+                Console.WriteLine(">>> " + val2string(res));
                 if (exp.LastError != "") {
                     Console.WriteLine(exp.LastError);
                 }
@@ -18,6 +18,24 @@ namespace LLconsole {
                 Console.WriteLine();
                 Console.WriteLine(e.Message);
             }
+        }
+
+        static string val2string(object val) {
+            if (val is double)
+                return val.ToString();
+            if (val is string)
+                return "\"" + val + "\"";
+            if (val is IList<object>) {
+                var lval = val as IList<object>;
+                var r = "["; var rest = false;
+                foreach (var o in lval) {
+                    if (rest) r = r + ","; rest = true;
+                    r = r + " " + val2string(o);
+                }
+                r = r + " ]";
+                return r;
+            }
+            return "none";
         }
 
         static void loop() {
