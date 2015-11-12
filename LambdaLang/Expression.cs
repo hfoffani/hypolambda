@@ -100,11 +100,8 @@ namespace LambdaLang {
         /// un <see cref="System.String"/></returns>
         public object Solve() {
             LastError = "";
-            IList<Terminal> postorden = null;
-            if (ast != null) {
-                RecorreArbol r = new RecorreArbol();
-                postorden = r.PostOrden(ast, null).ToList();
-                return CalculateNPI2(postorden, null, 0);
+            if (pcode != null) {
+                return CalculateNPI2(pcode, null, 0);
             } else {
                 throw new ApplicationException("Can't execute a non valid program.");
             }
@@ -114,7 +111,7 @@ namespace LambdaLang {
         /// Devuelve la lista de identificadores de la expresión.
         /// </summary>
         public IEnumerable<string> GetIdentifiers() {
-            foreach (var t in terminales)
+            foreach (var t in lexerStream)
                 if (t.TokenType == TokenType.ident)
                     yield return t.Value.ToString();
         }
@@ -566,10 +563,12 @@ namespace LambdaLang {
         /// </param>
         internal void SetExpression(string expStr, bool evalOnlyOneSymbol) {
             this._evalOnlyOneSymbol = evalOnlyOneSymbol;
-            terminales = Lexer(expStr).ToList();
+            lexerStream = Lexer(expStr).ToList();
             reader = 0;
             nexttoken();
             ast = expresion();
+            var r = new RecorreArbol();
+            pcode = r.PostOrden(ast, null).ToList();
         }
 
         private StringBuilder toString(Nodo n, StringBuilder prefix, bool isTail, StringBuilder sb) {
@@ -594,11 +593,11 @@ namespace LambdaLang {
         bool _evalOnlyOneSymbol = false;
 
         Nodo ast = null;
-
+        IList<Terminal> pcode = null;
         Dictionary<string, Terminal> reservedwords = new Dictionary<string, Terminal>();
 
         int reader;
-        List<Terminal> terminales;
+        List<Terminal> lexerStream;
 
         #region lexer
 
@@ -781,20 +780,20 @@ namespace LambdaLang {
         #region parser pp/ dicho.
 
         void nexttoken() {
-            if (reader >= this.terminales.Count)
+            if (reader >= this.lexerStream.Count)
                 currenttoken = new Terminal(TokenType.NIL, currenttoken.LN, currenttoken.CP);
             else {
-                currenttoken = terminales[reader++];
+                currenttoken = lexerStream[reader++];
             }
             // para debug
             // Debug.WriteLine(currenttoken.TokenType.ToString());
         }
 
         Terminal lookaheadone() {
-            if (reader >= this.terminales.Count)
+            if (reader >= this.lexerStream.Count)
                 return new Terminal(TokenType.NIL, currenttoken.LN, currenttoken.CP);
             else {
-                return terminales[reader];
+                return lexerStream[reader];
             }
         }
 
