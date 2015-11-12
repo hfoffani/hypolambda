@@ -6,24 +6,34 @@ using System.Text;
 namespace LLconsole {
     class Program {
         static void run(string program) {
-            var exp = new LambdaLang.Expression();
-            exp.SetExpression(program);
-            var res = exp.Solve();
-            Console.WriteLine();
-            Console.WriteLine(res.ToString());
+            try {
+                var exp = new LambdaLang.Expression();
+                exp.SetExpression(program);
+                var res = exp.Solve();
+                Console.WriteLine();
+                Console.WriteLine(res.ToString());
+                if (exp.LastError != "") {
+                    Console.WriteLine(exp.LastError);
+                }
+            } catch (Exception e) {
+                Console.WriteLine();
+                Console.WriteLine(e.Message);
+            }
         }
 
         static void loop() {
             string l;
             do {
-                Console.WriteLine("...");
+                Console.WriteLine("... Enter a LambdaLang expression or program.");
+                Console.WriteLine("... ENTER ENTER to run. ^Z ENTER to exit.");
                 var pg = "";
                 do {
                     l = Console.ReadLine();
                     if (l != null)
                         pg += l;
                 } while (l != null && l != "");
-                run(pg);
+                if (!string.IsNullOrEmpty(pg))
+                    run(pg);
             } while (l != null);
         }
 
