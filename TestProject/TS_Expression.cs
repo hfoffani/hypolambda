@@ -1191,6 +1191,15 @@ v + u;
         }
 
         [TestMethod]
+        public void Test_list_11() {
+            Expression exp = new Expression();
+            exp.SetExpression("([1,2,3] + 4 ) == [1,2,3,4]");
+            var res = exp.Calculate();
+            Assert.AreEqual(1.0, res);
+        }
+
+
+        [TestMethod]
         public void Test_builtins_10() {
             var exp = new Expression();
             exp.SetExpression("print(4,5,6)");

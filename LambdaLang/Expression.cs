@@ -189,13 +189,18 @@ namespace LambdaLang {
                     #region operadores matematicos
 
                     case TokenType.plus:
-                        if (pila.Peek() is string) {
-                            sb = (string)pila.Pop();
+                        var x = pila.Pop();
+                        if (pila.Peek() is List<object>) {
+                            var lb = new List<object>((IList<object>)pila.Pop());
+                            lb.Add(x);
+                            pila.Push(lb);
+                        } else if (pila.Peek() is string) {
+                            sb = (string)x;
                             sa = (string)pila.Pop();
                             str = sa + sb;
                             pila.Push(str);
                         } else {
-                            b = Convert.ToDouble(pila.Pop());
+                            b = Convert.ToDouble(x);
                             a = Convert.ToDouble(pila.Pop());
                             res = a + b;
                             pila.Push(res);
