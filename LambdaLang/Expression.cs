@@ -1180,7 +1180,6 @@ namespace LambdaLang {
         NIL
     }
 
-    [Serializable]
     class Nodo {
         private Terminal o;
         private Nodo izq;
