@@ -153,7 +153,8 @@ namespace LambdaLang {
             string sa, sb, str;
             string ignoreuptolabel = "";
 
-            foreach (var t in proveedor) {
+            for (int poster = 0; poster < proveedor.Count; poster++) {
+                var t = proveedor[poster];
 
                 if (stackFrames > 500) {
                     LastError = string.Format(Properties.Strings.Expression_MaxRecursionDepth, t.LN, t.CP);
@@ -402,11 +403,12 @@ namespace LambdaLang {
                         pila.Push(t.Value);
                         break;
                     case TokenType.lambdabody:
-                        pila.Push(t.Value);
+                        var pcbody = pcodebody(t.Value.ToString(), proveedor);
+                        pila.Push(pcbody);
                         break;
                     case TokenType.lambda:
                         var ls = new lambdatuple();
-                        ls.Body = pila.Pop() as Nodo;
+                        ls.Body = pila.Pop() as IList<Terminal>;
                         ls.Head = pila.Pop() as string[];
                         pila.Push(ls);
                         break;
@@ -441,6 +443,22 @@ namespace LambdaLang {
                 return 0.0;
         }
 
+        private List<Terminal> pcodebody(string label, IList<Terminal> pcode) {
+            var body = new List<Terminal>();
+            bool copy = false;
+            for (int i = 0; i < pcode.Count; i++) {
+                if (pcode[i].TokenType == TokenType.jmp && pcode[i].Value.ToString() == label) {
+                    copy = true;
+                    continue;
+                }
+                if (pcode[i].TokenType == TokenType.label && pcode[i].Value.ToString() == label)
+                    break;
+                if (copy)
+                    body.Add(pcode[i]);
+            }
+            return body;
+        }
+
         private object lambdaeval(lambdatuple lambda, List<Dictionary<string, object>> locals, IList<object> binds, int stackFrames) {
             if (lambda.Builtin != null) {
                 return _bultins[lambda.Builtin](binds, this, locals, stackFrames);
@@ -453,10 +471,7 @@ namespace LambdaLang {
                 }
                 locals.Add(newscope);
 
-                // lambda.Body should be a piece of pcode to avoid PostOrden.
-                RecorreArbol r = new RecorreArbol();
-                var postorden = r.PostOrden(lambda.Body, null).ToList();
-                var reslambda = CalculateNPI2(postorden, locals, stackFrames + 1);
+                var reslambda = CalculateNPI2(lambda.Body, locals, stackFrames + 1);
                 locals.RemoveAt(locals.Count - 1);
                 return reslambda;
             }
@@ -492,7 +507,7 @@ namespace LambdaLang {
         class lambdatuple {
             internal string Builtin;
             internal string[] Head;
-            internal Nodo Body;
+            internal IList<Terminal> Body;
         }
 
         private bool truthvalue(object value) {
@@ -1023,10 +1038,22 @@ namespace LambdaLang {
                 nexttoken();
                 var nl = name_list_parens();
                 expect(TokenType.colon);
-                var head = new Terminal(TokenType.lambdahead, nl.ToArray(), currenttoken.LN, currenttoken.CP);
+                var ln = currenttoken.LN; var cp = currenttoken.CP;
+                var head = new Terminal(TokenType.lambdahead, nl.ToArray(), ln, cp);
                 nexttoken();
-                var body = new Terminal(TokenType.lambdabody, expresion_lambda(), currenttoken.LN, currenttoken.CP);
-                return new Nodo(op, new Nodo(head), new Nodo(body));
+                ln = currenttoken.LN; cp = currenttoken.CP;
+                var lbljmp = Guid.NewGuid().ToString();
+                var jmplabel = new Terminal(TokenType.label, lbljmp, ln, cp);
+                var jmp = new Terminal(TokenType.jmp, lbljmp, ln, cp);
+                var body = expresion_lambda();
+                ln = currenttoken.LN; cp = currenttoken.CP;
+                var bodyop = new Terminal(TokenType.lambdabody, lbljmp, ln, cp);
+                return new Nodo(op,
+                                new Nodo(head),
+                                new Nodo(bodyop,
+                                        new Nodo(jmp),
+                                        new Nodo(jmplabel,
+                                                body, null)));
             } else {
                 return expresion_cond();
             }

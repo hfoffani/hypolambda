@@ -793,8 +793,9 @@ f()
         [TestMethod]
         public void Test_lambda_36() {
             Expression exp = new Expression();
-            var prog = "f = lambda a: (44); f()";
+            var prog = "f = lambda a: (43+1); f()";
             exp.SetExpression(prog);
+            Console.WriteLine(exp.prettyPrintAST());
             Assert.AreEqual(44.0, exp.Calculate());
         }
 
