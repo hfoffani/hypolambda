@@ -17,6 +17,15 @@ This README would normally document whatever steps are necessary to get your app
 * How to run tests
 * Deployment instructions
 
+### To Do ###
+
+* ejemplo de tail call.
+* pasar a git.
+* pasar a NUnit.
+* pasar a Mono.
+* tail call optimization.
+* partial application.
+
 ### Contribution guidelines ###
 
 * Writing tests

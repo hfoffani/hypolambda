@@ -8,12 +8,6 @@ namespace LLconsole {
     /// Evaluates LambdaLang program.
     /// </summary>
     /// <remarks>
-    /// ejemplo de tail call.
-    /// pasar a git.
-    /// pasar a NUnit.
-    /// pasar a Mono.
-    /// tail call optimization.
-    /// partial application.
     /// </remarks>
     class Program {
         static void run(string program) {
