@@ -16,5 +16,6 @@
 /TestProject/obj
 
 /Tests/bin
+/Tests/obj
 /*.userprefs
 /packages

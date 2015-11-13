@@ -1,0 +1,87 @@
+﻿Test Name:	Test_lambda_recursion_tail
+Test Outcome:	Passed
+Result StandardOutput:	
+│       ┌── ident [recsum]
+│   ┌── eval
+│   │   │       ┌── list
+│   │   │   ┌── comma
+│   │   │   │   └── number [0]
+│   │   └── comma
+│   │       └── number [5]
+└── semicolon
+    │   ┌── identlocal [recsum]
+    └── assig [recsum]
+        │       ┌── label [LBL_0001]
+        │       │   └── iff
+        │       │       │           ┌── label [LBL_0003]
+        │       │       │       ┌── NIL
+        │       │       │       │   │   ┌── ident [recsum]
+        │       │       │       │   └── eval
+        │       │       │       │       │       ┌── list
+        │       │       │       │       │   ┌── comma
+        │       │       │       │       │   │   │   ┌── ident [x]
+        │       │       │       │       │   │   └── plus
+        │       │       │       │       │   │       └── ident [accum]
+        │       │       │       │       └── comma
+        │       │       │       │           │   ┌── number [1]
+        │       │       │       │           └── minus
+        │       │       │       │               └── ident [x]
+        │       │       │   ┌── NIL
+        │       │       │   │   └── jmpnotz [LBL_0003]
+        │       │       └── or
+        │       │           │           ┌── label [LBL_0002]
+        │       │           │       ┌── NIL
+        │       │           │       │   └── ident [accum]
+        │       │           │   ┌── NIL
+        │       │           │   │   └── jmpzero [LBL_0002]
+        │       │           └── and
+        │       │               │   ┌── number [0]
+        │       │               └── eq
+        │       │                   └── ident [x]
+        │   ┌── lambdabody [LBL_0001]
+        │   │   └── jmp [LBL_0001]
+        └── lambda
+            └── lambdahead [System.String[]]
+
+lambdahead [System.String[]]
+jmp [LBL_0001]
+ident [x]
+number [0]
+eq
+jmpzero [LBL_0002]
+ident [accum]
+label [LBL_0002]
+NIL
+NIL
+and
+jmpnotz [LBL_0003]
+ident [x]
+number [1]
+minus
+ident [accum]
+ident [x]
+plus
+list
+comma
+comma
+ident [recsum]
+eval
+label [LBL_0003]
+NIL
+NIL
+or
+iff
+label [LBL_0001]
+lambdabody [LBL_0001]
+lambda
+identlocal [recsum]
+assig [recsum]
+number [5]
+number [0]
+list
+comma
+comma
+ident [recsum]
+eval
+semicolon
+
