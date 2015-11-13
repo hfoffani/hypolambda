@@ -9,7 +9,7 @@ using System.Linq;
 
 #if DEBUG
 using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleTo("TestProject")]
+[assembly: InternalsVisibleTo("Tests")]
 #endif
 
 
