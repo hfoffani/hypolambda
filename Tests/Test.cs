@@ -1357,7 +1357,7 @@ v + u;
 			Assert.IsTrue(0 < buffer.Length, "no hay nada en el buffer.");
 
 			// meto un error en el objeto buffer.
-			buffer[10] = (byte)'X';
+			buffer[200] = (byte)'X';
 
 			// leo.
 			using (System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer)) {
