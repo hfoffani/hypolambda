@@ -1065,10 +1065,11 @@ v + u;
 			var exp = new Expression();
 			exp.SetExpression(" \"A = {0:##.#}\" % a ");
 			exp.SymbolTable["a"] = 100.0 / 3.0;
+			var res = exp.Solve();
 
 			System.Threading.Thread.CurrentThread.CurrentCulture = ocul;
 
-			Assert.AreEqual("A = 33,3", exp.Solve());
+			Assert.AreEqual("A = 33,3", res);
 		}
 
 		[Test]
