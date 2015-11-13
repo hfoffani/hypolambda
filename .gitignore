@@ -14,3 +14,7 @@
 # /TestProject/
 /TestProject/bin
 /TestProject/obj
+
+/Tests/bin
+/*.userprefs
+/packages
