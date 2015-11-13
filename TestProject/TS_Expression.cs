@@ -606,7 +606,7 @@ namespace TestProject {
             var exp = new Expression();
             exp.SetExpression("(lambda: 2+3)()");
             Console.WriteLine();
-            Console.WriteLine(exp.prettyPrintAST());
+            Console.WriteLine(exp.prettyAST());
             Console.WriteLine();
             Assert.AreEqual(5.0, exp.Calculate());
         }
@@ -795,7 +795,7 @@ f()
             var exp = new Expression();
             var prog = "f = lambda a: (43+1); f()";
             exp.SetExpression(prog);
-            Console.WriteLine(exp.prettyPrintAST());
+            Console.WriteLine(exp.prettyAST());
             Assert.AreEqual(44.0, exp.Calculate());
         }
 
@@ -877,15 +877,44 @@ factorial_of_v()
         #region recursion
 
         [TestMethod]
-        public void Test_lambda_factorial_fmt() {
-            var exp = new Expression();
+        public void Test_lambda_recursion() {
             var prog = @"
 f = lambda x:
     (x*f(x-1)) if x > 1 else 1;
 f(4)
 ";
+            var exp = new Expression();
             exp.SetExpression(prog);
             Assert.AreEqual(24.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_recursion_normal() {
+            // sum of N first integers.
+            var prog = @"
+recsum = lambda x:
+    x if x == 1 else x + recsum(x - 1);
+recsum(5)
+";
+            var exp = new Expression();
+            exp.SetExpression(prog);
+            Console.WriteLine(exp.prettyAST());
+            Console.WriteLine(exp.prettyPCODE());
+            Assert.AreEqual(15.0, exp.Calculate());
+        }
+
+        [TestMethod]
+        public void Test_lambda_recursion_tail() {
+            var prog = @"
+recsum = lambda x, accum:
+    accum if x == 0 else recsum(x - 1, accum + x);
+recsum(5, 0)
+";
+            var exp = new Expression();
+            exp.SetExpression(prog);
+            Console.WriteLine(exp.prettyAST());
+            Console.WriteLine(exp.prettyPCODE());
+            Assert.AreEqual(15.0, exp.Calculate());
         }
 
         #endregion
@@ -1189,7 +1218,7 @@ v + u;
         public void Test_list_10() {
             var exp = new Expression();
             exp.SetExpression("l = [1,2,3]");
-            Console.WriteLine(exp.prettyPrintAST());
+            Console.WriteLine(exp.prettyAST());
             var l = exp.Solve() as IList<object>;
 
             Assert.IsNotNull(l);

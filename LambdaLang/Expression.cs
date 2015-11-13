@@ -36,6 +36,8 @@ namespace LambdaLang {
         private static Regex reNums = new Regex(REGEX_NUMS);
         private static Regex reOper = new Regex(REGEX_OPER);
 
+        private int labelNumber = 1;
+        private string labelFmt = "LBL_{0:D4}";
         #endregion
 
         #region Constructors
@@ -134,6 +136,11 @@ namespace LambdaLang {
         #endregion
 
         #region HMF recursivo descendente
+
+        private string newLabel() {
+            // return Guid.NewGuid().ToString();
+            return string.Format(labelFmt, labelNumber++);
+        }
 
         #region evaluacion.
 
@@ -617,25 +624,35 @@ namespace LambdaLang {
             pcode = r.PostOrden(ast, null).ToList();
         }
 
-        private StringBuilder toString(Nodo n, StringBuilder prefix, bool isTail, StringBuilder sb) {
+        private StringBuilder tree2string(Nodo n, StringBuilder prefix, bool isTail, StringBuilder sb) {
             if (n.Right != null) {
-                toString(n.Right, new StringBuilder().Append(prefix).Append(isTail ? "│   " : "    "), false, sb);
+                tree2string(n.Right, new StringBuilder().Append(prefix).Append(isTail ? "│   " : "    "), false, sb);
             }
-            sb.Append(prefix).Append(isTail ? "└── " : "┌── ").Append(n.Tag.ToString()).Append("\n");
+            sb.Append(prefix).Append(isTail ? "└── " : "┌── ").Append(n.Tag.ToString()).AppendLine("");
             if (n.Left != null) {
-                toString(n.Left, new StringBuilder().Append(prefix).Append(isTail ? "    " : "│   "), true, sb);
+                tree2string(n.Left, new StringBuilder().Append(prefix).Append(isTail ? "    " : "│   "), true, sb);
             }
             return sb;
         }
 
-        private String toString(Nodo n) {
-            return toString(n, new StringBuilder(), true, new StringBuilder()).ToString();
+        private String tree2string(Nodo n) {
+            return tree2string(n, new StringBuilder(), true, new StringBuilder()).ToString();
         }
 
-        internal String prettyPrintAST() {
+        internal String prettyAST() {
             if (ast == null)
                 throw new ApplicationException("No current AST. Must compile before.");
-            return toString(ast);
+            return tree2string(ast);
+        }
+
+        internal String prettyPCODE() {
+            if (pcode == null)
+                throw new ApplicationException("No current PCODE. Must compile before.");
+            var sb = new StringBuilder();
+            foreach (var t in pcode) {
+                sb.AppendLine(t.ToString());
+            }
+            return sb.ToString();
         }
 
         bool _evalOnlyOneSymbol = false;
@@ -1075,7 +1092,7 @@ namespace LambdaLang {
                 var head = new Terminal(TokenType.lambdahead, nl.ToArray(), ln, cp);
                 nexttoken();
                 ln = currenttoken.LN; cp = currenttoken.CP;
-                var lbljmp = Guid.NewGuid().ToString();
+                var lbljmp = newLabel();
                 var jmplabel = new Terminal(TokenType.label, lbljmp, ln, cp);
                 var jmp = new Terminal(TokenType.jmp, lbljmp, ln, cp);
                 var body = expresion_lambda();
@@ -1137,7 +1154,7 @@ namespace LambdaLang {
             Nodo n = null;
             switch (op.TokenType) {
                 case TokenType.and:
-                    var lbljmpzero = Guid.NewGuid().ToString();
+                    var lbljmpzero = newLabel();
                     n = new Nodo(op,
                         nizq,
                         new Nodo(nilterminal(),
@@ -1147,7 +1164,7 @@ namespace LambdaLang {
                                 new Nodo(new Terminal(TokenType.label, lbljmpzero, currenttoken.LN, currenttoken.CP)))));
                     break;
                 case TokenType.or:
-                    var lbljmpnotz = Guid.NewGuid().ToString();
+                    var lbljmpnotz = newLabel();
                     n = new Nodo(op,
                         nizq,
                         new Nodo(nilterminal(),
