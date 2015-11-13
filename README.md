@@ -6,7 +6,6 @@ This README would normally document whatever steps are necessary to get your app
 
 * Quick summary
 * Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
 
@@ -16,11 +15,6 @@ This README would normally document whatever steps are necessary to get your app
 * Database configuration
 * How to run tests
 * Deployment instructions
-
-### To Do ###
-
-* tail call optimization.
-* partial application.
 
 ### Contribution guidelines ###
 
