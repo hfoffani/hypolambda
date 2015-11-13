@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Globalization;
 
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -1058,9 +1059,15 @@ v + u;
 
 		[Test]
 		public void Prueba94_TestRecursiveDescent() {
+			var ocul = System.Threading.Thread.CurrentThread.CurrentCulture;
+			System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("es-ES");
+
 			var exp = new Expression();
 			exp.SetExpression(" \"A = {0:##.#}\" % a ");
 			exp.SymbolTable["a"] = 100.0 / 3.0;
+
+			System.Threading.Thread.CurrentThread.CurrentCulture = ocul;
+
 			Assert.AreEqual("A = 33,3", exp.Solve());
 		}
 
