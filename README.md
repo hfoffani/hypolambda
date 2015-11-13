@@ -11,4 +11,4 @@ A small functional programming language for .NET.
 
 ### Who do I talk to? ###
 
-* For any doubt or inquiry contact me at \@herchu or hfoffani at gmail dot com.
+* For any doubt or inquiry contact me at @hfoffani or hfoffani at gmail dot com.
