@@ -1425,10 +1425,33 @@ v + u;
 
 		#region serializacion
 
+		[Test]
+		public void Test_ToFrom_PCode()
+		{
+			var e1 = new LambdaLang();
+			e1.Compile("(this.A + this.B) * 5");
+			Aux y1 = new Aux();
+			y1.A = 2;
+			y1.B = 1;
+			e1.SymbolTable["this"] = y1;
+			Assert.AreEqual(15.0, e1.Compute());
+
+			var pc1 = e1.ToPCODE();
+
+			var e2 = new LambdaLang();
+			e2.FromPCODE(pc1);
+			//Compruebo la deserealizacion.
+			Aux y2 = new Aux();
+			y2.A = 2;
+			y2.B = 1;
+			e2.SymbolTable["this"] = y2;
+			Assert.AreEqual(15.0, e2.Compute());
+		}
+
 		/// <summary>
 		/// Prueba Serializacion
 		/// </summary>
-		[Test]
+		[Test, Ignore]
 		public void Prueba98_Serializacion()
 		{
 			byte[] buffer;

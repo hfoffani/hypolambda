@@ -17,7 +17,6 @@ namespace LL
 	/// <summary>
 	/// Permite evaluar expresiones.
 	/// </summary>
-	[Serializable]
 	public class LambdaLang
 	{
 		#region Fields
@@ -134,6 +133,35 @@ namespace LL
 		/// Obtains the last error message.
 		/// </summary>
 		public string LastError { get; private set; }
+
+
+		public void FromPCODE(string pcode)
+		{
+			this.pcode = new List<Terminal>();
+			var ts = pcode.Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
+			foreach (var t in ts) {
+				var parts = t.Split('|');
+				var ttype = (TokenType) Enum.Parse(typeof(TokenType), parts[0]);
+				var ln = int.Parse(parts[1]);
+				var cp = int.Parse(parts[2]);
+				var value = parts[3];
+				var term = new Terminal(ttype, value, ln, cp);
+				this.pcode.Add(term);
+			}
+		}
+
+		public string ToPCODE()
+		{
+			var sb = new StringBuilder();
+			foreach (var t in this.pcode) {
+				sb.Append(t.TokenType.ToString());	sb.Append("|");
+				sb.Append(t.LN.ToString());			sb.Append("|");
+				sb.Append(t.CP.ToString());			sb.Append("|");
+				sb.Append(t.Value == null ? "null" : t.Value.ToString());
+				sb.AppendLine();
+			}
+			return sb.ToString();
+		}
 
 		#endregion
 
@@ -368,7 +396,8 @@ namespace LL
 
 					case TokenType.iff:
                         // codificado como and/or. arreglo stack.
-						object ores = pila.Pop(); pila.Pop();
+						object ores = pila.Pop();
+						pila.Pop();
 						pila.Push(ores);
 						break;
 
@@ -503,10 +532,11 @@ namespace LL
 					Console.WriteLine(s);
 					return s;
 				}
-			}, { "first", (binds,exp,_,__) => {
-                var l = binds[0] as IList<object>;
-                return l[0]; } },
-            { "rest", (binds,exp,_,__) => {
+			}, { "first", (binds, exp, _, __) => {
+					var l = binds[0] as IList<object>;
+					return l[0];
+				}
+			}, { "rest", (binds,exp,_,__) => {
                 var l = binds[0] as IList<object>;
                 return l.Skip(1).ToList(); } },
             { "__add1__", (binds,exp,_,__) => {
@@ -667,7 +697,6 @@ namespace LL
 
         bool _evalOnlyOneSymbol = false;
 
-        [NonSerialized]
         Nodo ast = null;
 
         IList<Terminal> pcode = null;
@@ -867,7 +896,7 @@ namespace LL
         #endregion
 
         #region parser pp/ dicho.
-        [NonSerialized]
+
         IEnumerator<Terminal> enu;
 
         void nexttoken(IEnumerator<Terminal> enumerator) {
@@ -886,7 +915,7 @@ namespace LL
             else
                 lookaheadtoken = new Terminal(TokenType.NIL, currenttoken.LN, currenttoken.CP);
         }
-        [NonSerialized]
+
         Terminal lookaheadtoken = null;
         Terminal lookaheadone() {
             return lookaheadtoken;
@@ -1283,8 +1312,7 @@ namespace LL
             }
         }
     }
-
-    [Serializable]
+		
     class Terminal {
 
         public Terminal(TokenType tokenType, int linenumber, int position) {
