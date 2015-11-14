@@ -18,12 +18,19 @@ A small functional programming language for .NET.
                         single_exp
                     |   single_exp ";" list_exprs
 
+        terminal :=
+        				vname
+        			|	number
+        			|	string
+        			|	list
+
+        list := 		"[" ( terminal ("," terminal)* ) "]"
+
         single_exp :=
-                        vname
-                    |   constant
-                    |   "(" expression ")"
-                    |   variable = single_exp
-                    |   lambdaexp "(" [ single_exp [ "," single_exp ... ]] ")"
+                        terminal
+        			|	"(" expression ")"
+					|   vname = single_exp
+                    |   lambda_exp "(" single_exp ("," single_exp)* ")"
                     |   condition
                     |   single_exp "*" single_exp
                     |   single_exp "/" single_exp
@@ -35,14 +42,15 @@ A small functional programming language for .NET.
                     |   condition "and" condition
                     |   condition "or" condition
                     |   "not" condition
-                    |   single_exp "&gt;" single_exp
-                    |   single_exp "&gt;=" single_exp
-                    |   single_exp "&lt;" single_exp
-                    |   single_exp "&lt;=" single_exp
+                    |   single_exp ">" single_exp
+                    |   single_exp ">=" single_exp
+                    |   single_exp "<" single_exp
+                    |   single_exp "<=" single_exp
                     |   single_exp "==" single_exp
                     |   single_exp "!=" single_exp
 
-        lambdaexp :=    lambda  [ "(" vname [ "," vname ... ] ")" ] ":" single_exp
+        lambda_exp :=	"lambda" ( "(" vname ("," vname)* ")" ) ":" single_exp
+
 
 
 ### Who do I talk to? ###
