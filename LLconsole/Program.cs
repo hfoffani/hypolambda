@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using LL;
+
 namespace LLconsole {
     /// <summary>
     /// Evaluates LambdaLang program.
@@ -10,9 +12,9 @@ namespace LLconsole {
     class Program {
         static void run(string program) {
             try {
-                var exp = new LambdaLang.Expression();
-                exp.SetExpression(program);
-                var res = exp.Solve();
+                var exp = new LambdaLang();
+                exp.Compile(program);
+                var res = exp.Run();
                 Console.WriteLine(">>> " + val2string(res));
                 if (exp.LastError != "") {
                     Console.WriteLine(exp.LastError);
