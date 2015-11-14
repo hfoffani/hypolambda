@@ -42,7 +42,7 @@ A small functional programming language for .NET.
                     |   condition "and" condition
                     |   condition "or" condition
                     |   "not" condition
-                    |   single_exp ">" single_exp
+                    |   single_exp "\>" single_exp
                     |   single_exp ">=" single_exp
                     |   single_exp "<" single_exp
                     |   single_exp "<=" single_exp
