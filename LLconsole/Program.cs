@@ -7,8 +7,6 @@ namespace LLconsole {
     /// <summary>
     /// Evaluates LambdaLang program.
     /// </summary>
-    /// <remarks>
-    /// </remarks>
     class Program {
         static void run(string program) {
             try {
