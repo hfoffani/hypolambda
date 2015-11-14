@@ -2,497 +2,514 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Reflection; 
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Linq;
 
 #if DEBUG
 using System.Runtime.CompilerServices;
+
 [assembly: InternalsVisibleTo("Tests")]
 #endif
 
+namespace LL
+{
+	/// <summary>
+	/// Permite evaluar expresiones.
+	/// </summary>
+	/// <remarks>
+	/// <include file='Expression.doc' path='ExpressionSintax' />
+	/// </remarks>
+	[Serializable]
+	public class LambdaLang
+	{
+		#region Fields
 
-namespace LL {
+		private Dictionary<string, object> symbolTable;
 
-    /// <summary>
-    /// Permite evaluar expresiones.
-    /// </summary>
-    /// <remarks>
-    /// <include file='Expression.doc' path='ExpressionSintax' />
-    /// </remarks>
-    [Serializable]
-    public class LambdaLang {
+		private static string REGEX_VARS = @"[\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}_][\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}_\p{Nd}\.]*";
+		private static string REGEX_NUMS = @"[\p{Nd}][\.\p{Nd}]*";
+		private static string REGEX_OPER = @"[\*\+-/]";
 
-        #region Fields
+		private static Regex reVars = new Regex(REGEX_VARS);
+		private static Regex reNums = new Regex(REGEX_NUMS);
+		private static Regex reOper = new Regex(REGEX_OPER);
 
-        private Dictionary<string, object> symbolTable;
+		private int labelNumber = 1;
+		private string labelFmt = "LBL_{0:D4}";
 
-        private static string REGEX_VARS = @"[\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}_][\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}_\p{Nd}\.]*";
-        private static string REGEX_NUMS = @"[\p{Nd}][\.\p{Nd}]*";
-        private static string REGEX_OPER = @"[\*\+-/]";
+		#endregion
 
-        private static Regex reVars = new Regex(REGEX_VARS);
-        private static Regex reNums = new Regex(REGEX_NUMS);
-        private static Regex reOper = new Regex(REGEX_OPER);
+		#region Constructors
 
-        private int labelNumber = 1;
-        private string labelFmt = "LBL_{0:D4}";
-        #endregion
+		/// <summary>
+		/// Constructor generico para usar el parser recursivo descendente.
+		/// </summary>
+		/// <param name="expStr">Expresion a compilar.</param>
+		public LambdaLang(string expStr)
+			: this()
+		{
+			this.Compile(expStr, false);
+		}
 
-        #region Constructors
+		/// <summary>
+		/// Constructor generico para usar el parser recursivo descendente.
+		/// </summary>
+		public LambdaLang()
+		{
+			this.symbolTable = new Dictionary<string, object>();
 
-        /// <summary>
-        /// Constructor generico para usar el parser recursivo descendente.
-        /// </summary>
-        /// <param name="expStr">Expresion a compilar.</param>
-        public LambdaLang(string expStr)
-            : this() {
-            this.Compile(expStr, false);
-        }
+			this.reservedwords.Add("not", new Terminal(TokenType.not, 0, 0));
+			this.reservedwords.Add("and", new Terminal(TokenType.and, 0, 0));
+			this.reservedwords.Add("or", new Terminal(TokenType.or, 0, 0));
+			this.reservedwords.Add("if", new Terminal(TokenType.iff, 0, 0));
+			this.reservedwords.Add("else", new Terminal(TokenType.els, 0, 0));
+			this.reservedwords.Add("lambda", new Terminal(TokenType.lambda, 0, 0));
+		}
 
-        /// <summary>
-        /// Constructor generico para usar el parser recursivo descendente.
-        /// </summary>
-        public LambdaLang() {
-            this.symbolTable = new Dictionary<string, object>();
+		#endregion
 
-            this.reservedwords.Add("not",  new Terminal(TokenType.not, 0, 0));
-            this.reservedwords.Add("and", new Terminal(TokenType.and, 0, 0));
-            this.reservedwords.Add("or", new Terminal(TokenType.or, 0, 0));
-            this.reservedwords.Add("if", new Terminal(TokenType.iff, 0, 0));
-            this.reservedwords.Add("else", new Terminal(TokenType.els, 0, 0));
-            this.reservedwords.Add("lambda", new Terminal(TokenType.lambda, 0, 0));
-        }
-        #endregion
+		#region Properties, Accesors and Modifiers
 
-        #region Properties, Accesors and Modifiers
+		/// <summary>
+		/// Tabla de símbolos.
+		/// </summary>
+		public Dictionary<string,object> SymbolTable {
+			get { return this.symbolTable; }
+		}
 
-        /// <summary>
-        /// Tabla de símbolos.
-        /// </summary>
-        public Dictionary<string,object> SymbolTable {
-            get { return this.symbolTable; }
-        }
+		#endregion
 
-        #endregion
+		#region Public Methods
 
-        #region Public Methods
+		/// <summary>
+		/// Inicializa la expresión.
+		/// </summary>
+		/// <remarks>
+		/// <para>Hace un análsis sintáctico recursivo descendente
+		/// construyendo un árbol sintáctico (AST) y generando un PCODE.
+		/// Completa la
+		/// tabla de símbolos <see cref="Expression.SymbolTable"/></para>
+		/// <include file='Expression.doc' path='ExpressionSintax' />
+		/// </remarks>
+		/// <param name="expStr">Expresion.</param>
+		public void Compile(string expStr)
+		{
+			this.Compile(expStr, false);
+		}
 
-        /// <summary>
-        /// Inicializa la expresión.
-        /// </summary>
-        /// <remarks>
-        /// <para>Hace un análsis sintáctico recursivo descendente
-        /// construyendo un árbol sintáctico (AST) y generando un PCODE.
-        /// Completa la
-        /// tabla de símbolos <see cref="Expression.SymbolTable"/></para>
-        /// <include file='Expression.doc' path='ExpressionSintax' />
-        /// </remarks>
-        /// <param name="expStr">Expresion.</param>
-        public void Compile(string expStr) {
-            this.Compile(expStr, false);
-        }
+		/// <summary>
+		/// Calcula el resultado de la expresión numérica.
+		/// </summary>
+		/// <returns>El resultado (<see cref="System.Double"/>).</returns>
+		public double Compute()
+		{
+			var res = this.Run();
+			// antes habia un cast pero en determinados casos
+			// es necesario una conversion explicita.
+			return Convert.ToDouble(res);
+		}
 
-        /// <summary>
-        /// Calcula el resultado de la expresión numérica.
-        /// </summary>
-        /// <returns>El resultado (<see cref="System.Double"/>).</returns>
-        public double Compute() {
-            var res = this.Run();
-            // antes habia un cast pero en determinados casos
-            // es necesario una conversion explicita.
-            return Convert.ToDouble(res);
-        }
+		/// <summary>
+		/// Resuelve la expresión.
+		/// </summary>
+		/// <returns>El resultado, que puede ser un <see cref="System.Double"/> o
+		/// un <see cref="System.String"/></returns>
+		public object Run()
+		{
+			LastError = "";
+			if (pcode != null) {
+				return CalculateNPI2(pcode, null, 0);
+			} else {
+				throw new ApplicationException("Can't execute a non valid program.");
+			}
+		}
 
-        /// <summary>
-        /// Resuelve la expresión.
-        /// </summary>
-        /// <returns>El resultado, que puede ser un <see cref="System.Double"/> o
-        /// un <see cref="System.String"/></returns>
-        public object Run() {
-            LastError = "";
-            if (pcode != null) {
-                return CalculateNPI2(pcode, null, 0);
-            } else {
-                throw new ApplicationException("Can't execute a non valid program.");
-            }
-        }
+		/// <summary>
+		/// Devuelve la lista de identificadores de la expresión.
+		/// </summary>
+		public IEnumerable<string> GetIdentifiers()
+		{
+			foreach (var t in pcode)
+				if (t.TokenType == TokenType.ident)
+					yield return t.Value.ToString();
+		}
 
-        /// <summary>
-        /// Devuelve la lista de identificadores de la expresión.
-        /// </summary>
-        public IEnumerable<string> GetIdentifiers() {
-            foreach (var t in pcode)
-                if (t.TokenType == TokenType.ident)
-                    yield return t.Value.ToString();
-        }
+		/// <summary>
+		/// Obtains the last error message.
+		/// </summary>
+		public string LastError { get; private set; }
 
-        /// <summary>
-        /// Obtains the last error message.
-        /// </summary>
-        public string LastError { get; private set; }
+		#endregion
 
-        #endregion
+		#region HMF recursivo descendente
 
-        #region HMF recursivo descendente
+		private string newLabel()
+		{
+			// return Guid.NewGuid().ToString();
+			return string.Format(labelFmt, labelNumber++);
+		}
 
-        private string newLabel() {
-            // return Guid.NewGuid().ToString();
-            return string.Format(labelFmt, labelNumber++);
-        }
+		#region evaluacion.
 
-        #region evaluacion.
+		private object CalculateNPI2(IList<Terminal> proveedor, List<Dictionary<string, object>> locals, int stackFrames)
+		{
+			// los Convert.ToDouble son necesarios porque es posible que alguna
+			// de las propiedades de objetos utilizados devuelvan int long o float.
+			// asi nos aseguramos que los calculos se hagan siempre con double.
 
-        private object CalculateNPI2(IList<Terminal> proveedor, List<Dictionary<string, object>> locals, int stackFrames) {
-            // los Convert.ToDouble son necesarios porque es posible que alguna
-            // de las propiedades de objetos utilizados devuelvan int long o float.
-            // asi nos aseguramos que los calculos se hagan siempre con double.
+			var pila = new Stack<object>();
+			if (locals == null) {
+				locals = new List<Dictionary<string, object>>();
+				locals.Add(new Dictionary<string, object>());
+			}
+			var currentscope = locals[locals.Count - 1];
 
-            var pila = new Stack<object>();
-            if (locals == null) {
-                locals = new List<Dictionary<string, object>>();
-                locals.Add(new Dictionary<string, object>());
-            }
-            var currentscope = locals[locals.Count-1];
+			double a, b, res;
+			string sa, sb, str;
+			string ignoreuptolabel = "";
 
-            double a, b, res;
-            string sa, sb, str;
-            string ignoreuptolabel = "";
+			for (int poster = 0; poster < proveedor.Count; poster++) {
+				var t = proveedor[poster];
 
-            for (int poster = 0; poster < proveedor.Count; poster++) {
-                var t = proveedor[poster];
+				#region check recursion depth.
+				if (stackFrames > 500) {
+					LastError = string.Format(Strings.Expression_MaxRecursionDepth, t.LN, t.CP);
+					throw new StackOverflowException(LastError);
+				}
+				#endregion
 
-                #region check recursion depth.
-                if (stackFrames > 500) {
-                    LastError = string.Format(Strings.Expression_MaxRecursionDepth, t.LN, t.CP);
-                    throw new StackOverflowException(LastError);
-                }
-                #endregion
+				#region jump ppmente dicho
+				if (ignoreuptolabel != "") {
+					if (t.TokenType == TokenType.label && ignoreuptolabel == (string)t.Value)
+						ignoreuptolabel = "";
+					continue;
+				}
+				#endregion
 
-                #region jump ppmente dicho
-                if (ignoreuptolabel != "") {
-                    if (t.TokenType == TokenType.label && ignoreuptolabel == (string)t.Value)
-                        ignoreuptolabel = "";
-                    continue;
-                }
-                #endregion
-
-                switch (t.TokenType) {
+				switch (t.TokenType) {
 
                     #region tipos
 
-                    case TokenType.number:
-                        double cte = Convert.ToDouble(t.Value);
-                        pila.Push(cte);
-                        break;
-                    case TokenType.ident:
-                        pila.Push(getValue((string)t.Value, locals));
-                        break;
-                    case TokenType.str:
-                        str = (string)t.Value;
-                        pila.Push(str);
-                        break;
+					case TokenType.number:
+						double cte = Convert.ToDouble(t.Value);
+						pila.Push(cte);
+						break;
+					case TokenType.ident:
+						pila.Push(getValue((string)t.Value, locals));
+						break;
+					case TokenType.str:
+						str = (string)t.Value;
+						pila.Push(str);
+						break;
 
                     #endregion
 
                     #region operadores matematicos
 
-                    case TokenType.plus:
-                        var x = pila.Pop();
-                        if (pila.Peek() is List<object>) {
-                            var lb = new List<object>((IList<object>)pila.Pop());
-                            lb.Add(x);
-                            pila.Push(lb);
-                        } else if (pila.Peek() is string) {
-                            sb = (string)x;
-                            sa = (string)pila.Pop();
-                            str = sa + sb;
-                            pila.Push(str);
-                        } else {
-                            b = Convert.ToDouble(x);
-                            a = Convert.ToDouble(pila.Pop());
-                            res = a + b;
-                            pila.Push(res);
-                        }
-                        break;
-                    case TokenType.minus:
-                        b = Convert.ToDouble(pila.Pop());
-                        a = Convert.ToDouble(pila.Pop());
-                        res = a - b;
-                        pila.Push(res);
-                        break;
-                    case TokenType.times:
-                        b = Convert.ToDouble(pila.Pop());
-                        if (pila.Peek() is string) {
-                            sa = (string)pila.Pop();
-                            str = "";
-                            for (; b > 0; b--) {
-                                str += sa;
-                            }
-                            pila.Push(str);
-                        } else {
-                            a = Convert.ToDouble(pila.Pop());
-                            res = a * b;
-                            pila.Push(res);
-                        }
-                        break;
-                    case TokenType.slash:
-                        b = Convert.ToDouble(pila.Pop());
-                        a = Convert.ToDouble(pila.Pop());
-                        if (b == 0.0) {
-                            LastError = string.Format(Strings.Expression_ZeroDivisionError, t.LN, t.CP);
-                        }
-                        res = a / b;
-                        pila.Push(res);
-                        break;
-                    case TokenType.perc:
-                        object o = pila.Pop();
-                        sa = (string)pila.Pop();
-                        pila.Push(string.Format(sa, o));
-                        break;
+					case TokenType.plus:
+						var x = pila.Pop();
+						if (pila.Peek() is List<object>) {
+							var lb = new List<object>((IList<object>)pila.Pop());
+							lb.Add(x);
+							pila.Push(lb);
+						} else if (pila.Peek() is string) {
+							sb = (string)x;
+							sa = (string)pila.Pop();
+							str = sa + sb;
+							pila.Push(str);
+						} else {
+							b = Convert.ToDouble(x);
+							a = Convert.ToDouble(pila.Pop());
+							res = a + b;
+							pila.Push(res);
+						}
+						break;
+					case TokenType.minus:
+						b = Convert.ToDouble(pila.Pop());
+						a = Convert.ToDouble(pila.Pop());
+						res = a - b;
+						pila.Push(res);
+						break;
+					case TokenType.times:
+						b = Convert.ToDouble(pila.Pop());
+						if (pila.Peek() is string) {
+							sa = (string)pila.Pop();
+							str = "";
+							for (; b > 0; b--) {
+								str += sa;
+							}
+							pila.Push(str);
+						} else {
+							a = Convert.ToDouble(pila.Pop());
+							res = a * b;
+							pila.Push(res);
+						}
+						break;
+					case TokenType.slash:
+						b = Convert.ToDouble(pila.Pop());
+						a = Convert.ToDouble(pila.Pop());
+						if (b == 0.0) {
+							LastError = string.Format(Strings.Expression_ZeroDivisionError, t.LN, t.CP);
+						}
+						res = a / b;
+						pila.Push(res);
+						break;
+					case TokenType.perc:
+						object o = pila.Pop();
+						sa = (string)pila.Pop();
+						pila.Push(string.Format(sa, o));
+						break;
 
                     #endregion
 
                     #region operadores de comparacion
 
-                    case TokenType.eq:
-                        if (pila.Peek() is IList<object>) {
-                            var lb = (IList<object>)pila.Pop();
-                            var la = (IList<object>)pila.Pop();
-                            if (la.Count != lb.Count) pila.Push(0.0);
-                            else {
-                                var areeq = 1.0;
-                                for (int i = 0; i < la.Count; i++)
-                                    if (!la[i].Equals(lb[i])) areeq = 0.0;
-                                pila.Push(areeq);
-                            }
-                        } else if (pila.Peek() is string) {
-                            sb = (string)pila.Pop();
-                            sa = (string)pila.Pop();
-                            pila.Push((sa == sb ? 1.0 : 0.0));
-                        } else {
-                            b = Convert.ToDouble(pila.Pop());
-                            a = Convert.ToDouble(pila.Pop());
-                            pila.Push((a == b ? 1.0 : 0.0));
-                        }
-                        break;
-                    case TokenType.neq:
-                        if (pila.Peek() is IList<object>) {
-                            var lb = (IList<object>)pila.Pop();
-                            var la = (IList<object>)pila.Pop();
-                            if (la.Count != lb.Count) pila.Push(1.0);
-                            else {
-                                var areneq = 0.0;
-                                for (int i = 0; i < la.Count; i++)
-                                    if (!la[i].Equals(lb[i])) areneq = 1.0;
-                                pila.Push(areneq);
-                            }
-                        } else if (pila.Peek() is string) {
-                            sb = (string)pila.Pop();
-                            sa = (string)pila.Pop();
-                            pila.Push((sa != sb ? 1.0 : 0.0));
-                        } else {
-                            b = Convert.ToDouble(pila.Pop());
-                            a = Convert.ToDouble(pila.Pop());
-                            pila.Push((a != b ? 1.0 : 0.0));
-                        }
-                        break;
-                    case TokenType.gt:
-                        if (pila.Peek() is string) {
-                            sb = (string)pila.Pop();
-                            sa = (string)pila.Pop();
-                            pila.Push((sb.CompareTo(sa) > 0 ? 1.0 : 0.0));
-                        } else {
-                            b = Convert.ToDouble(pila.Pop());
-                            a = Convert.ToDouble(pila.Pop());
-                            pila.Push((a > b ? 1.0 : 0.0));
-                        }
-                        break;
-                    case TokenType.gteq:
-                        if (pila.Peek() is string) {
-                            sb = (string)pila.Pop();
-                            sa = (string)pila.Pop();
-                            pila.Push((sb.CompareTo(sa) >= 0 ? 1.0 : 0.0));
-                        } else {
-                            b = Convert.ToDouble(pila.Pop());
-                            a = Convert.ToDouble(pila.Pop());
-                            pila.Push((a >= b ? 1.0 : 0.0));
-                        }
-                        break;
-                    case TokenType.lt:
-                        if (pila.Peek() is string) {
-                            sb = (string)pila.Pop();
-                            sa = (string)pila.Pop();
-                            pila.Push((sb.CompareTo(sa) < 0 ? 1.0 : 0.0));
-                        } else {
-                            b = Convert.ToDouble(pila.Pop());
-                            a = Convert.ToDouble(pila.Pop());
-                            pila.Push((a < b ? 1.0 : 0.0));
-                        }
-                        break;
-                    case TokenType.lteq:
-                        if (pila.Peek() is string) {
-                            sb = (string)pila.Pop();
-                            sa = (string)pila.Pop();
-                            pila.Push((sb.CompareTo(sa) <= 0 ? 1.0 : 0.0));
-                        } else {
-                            b = Convert.ToDouble(pila.Pop());
-                            a = Convert.ToDouble(pila.Pop());
-                            pila.Push((a <= b ? 1.0 : 0.0));
-                        }
-                        break;
+					case TokenType.eq:
+						if (pila.Peek() is IList<object>) {
+							var lb = (IList<object>)pila.Pop();
+							var la = (IList<object>)pila.Pop();
+							if (la.Count != lb.Count)
+								pila.Push(0.0);
+							else {
+								var areeq = 1.0;
+								for (int i = 0; i < la.Count; i++)
+									if (!la[i].Equals(lb[i]))
+										areeq = 0.0;
+								pila.Push(areeq);
+							}
+						} else if (pila.Peek() is string) {
+							sb = (string)pila.Pop();
+							sa = (string)pila.Pop();
+							pila.Push((sa == sb ? 1.0 : 0.0));
+						} else {
+							b = Convert.ToDouble(pila.Pop());
+							a = Convert.ToDouble(pila.Pop());
+							pila.Push((a == b ? 1.0 : 0.0));
+						}
+						break;
+					case TokenType.neq:
+						if (pila.Peek() is IList<object>) {
+							var lb = (IList<object>)pila.Pop();
+							var la = (IList<object>)pila.Pop();
+							if (la.Count != lb.Count)
+								pila.Push(1.0);
+							else {
+								var areneq = 0.0;
+								for (int i = 0; i < la.Count; i++)
+									if (!la[i].Equals(lb[i]))
+										areneq = 1.0;
+								pila.Push(areneq);
+							}
+						} else if (pila.Peek() is string) {
+							sb = (string)pila.Pop();
+							sa = (string)pila.Pop();
+							pila.Push((sa != sb ? 1.0 : 0.0));
+						} else {
+							b = Convert.ToDouble(pila.Pop());
+							a = Convert.ToDouble(pila.Pop());
+							pila.Push((a != b ? 1.0 : 0.0));
+						}
+						break;
+					case TokenType.gt:
+						if (pila.Peek() is string) {
+							sb = (string)pila.Pop();
+							sa = (string)pila.Pop();
+							pila.Push((sb.CompareTo(sa) > 0 ? 1.0 : 0.0));
+						} else {
+							b = Convert.ToDouble(pila.Pop());
+							a = Convert.ToDouble(pila.Pop());
+							pila.Push((a > b ? 1.0 : 0.0));
+						}
+						break;
+					case TokenType.gteq:
+						if (pila.Peek() is string) {
+							sb = (string)pila.Pop();
+							sa = (string)pila.Pop();
+							pila.Push((sb.CompareTo(sa) >= 0 ? 1.0 : 0.0));
+						} else {
+							b = Convert.ToDouble(pila.Pop());
+							a = Convert.ToDouble(pila.Pop());
+							pila.Push((a >= b ? 1.0 : 0.0));
+						}
+						break;
+					case TokenType.lt:
+						if (pila.Peek() is string) {
+							sb = (string)pila.Pop();
+							sa = (string)pila.Pop();
+							pila.Push((sb.CompareTo(sa) < 0 ? 1.0 : 0.0));
+						} else {
+							b = Convert.ToDouble(pila.Pop());
+							a = Convert.ToDouble(pila.Pop());
+							pila.Push((a < b ? 1.0 : 0.0));
+						}
+						break;
+					case TokenType.lteq:
+						if (pila.Peek() is string) {
+							sb = (string)pila.Pop();
+							sa = (string)pila.Pop();
+							pila.Push((sb.CompareTo(sa) <= 0 ? 1.0 : 0.0));
+						} else {
+							b = Convert.ToDouble(pila.Pop());
+							a = Convert.ToDouble(pila.Pop());
+							pila.Push((a <= b ? 1.0 : 0.0));
+						}
+						break;
 
                     #endregion
 
                     #region operadores booleanos
 
-                    case TokenType.and:
+					case TokenType.and:
                         // ya resuelto por los short-circuit.
-                        break;
-                    case TokenType.or:
+						break;
+					case TokenType.or:
                         // ya resuelto por los short-circuit.
-                        break;
-                    case TokenType.not:
-                        res = (truthvalue(pila.Pop()) ? 0.0 : 1.0);
-                        pila.Push(res);
-                        break;
+						break;
+					case TokenType.not:
+						res = (truthvalue(pila.Pop()) ? 0.0 : 1.0);
+						pila.Push(res);
+						break;
 
-                    case TokenType.iff:
+					case TokenType.iff:
                         // codificado como and/or. arreglo stack.
-                        object ores = pila.Pop();
-                        object cond = pila.Pop();
-                        pila.Push(ores);
-                        break;
+						object ores = pila.Pop();
+						object cond = pila.Pop();
+						pila.Push(ores);
+						break;
 
                     #endregion
 
                     #region jump tokens
 
-                    case TokenType.jmpzero:
-                        if (!truthvalue(pila.Peek())) {
-                            ignoreuptolabel = (string)t.Value;
-                        }
-                        break;
+					case TokenType.jmpzero:
+						if (!truthvalue(pila.Peek())) {
+							ignoreuptolabel = (string)t.Value;
+						}
+						break;
 
-                    case TokenType.jmpnotz:
-                        if (truthvalue(pila.Peek())) {
-                            ignoreuptolabel = (string)t.Value;
-                        }
-                        break;
+					case TokenType.jmpnotz:
+						if (truthvalue(pila.Peek())) {
+							ignoreuptolabel = (string)t.Value;
+						}
+						break;
 
-                    case TokenType.jmp:
-                        ignoreuptolabel = (string)t.Value;
-                        break;
+					case TokenType.jmp:
+						ignoreuptolabel = (string)t.Value;
+						break;
 
                     #endregion
 
                     #region Turing
 
-                    case TokenType.eval:
-                        var lambda = pila.Pop() as lambdatuple;
-                        var binds = pila.Pop() as List<object>;
-                        if (lambda != null) {
-                            var reslambda = lambdaeval(lambda, locals, binds, stackFrames);
-                            pila.Push(reslambda);
-                        }
-                        break;
+					case TokenType.eval:
+						var lambda = pila.Pop() as lambdatuple;
+						var binds = pila.Pop() as List<object>;
+						if (lambda != null) {
+							var reslambda = lambdaeval(lambda, locals, binds, stackFrames);
+							pila.Push(reslambda);
+						}
+						break;
 
-                    case TokenType.identlocal:
-                        var vallocal = pila.Pop();
-                        var valname = t.Value.ToString();
-                        if (currentscope.ContainsKey(valname)) {
-                            currentscope[valname] = vallocal;
-                        } else {
-                            currentscope.Add(valname, vallocal);
-                        }
-                        break;
+					case TokenType.identlocal:
+						var vallocal = pila.Pop();
+						var valname = t.Value.ToString();
+						if (currentscope.ContainsKey(valname)) {
+							currentscope[valname] = vallocal;
+						} else {
+							currentscope.Add(valname, vallocal);
+						}
+						break;
 
-                    case TokenType.lambdahead:
-                        pila.Push(t.Value);
-                        break;
-                    case TokenType.lambdabody:
-                        var pcbody = pcodebody(t.Value.ToString(), proveedor);
-                        pila.Push(pcbody);
-                        break;
-                    case TokenType.lambda:
-                        var ls = new lambdatuple();
-                        ls.Body = pila.Pop() as IList<Terminal>;
-                        ls.Head = pila.Pop() as string[];
-                        pila.Push(ls);
-                        break;
+					case TokenType.lambdahead:
+						pila.Push(t.Value);
+						break;
+					case TokenType.lambdabody:
+						var pcbody = pcodebody(t.Value.ToString(), proveedor);
+						pila.Push(pcbody);
+						break;
+					case TokenType.lambda:
+						var ls = new lambdatuple();
+						ls.Body = pila.Pop() as IList<Terminal>;
+						ls.Head = pila.Pop() as string[];
+						pila.Push(ls);
+						break;
 
-                    case TokenType.list:
-                        pila.Push(new List<object>());
-                        break;
+					case TokenType.list:
+						pila.Push(new List<object>());
+						break;
 
-                    case TokenType.comma:
-                        var tail = pila.Pop() as List<object>;
-                        var head = pila.Pop();
-                        var li = new List<object>();
-                        li.Add(head); li.AddRange(tail);
-                        pila.Push(li);
-                        break;
+					case TokenType.comma:
+						var tail = pila.Pop() as List<object>;
+						var head = pila.Pop();
+						var li = new List<object>();
+						li.Add(head);
+						li.AddRange(tail);
+						pila.Push(li);
+						break;
 
-                    case TokenType.semicolon:
-                        var oc = pila.Pop(); pila.Pop();
-                        pila.Push(oc);
-                        break;
+					case TokenType.semicolon:
+						var oc = pila.Pop();
+						pila.Pop();
+						pila.Push(oc);
+						break;
 
-                    case TokenType.assig:
-                        pila.Push(getValue(t.Value.ToString(), locals));
-                        break;
+					case TokenType.assig:
+						pila.Push(getValue(t.Value.ToString(), locals));
+						break;
 
                     #endregion
-                }
-            }
-            if (pila.Count > 0)
-                return pila.Pop();
-            else
-                return 0.0;
-        }
+				}
+			}
+			if (pila.Count > 0)
+				return pila.Pop();
+			else
+				return 0.0;
+		}
 
-        private List<Terminal> pcodebody(string label, IList<Terminal> pcode) {
-            var body = new List<Terminal>();
-            bool copy = false;
-            for (int i = 0; i < pcode.Count; i++) {
-                if (pcode[i].TokenType == TokenType.jmp && pcode[i].Value.ToString() == label) {
-                    copy = true;
-                    continue;
-                }
-                if (pcode[i].TokenType == TokenType.label && pcode[i].Value.ToString() == label)
-                    break;
-                if (copy)
-                    body.Add(pcode[i]);
-            }
-            return body;
-        }
+		private List<Terminal> pcodebody(string label, IList<Terminal> pcode)
+		{
+			var body = new List<Terminal>();
+			bool copy = false;
+			for (int i = 0; i < pcode.Count; i++) {
+				if (pcode[i].TokenType == TokenType.jmp && pcode[i].Value.ToString() == label) {
+					copy = true;
+					continue;
+				}
+				if (pcode[i].TokenType == TokenType.label && pcode[i].Value.ToString() == label)
+					break;
+				if (copy)
+					body.Add(pcode[i]);
+			}
+			return body;
+		}
 
-        private object lambdaeval(lambdatuple lambda, List<Dictionary<string, object>> locals, IList<object> binds, int stackFrames) {
-            if (lambda.Builtin != null) {
-                return _bultins[lambda.Builtin](binds, this, locals, stackFrames);
-            } else {
-                var newscope = new Dictionary<string, object>();
-                for (int j = 0; j < lambda.Head.Length; j++) {
-                    if (j < binds.Count) {
-                        newscope.Add(lambda.Head[j], binds[j]);
-                    }
-                }
-                locals.Add(newscope);
+		private object lambdaeval(lambdatuple lambda, List<Dictionary<string, object>> locals, IList<object> binds, int stackFrames)
+		{
+			if (lambda.Builtin != null) {
+				return _bultins[lambda.Builtin](binds, this, locals, stackFrames);
+			} else {
+				var newscope = new Dictionary<string, object>();
+				for (int j = 0; j < lambda.Head.Length; j++) {
+					if (j < binds.Count) {
+						newscope.Add(lambda.Head[j], binds[j]);
+					}
+				}
+				locals.Add(newscope);
 
-                var reslambda = CalculateNPI2(lambda.Body, locals, stackFrames + 1);
-                locals.RemoveAt(locals.Count - 1);
-                return reslambda;
-            }
-        }
+				var reslambda = CalculateNPI2(lambda.Body, locals, stackFrames + 1);
+				locals.RemoveAt(locals.Count - 1);
+				return reslambda;
+			}
+		}
 
-        Dictionary<string, Func<IList<object>, LambdaLang, List<Dictionary<string, object>>, int, object>>
-            _bultins = new Dictionary<string, Func<IList<object>, LambdaLang, List<Dictionary<string, object>>, int, object>>() {
-
-            { "print", (binds,exp,_,__) => {
-                var s = String.Join(" ", binds.Select(x => x.ToString()));
-                Console.WriteLine(s);
-                return s; } },
-            { "first", (binds,exp,_,__) => {
+		Dictionary<string, Func<IList<object>, LambdaLang, List<Dictionary<string, object>>, int, object>>
+			_bultins = new Dictionary<string, Func<IList<object>, LambdaLang, List<Dictionary<string, object>>, int, object>>() { { "print", (binds, exp, _, __) => {
+					var s = String.Join(" ", binds.Select(x => x.ToString()));
+					Console.WriteLine(s);
+					return s;
+				}
+			}, { "first", (binds,exp,_,__) => {
                 var l = binds[0] as IList<object>;
                 return l[0]; } },
             { "rest", (binds,exp,_,__) => {

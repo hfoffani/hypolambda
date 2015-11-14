@@ -8,33 +8,37 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 using LL;
 
-namespace Tests {
+namespace Tests
+{
 	/// <summary>
 	/// Test de la clase <see cref="ECC.Lib.Expression"/>
 	/// </summary>
 	[TestFixture]
-	public class TS_Expression {
-
+	public class TS_Expression
+	{
 		#region Tests
 
 		#region expresiones algebraicas
 
 		[Test]
-		public void Prueba19_TestRecursiveDescent() {
+		public void Prueba19_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(2+3\r\n)*\n5");
 			Assert.AreEqual(25.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba20_TestRecursiveDescent() {
+		public void Prueba20_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(2+3)*5");
 			Assert.AreEqual(25.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba21_TestRecursiveDescent() {
+		public void Prueba21_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(i+3)*5");
 			Assert.AreEqual(1, exp.SymbolTable.Count);
@@ -42,7 +46,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba22_TestRecursiveDescent() {
+		public void Prueba22_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(a.A+3)*5");
 			Aux y = new Aux();
@@ -53,20 +58,23 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba23_TestRecursiveDescent() {
+		public void Prueba23_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(2.0+3.0)*5.0");
 			Assert.AreEqual(25.0, exp.Compute());
 		}
 
 		[Test, ExpectedException(typeof(System.ApplicationException))]
-		public void Prueba24_TestRecursiveDescent() {
+		public void Prueba24_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(2+*5.0");
 		}
 
 		[Test]
-		public void Prueba25_TestRecursiveDescent() {
+		public void Prueba25_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(A+B)*5", true);
 			Aux y = new Aux();
@@ -77,7 +85,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba26_TestRecursiveDescent() {
+		public void Prueba26_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(this.A+this.B)*5");
 			Aux y = new Aux();
@@ -88,7 +97,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba27_TestRecursiveDescent() {
+		public void Prueba27_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(A+B)*5");
 			exp.SymbolTable["A"] = 2.0;
@@ -97,14 +107,16 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba28_TestRecursiveDescent() {
+		public void Prueba28_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("3/0");
 			Assert.AreEqual(double.PositiveInfinity, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba29_TestRecursiveDescent() {
+		public void Prueba29_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("({A.X}+{A.Y})*5");
 			var A = new { X = 2.0, Y = 1.0 };
@@ -114,7 +126,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba30_TestRecursiveDescent() {
+		public void Prueba30_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("({A.X}+{A.Y}) == (this.X + this.Y)");
 			var A = new { X = 2.0, Y = 1.0 };
@@ -124,7 +137,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba31_TestRecursiveDescent() {
+		public void Prueba31_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("t2.Ticks - t1.Ticks");
 			var now = System.DateTime.Now;
@@ -138,7 +152,8 @@ namespace Tests {
 		#region expresiones logicas cadenas
 
 		[Test]
-		public void Prueba40_TestRecursiveDescent() {
+		public void Prueba40_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A>B");
 			exp.SymbolTable["A"] = "a";
@@ -147,7 +162,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba41_TestRecursiveDescent() {
+		public void Prueba41_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A==B");
 			exp.SymbolTable["A"] = "a";
@@ -156,7 +172,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba42_TestRecursiveDescent() {
+		public void Prueba42_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A<B");
 			exp.SymbolTable["A"] = "a";
@@ -165,7 +182,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba43_TestRecursiveDescent() {
+		public void Prueba43_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A>=B");
 			exp.SymbolTable["A"] = "a";
@@ -174,7 +192,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba45_TestRecursiveDescent() {
+		public void Prueba45_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A!=B");
 			exp.SymbolTable["A"] = "a";
@@ -183,7 +202,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba46_TestRecursiveDescent() {
+		public void Prueba46_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(A<B)");
 			exp.SymbolTable["A"] = "a";
@@ -192,7 +212,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba47_TestRecursiveDescent() {
+		public void Prueba47_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("not (A<B)");
 			exp.SymbolTable["A"] = "a";
@@ -201,7 +222,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba48_TestRecursiveDescent() {
+		public void Prueba48_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("not (A!=B)");
 			exp.SymbolTable["A"] = "a";
@@ -210,7 +232,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba112_TestRecursiveDescent() {
+		public void Prueba112_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A and not B");
 			exp.SymbolTable["A"] = "a";
@@ -223,7 +246,8 @@ namespace Tests {
 		#region expresiones logicas numeros
 
 		[Test]
-		public void Prueba50_TestRecursiveDescent() {
+		public void Prueba50_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A>B");
 			exp.SymbolTable["A"] = 2.0;
@@ -232,7 +256,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba51_TestRecursiveDescent() {
+		public void Prueba51_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A==B");
 			exp.SymbolTable["A"] = 2.0;
@@ -241,7 +266,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba52_TestRecursiveDescent() {
+		public void Prueba52_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A<B");
 			exp.SymbolTable["A"] = 2.0;
@@ -250,7 +276,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba53_TestRecursiveDescent() {
+		public void Prueba53_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A>=B");
 			exp.SymbolTable["A"] = 2.0;
@@ -259,7 +286,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba55_TestRecursiveDescent() {
+		public void Prueba55_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A!=B");
 			exp.SymbolTable["A"] = 2.0;
@@ -268,7 +296,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba56_TestRecursiveDescent() {
+		public void Prueba56_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(A<B)");
 			exp.SymbolTable["A"] = 2.0;
@@ -277,7 +306,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba57_TestRecursiveDescent() {
+		public void Prueba57_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("not (A<B)");
 			exp.SymbolTable["A"] = 2.0;
@@ -286,7 +316,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba58_TestRecursiveDescent() {
+		public void Prueba58_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("not A");
 			exp.SymbolTable["A"] = 2.0;
@@ -294,7 +325,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba60_TestRecursiveDescent() {
+		public void Prueba60_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(A > B) and (A > B)");
 			exp.SymbolTable["A"] = 2.0;
@@ -303,7 +335,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba61_TestRecursiveDescent() {
+		public void Prueba61_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(A > B) and (A < B)");
 			exp.SymbolTable["A"] = 2.0;
@@ -312,7 +345,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba62_TestRecursiveDescent() {
+		public void Prueba62_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(A < B) or (A < B)");
 			exp.SymbolTable["A"] = 2.0;
@@ -321,7 +355,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba63_TestRecursiveDescent() {
+		public void Prueba63_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(A < B) or (A > B)");
 			exp.SymbolTable["A"] = 2.0;
@@ -330,7 +365,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba64_TestRecursiveDescent() {
+		public void Prueba64_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("not ((A < B) or (A < B))");
 			exp.SymbolTable["A"] = 2.0;
@@ -339,7 +375,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba65_TestRecursiveDescent() {
+		public void Prueba65_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(not 0) * 2");
 			Assert.AreEqual(2.0, exp.Compute());
@@ -350,42 +387,48 @@ namespace Tests {
 		#region if expression
 
 		[Test]
-		public void Prueba70_TestRecursiveDescent() {
+		public void Prueba70_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("3 if 1 else 4");
 			Assert.AreEqual(3.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba71_TestRecursiveDescent() {
+		public void Prueba71_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("3 if 0 else 4");
 			Assert.AreEqual(4.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba72_TestRecursiveDescent() {
+		public void Prueba72_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("3 if not 0 else 4");
 			Assert.AreEqual(3.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba73_TestRecursiveDescent() {
+		public void Prueba73_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("3 if \"A\" == \"A\" else 4");
 			Assert.AreEqual(3.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba74_TestRecursiveDescent() {
+		public void Prueba74_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("3 if \"A\" != \"A\" else 4");
 			Assert.AreEqual(4.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba75_TestRecursiveDescent() {
+		public void Prueba75_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("\"fail\" if (A != \"A\") else \"ok\"");
 			exp.SymbolTable["A"] = "A";
@@ -395,7 +438,8 @@ namespace Tests {
 		// tests para short-circuit.
 		// el 1º es para asegurarnos que salta una excepcion.
 		[Test, ExpectedException(typeof(System.NullReferenceException))]
-		public void Prueba130_TestRecursiveDescent() {
+		public void Prueba130_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("x.X.A == 3");
 			var x = new Aux();
@@ -405,7 +449,8 @@ namespace Tests {
 
 		// si hay short-circuit en AND no deberia haber excepcion.
 		[Test]
-		public void Prueba131_TestRecursiveDescent() {
+		public void Prueba131_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("0 and x.X.A == 3");
 			var x = new Aux();
 			exp.SymbolTable["x"] = x;
@@ -414,7 +459,8 @@ namespace Tests {
 
 		// si hay short-circuit en OR no deberia haber excepcion.
 		[Test]
-		public void Prueba132_TestRecursiveDescent() {
+		public void Prueba132_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("1 or x.X.A == 3");
 			var x = new Aux();
 			exp.SymbolTable["x"] = x;
@@ -423,7 +469,8 @@ namespace Tests {
 
 		// si hay short-circuit en IFF-TRUE no deberia haber excepcion.
 		[Test]
-		public void Prueba133_TestRecursiveDescent() {
+		public void Prueba133_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("5 if 1 else x.X.A");
 			var x = new Aux();
 			exp.SymbolTable["x"] = x;
@@ -432,7 +479,8 @@ namespace Tests {
 
 		// si hay short-circuit en IFF-FALSE no deberia haber excepcion.
 		[Test]
-		public void Prueba134_TestRecursiveDescent() {
+		public void Prueba134_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("x.X.A if 0 else 5");
 			var x = new Aux();
 			exp.SymbolTable["x"] = x;
@@ -440,49 +488,57 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba140_TestRecursiveDescent() {
+		public void Prueba140_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("1 and \"x\" and 3");
 			Assert.AreEqual(3.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba141_TestRecursiveDescent() {
+		public void Prueba141_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("0 or \"\" or 3");
 			Assert.AreEqual(3.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba142_TestRecursiveDescent() {
+		public void Prueba142_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("3 and 0");
 			Assert.AreEqual(0.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba143_TestRecursiveDescent() {
+		public void Prueba143_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("3 and not 0");
 			Assert.AreEqual(1.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba144_TestRecursiveDescent() {
+		public void Prueba144_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("0 or not 3");
 			Assert.AreEqual(0.0, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba150_TestRecursiveDescent() {
+		public void Prueba150_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("\"y\" and 3 and \"x\"");
 			Assert.AreEqual("x", exp.Run());
 		}
 
 		[Test]
-		public void Prueba151_TestRecursiveDescent() {
+		public void Prueba151_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("0 or \"\" or \"x\"");
 			Assert.AreEqual("x", exp.Run());
 		}
 
 		[Test]
-		public void Prueba160_TestRecursiveDescent() {
+		public void Prueba160_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("not ( X and Y )");
 
 			exp.SymbolTable["X"] = 2;
@@ -499,7 +555,8 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Prueba161_TestRecursiveDescent() {
+		public void Prueba161_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("not X or not Y");
 
 			exp.SymbolTable["X"] = 2;
@@ -517,7 +574,8 @@ namespace Tests {
 
 		// de Expression.doc
 		[Test]
-		public void Prueba170_TestRecursiveDescent() {
+		public void Prueba170_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("1 if this.S else 1/this.S");
 
 			var aux = new Aux();
@@ -528,7 +586,8 @@ namespace Tests {
 
 		// de Expression.doc
 		[Test]
-		public void Prueba171_TestRecursiveDescent() {
+		public void Prueba171_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang("this.A and (10 / this.A) > 0");
 
 			var aux = new Aux();
@@ -545,14 +604,16 @@ namespace Tests {
 		#region expresiones varias
 
 		[Test]
-		public void Prueba80_TestRecursiveDescent() {
+		public void Prueba80_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("1 + 2 if 3 > 4 else 5 - 6");
 			Assert.AreEqual(-1, exp.Compute());
 		}
 
 		[Test]
-		public void Prueba81_TestRecursiveDescent() {
+		public void Prueba81_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("A + B if C > D else E - F");
 			exp.SymbolTable["A"] = 1.0;
@@ -569,35 +630,40 @@ namespace Tests {
 		#region lambda: expressions
 
 		[Test]
-		public void Test_lambda_10() {
+		public void Test_lambda_10()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("3; 2");
 			Assert.AreEqual(2.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_11() {
+		public void Test_lambda_11()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("3; 2; 5");
 			Assert.AreEqual(5.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_12() {
+		public void Test_lambda_12()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("a = 3");
 			Assert.AreEqual(3.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_13() {
+		public void Test_lambda_13()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("a = 3; 5; a");
 			Assert.AreEqual(3.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_01() {
+		public void Test_lambda_01()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(lambda: 2+3)()");
 			Console.WriteLine();
@@ -607,49 +673,56 @@ namespace Tests {
 		}
 
 		[Test]
-		public void Test_lambda_02() {
+		public void Test_lambda_02()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("v=3; (lambda: 2+v)()");
 			Assert.AreEqual(5.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_03() {
+		public void Test_lambda_03()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(f = lambda: 2+3); 9");
 			Assert.AreEqual(9.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_04() {
+		public void Test_lambda_04()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(f = lambda: 2+3); f()");
 			Assert.AreEqual(5.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_05() {
+		public void Test_lambda_05()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("(f = lambda: 2+v); (v = 3); f()");
 			Assert.AreEqual(5.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_06() {
+		public void Test_lambda_06()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("f = lambda: 2+v; v = 3; f()");
 			Assert.AreEqual(5.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_07() {
+		public void Test_lambda_07()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("f = lambda: (y=4; y+v); v = 3; f()");
 			Assert.AreEqual(7.0, exp.Compute());
 		}
 
 		[Test]
-		public void Test_lambda_08() {
+		public void Test_lambda_08()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 f = lambda: (
@@ -664,7 +737,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_21() {
+		public void Test_lambda_21()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 u = 3;
@@ -676,7 +750,8 @@ v
 		}
 
 		[Test]
-		public void Test_lambda_22() {
+		public void Test_lambda_22()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 u = 3;
@@ -688,7 +763,8 @@ v
 		}
 
 		[Test]
-		public void Test_lambda_23() {
+		public void Test_lambda_23()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 u = 3;
@@ -700,7 +776,8 @@ v
 		}
 
 		[Test]
-		public void Test_lambda_24() {
+		public void Test_lambda_24()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 f = lambda: (
@@ -715,7 +792,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_30() {
+		public void Test_lambda_30()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 f = lambda: (
@@ -729,7 +807,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_31() {
+		public void Test_lambda_31()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 v = 3;
@@ -741,7 +820,8 @@ v
 		}
 
 		[Test]
-		public void Test_lambda_32() {
+		public void Test_lambda_32()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 f = lambda: (
@@ -756,7 +836,8 @@ v
 		}
 
 		[Test]
-		public void Test_lambda_33() {
+		public void Test_lambda_33()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 f = lambda: (
@@ -771,7 +852,8 @@ v
 		}
 
 		[Test]
-		public void Test_lambda_34() {
+		public void Test_lambda_34()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 f = lambda: (
@@ -786,7 +868,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_36() {
+		public void Test_lambda_36()
+		{
 			var exp = new LambdaLang();
 			var prog = "f = lambda a: (43+1); f()";
 			exp.Compile(prog);
@@ -795,7 +878,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_37() {
+		public void Test_lambda_37()
+		{
 			var exp = new LambdaLang();
 			var prog = "f = lambda a,b: (44); f()";
 			exp.Compile(prog);
@@ -803,7 +887,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_38() {
+		public void Test_lambda_38()
+		{
 			var exp = new LambdaLang();
 			var prog = "f = lambda (a): (44); f()";
 			exp.Compile(prog);
@@ -811,7 +896,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_39() {
+		public void Test_lambda_39()
+		{
 			var exp = new LambdaLang();
 			var prog = "f = lambda (a,b): (44); f()";
 			exp.Compile(prog);
@@ -819,7 +905,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_40() {
+		public void Test_lambda_40()
+		{
 			var exp = new LambdaLang();
 			var prog = "f = lambda (a,b,c): (44); f(4,5,6)";
 			exp.Compile(prog);
@@ -827,7 +914,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_41() {
+		public void Test_lambda_41()
+		{
 			var exp = new LambdaLang();
 			var prog = "f = lambda (a,b,c): (a+b+c); f(4,5,6)";
 			exp.Compile(prog);
@@ -835,7 +923,8 @@ f()
 		}
 
 		[Test]
-		public void Test_lambda_factorial_of_v() {
+		public void Test_lambda_factorial_of_v()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 factorial_of_v = lambda: ( (
@@ -851,7 +940,8 @@ factorial_of_v()
 		}
 
 		[Test]
-		public void Test_lambda_factorial() {
+		public void Test_lambda_factorial()
+		{
 			var exp = new LambdaLang();
 			var prog = "f = lambda (v): ( (v*f(v-1)) if v > 1 else 1 ); f(4)";
 			exp.Compile(prog);
@@ -859,7 +949,8 @@ factorial_of_v()
 		}
 
 		[Test]
-		public void Test_lambda_factorial_2() {
+		public void Test_lambda_factorial_2()
+		{
 			var exp = new LambdaLang();
 			var prog = "f = lambda v: (v*f(v-1)) if v > 1 else 1; f(4)";
 			exp.Compile(prog);
@@ -872,7 +963,8 @@ factorial_of_v()
 		#region recursion
 
 		[Test]
-		public void Test_lambda_recursion() {
+		public void Test_lambda_recursion()
+		{
 			var prog = @"
 f = lambda x:
     (x*f(x-1)) if x > 1 else 1;
@@ -884,7 +976,8 @@ f(4)
 		}
 
 		[Test]
-		public void Test_lambda_recursion_normal() {
+		public void Test_lambda_recursion_normal()
+		{
 			// sum of N first integers.
 			var prog = @"
 recsum = lambda x:
@@ -899,7 +992,8 @@ recsum(5)
 		}
 
 		[Test]
-		public void Test_lambda_recursion_tail() {
+		public void Test_lambda_recursion_tail()
+		{
 			var prog = @"
 recsum = lambda x, accum:
     accum if x == 0 else recsum(x - 1, accum + x);
@@ -917,7 +1011,8 @@ recsum(5, 0)
 		#region Errors
 
 		[Test, ExpectedException(typeof(StackOverflowException))]
-		public void Test_error_40() {
+		public void Test_error_40()
+		{
 			var exp = new LambdaLang();
 			var prog = @"
 f = lambda: (
@@ -930,9 +1025,10 @@ f()
 		}
 
 		[Test]
-		public void Test_error_41() {
+		public void Test_error_41()
+		{
 			var error = string.Format(
-				"Maximum recursion depth reached nearby line {0} position {1}.", 3, 6);
+				            "Maximum recursion depth reached nearby line {0} position {1}.", 3, 6);
 
 			var exp = new LambdaLang();
 			var prog = @"
@@ -952,9 +1048,10 @@ f()
 		}
 
 		[Test]
-		public void Test_error_42() {
+		public void Test_error_42()
+		{
 			var error = string.Format(
-				"Division by zero error nearby line {0} position {1}.", 4, 2);
+				            "Division by zero error nearby line {0} position {1}.", 4, 2);
 
 			var exp = new LambdaLang();
 			var prog = @"
@@ -968,9 +1065,10 @@ v/u
 		}
 
 		[Test]
-		public void Test_error_43() {
+		public void Test_error_43()
+		{
 			var error = string.Format(
-				"Unexpected symbol. Waits for {0} comes {1} nearby line {2} position {3}.", "els","ident", 4, 8);
+				            "Unexpected symbol. Waits for {0} comes {1} nearby line {2} position {3}.", "els", "ident", 4, 8);
 
 			var exp = new LambdaLang();
 			var prog = @"
@@ -988,9 +1086,10 @@ u = 0;
 		}
 
 		[Test]
-		public void Test_error_44() {
+		public void Test_error_44()
+		{
 			var error = string.Format(
-				"Syntax error nearby line {0} position {1}.", 4, 6);
+				            "Syntax error nearby line {0} position {1}.", 4, 6);
 
 			var exp = new LambdaLang();
 			var prog = @"
@@ -1008,19 +1107,22 @@ v + u;
 		}
 
 		[Test, ExpectedException(typeof(ApplicationException))]
-		public void Test_error_45() {
+		public void Test_error_45()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("3, 2");
 		}
 
 		[Test, ExpectedException(typeof(ApplicationException))]
-		public void Test_error_46() {
+		public void Test_error_46()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("f(3; 2)");
 		}
 
 		[Test, ExpectedException(typeof(ApplicationException))]
-		public void Test_error_47() {
+		public void Test_error_47()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("f(a = 2)");
 		}
@@ -1030,35 +1132,40 @@ v + u;
 		#region cadenas
 
 		[Test]
-		public void Prueba90_TestRecursiveDescent() {
+		public void Prueba90_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("\"Hola\"");
 			Assert.AreEqual("Hola", exp.Run());
 		}
 
 		[Test]
-		public void Prueba91_TestRecursiveDescent() {
+		public void Prueba91_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("\"A\" * 3");
 			Assert.AreEqual("AAA", exp.Run());
 		}
 
 		[Test]
-		public void Prueba92_TestRecursiveDescent() {
+		public void Prueba92_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("\"A\" + \"B\"");
 			Assert.AreEqual("AB", exp.Run());
 		}
 
 		[Test]
-		public void Prueba93_TestRecursiveDescent() {
+		public void Prueba93_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("  \"Hola \\\"Juan\\\"!\"  ");
 			Assert.AreEqual("Hola \"Juan\"!", exp.Run());
 		}
 
 		[Test]
-		public void Prueba94_TestRecursiveDescent() {
+		public void Prueba94_TestRecursiveDescent()
+		{
 			var ocul = System.Threading.Thread.CurrentThread.CurrentCulture;
 			System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("es-ES");
 
@@ -1073,7 +1180,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba95_TestRecursiveDescent() {
+		public void Prueba95_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile(" \"Ahora: {0:dd/M/yyyy}\" % now ");
 			exp.SymbolTable["now"] = new System.DateTime(2010, 3, 31, 14, 55, 58);
@@ -1081,7 +1189,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba96_TestRecursiveDescent() {
+		public void Prueba96_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile(" ( \"Punto = ({0};{{0}})\" % x ) % y");
 			exp.SymbolTable["x"] = 1.0;
@@ -1090,7 +1199,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba97_TestRecursiveDescent() {
+		public void Prueba97_TestRecursiveDescent()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("\"Hola \" + ( \"amigo\" if {x} == 2 else \"enemigo\")");
 			exp.SymbolTable["x"] = 1.0;
@@ -1098,7 +1208,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba100_TestRecursiveDescent() {
+		public void Prueba100_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang();
 			e1.Compile("5 if this.S == this.T else 4");
 			Aux y1 = new Aux();
@@ -1109,7 +1220,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba101_TestRecursiveDescent() {
+		public void Prueba101_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang();
 			e1.Compile("5 if this.S else 4");
 			Aux y1 = new Aux();
@@ -1119,7 +1231,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba102_TestRecursiveDescent() {
+		public void Prueba102_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang();
 			e1.Compile("5 if this.S else 4");
 			Aux y1 = new Aux();
@@ -1129,7 +1242,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba103_TestRecursiveDescent() {
+		public void Prueba103_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang();
 			e1.Compile("5 if not this.S else 4");
 			Aux y1 = new Aux();
@@ -1139,7 +1253,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba104_TestRecursiveDescent() {
+		public void Prueba104_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang();
 			e1.Compile("5 if this.S and this.S == \"X\" else 4");
 			Aux y1 = new Aux();
@@ -1149,7 +1264,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba105_TestRecursiveDescent() {
+		public void Prueba105_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang();
 			e1.Compile("5 if this.S and this.S != \"\" else 4");
 			Aux y1 = new Aux();
@@ -1163,7 +1279,8 @@ v + u;
 		#region objetos
 
 		[Test]
-		public void Prueba180_TestRecursiveDescent() {
+		public void Prueba180_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang();
 			e1.Compile("this.A1.A * this.A2.B");
 			var a1 = new Aux();
@@ -1177,7 +1294,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba181_TestRecursiveDescent() {
+		public void Prueba181_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang();
 			e1.Compile("X.X.S", true);
 
@@ -1190,7 +1308,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba182_TestRecursiveDescent() {
+		public void Prueba182_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang();
 			e1.Compile("this.X.X.S");
 			var a1 = new Aux();
@@ -1202,7 +1321,8 @@ v + u;
 		}
 
 		[Test]
-		public void Prueba183_TestRecursiveDescent() {
+		public void Prueba183_TestRecursiveDescent()
+		{
 			var e1 = new LambdaLang("a1.X.X.S");
 			var a1 = new Aux();
 			a1.X = new Aux();
@@ -1217,7 +1337,8 @@ v + u;
 		#region Lists & builtins
 
 		[Test]
-		public void Test_list_10() {
+		public void Test_list_10()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("l = [1,2,3]");
 			Console.WriteLine(exp.prettyAST());
@@ -1228,7 +1349,8 @@ v + u;
 		}
 
 		[Test]
-		public void Test_list_11() {
+		public void Test_list_11()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("([1,2,3] + 4 ) == [1,2,3,4]");
 			var res = exp.Compute();
@@ -1237,7 +1359,8 @@ v + u;
 
 
 		[Test]
-		public void Test_builtins_10() {
+		public void Test_builtins_10()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("print(4,5,6)");
 			var s = exp.Run() as string;
@@ -1245,7 +1368,8 @@ v + u;
 		}
 
 		[Test]
-		public void Test_builtins_11() {
+		public void Test_builtins_11()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("first( [3,4,5] )");
 			var s = exp.Compute();
@@ -1253,7 +1377,8 @@ v + u;
 		}
 
 		[Test]
-		public void Test_builtins_12() {
+		public void Test_builtins_12()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("first( rest( rest( [3,4,5] )))");
 			var s = exp.Compute();
@@ -1261,7 +1386,8 @@ v + u;
 		}
 
 		[Test]
-		public void Test_builtins_13() {
+		public void Test_builtins_13()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("__add1__(4)");
 			var s = exp.Compute();
@@ -1269,7 +1395,8 @@ v + u;
 		}
 
 		[Test]
-		public void Test_builtins_14() {
+		public void Test_builtins_14()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("l1 = map(__add1__, [3,4,5]); l2=[4,5,6]; l1==l2");
 			var s = exp.Compute();
@@ -1277,7 +1404,8 @@ v + u;
 		}
 
 		[Test]
-		public void Test_builtins_15() {
+		public void Test_builtins_15()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("add=lambda (a,b): a+b; map(add,[3,4,5],[2,3,4]) == [5,7,9]");
 			var s = exp.Compute();
@@ -1285,7 +1413,8 @@ v + u;
 		}
 
 		[Test]
-		public void Test_builtins_16() {
+		public void Test_builtins_16()
+		{
 			var exp = new LambdaLang();
 			exp.Compile("map(\"-\",[3,4,5],[2,3,4]) == [1,1,1]");
 			var s = exp.Compute();
@@ -1300,7 +1429,8 @@ v + u;
 		/// Prueba Serializacion
 		/// </summary>
 		[Test]
-		public void Prueba98_Serializacion() {
+		public void Prueba98_Serializacion()
+		{
 			byte[] buffer;
 
 			var e1 = new LambdaLang();
@@ -1344,7 +1474,8 @@ v + u;
 		/// </summary>
 		[Test,
 			ExpectedException(typeof(SerializationException))]
-		public void Prueba99_SerializacionError() {
+		public void Prueba99_SerializacionError()
+		{
 			byte[] buffer;
 
 			var e1 = new LambdaLang();
@@ -1371,7 +1502,8 @@ v + u;
 
 		#region clases auxiliares
 
-		class Aux {
+		class Aux
+		{
 			public double A = 0.0;
 			public double B = 0.0;
 			public string S = "";
