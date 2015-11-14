@@ -17,9 +17,6 @@ namespace LL
 	/// <summary>
 	/// Permite evaluar expresiones.
 	/// </summary>
-	/// <remarks>
-	/// <include file='Expression.doc' path='ExpressionSintax' />
-	/// </remarks>
 	[Serializable]
 	public class LambdaLang
 	{
@@ -29,11 +26,9 @@ namespace LL
 
 		private static string REGEX_VARS = @"[\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}_][\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}_\p{Nd}\.]*";
 		private static string REGEX_NUMS = @"[\p{Nd}][\.\p{Nd}]*";
-		private static string REGEX_OPER = @"[\*\+-/]";
 
 		private static Regex reVars = new Regex(REGEX_VARS);
 		private static Regex reNums = new Regex(REGEX_NUMS);
-		private static Regex reOper = new Regex(REGEX_OPER);
 
 		private int labelNumber = 1;
 		private string labelFmt = "LBL_{0:D4}";
@@ -373,8 +368,7 @@ namespace LL
 
 					case TokenType.iff:
                         // codificado como and/or. arreglo stack.
-						object ores = pila.Pop();
-						object cond = pila.Pop();
+						object ores = pila.Pop(); pila.Pop();
 						pila.Push(ores);
 						break;
 
@@ -1052,7 +1046,6 @@ namespace LL
         Nodo expresion_cond() {
             Nodo whentrue = expresion_andor();
             if (currenttoken.TokenType == TokenType.iff) {
-                Terminal op = currenttoken;
                 nexttoken();
                 Nodo condition = expresion_andor();
                 expect(TokenType.els);
