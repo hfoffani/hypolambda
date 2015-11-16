@@ -12,12 +12,12 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Tests")]
 #endif
 
-namespace LL
+namespace HL
 {
 	/// <summary>
 	/// Permite evaluar expresiones.
 	/// </summary>
-	public class LambdaLang
+	public class HypoLambda
 	{
 		#region Fields
 
@@ -40,7 +40,7 @@ namespace LL
 		/// Constructor generico para usar el parser recursivo descendente.
 		/// </summary>
 		/// <param name="expStr">Expresion a compilar.</param>
-		public LambdaLang(string expStr)
+		public HypoLambda(string expStr)
 			: this()
 		{
 			this.Compile(expStr, false);
@@ -49,7 +49,7 @@ namespace LL
 		/// <summary>
 		/// Constructor generico para usar el parser recursivo descendente.
 		/// </summary>
-		public LambdaLang()
+		public HypoLambda()
 		{
 			this.symbolTable = new Dictionary<string, object>();
 
@@ -526,8 +526,8 @@ namespace LL
 			}
 		}
 
-		Dictionary<string, Func<IList<object>, LambdaLang, List<Dictionary<string, object>>, int, object>>
-			_bultins = new Dictionary<string, Func<IList<object>, LambdaLang, List<Dictionary<string, object>>, int, object>>() { { "print", (binds, exp, _, __) => {
+		Dictionary<string, Func<IList<object>, HypoLambda, List<Dictionary<string, object>>, int, object>>
+			_bultins = new Dictionary<string, Func<IList<object>, HypoLambda, List<Dictionary<string, object>>, int, object>>() { { "print", (binds, exp, _, __) => {
 					var s = String.Join(" ", binds.Select(x => x.ToString()));
 					Console.WriteLine(s);
 					return s;
@@ -613,14 +613,14 @@ namespace LL
             if (trail == string.Empty)
                 return (o);
             // return Expression.getValueFromField(o, trail);
-            return LambdaLang.travel(o, trail.Split(new char[] { '.' }));
+            return HypoLambda.travel(o, trail.Split(new char[] { '.' }));
         }
 
         private static object travel(object obj, string[] namelist) {
             if (namelist.Length == 0)
                 return obj;
             var name = namelist[0];
-            var val = LambdaLang.getValueFromField(obj, name);
+            var val = HypoLambda.getValueFromField(obj, name);
             var namelistcdr = namelist.Skip(1).ToArray();
             return travel(val, namelistcdr);
         }

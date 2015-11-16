@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using LL;
+using HL;
 
-namespace LLconsole
+namespace HL
 {
 	/// <summary>
 	/// Evaluates LambdaLang program.
@@ -15,7 +15,7 @@ namespace LLconsole
 		static void run(string program)
 		{
 			try {
-				var exp = new LambdaLang();
+				var exp = new HypoLambda();
 				exp.Compile(program);
 				var res = exp.Run();
 				Console.WriteLine(">>> " + val2string(res));
