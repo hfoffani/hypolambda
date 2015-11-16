@@ -93,18 +93,6 @@ namespace HL
 		}
 
 		/// <summary>
-		/// Calcula el resultado de la expresión numérica.
-		/// </summary>
-		/// <returns>El resultado (<see cref="System.Double"/>).</returns>
-		public double Compute()
-		{
-			var res = this.Run();
-			// antes habia un cast pero en determinados casos
-			// es necesario una conversion explicita.
-			return Convert.ToDouble(res);
-		}
-
-		/// <summary>
 		/// Resuelve la expresión.
 		/// </summary>
 		/// <returns>El resultado, que puede ser un <see cref="System.Double"/> o
