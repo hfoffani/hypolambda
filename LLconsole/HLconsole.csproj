@@ -46,12 +46,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LambdaLang\HypoLambda.csproj">
-      <Project>{F6CE6635-F872-4DF6-AA1A-C25E7DB4FE71}</Project>
-      <Name>HypoLambda</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -60,4 +54,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\HypoLambda\HypoLambda.csproj">
+      <Project>{F6CE6635-F872-4DF6-AA1A-C25E7DB4FE71}</Project>
+      <Name>HypoLambda</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
