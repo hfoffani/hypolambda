@@ -46,6 +46,8 @@
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="HypoLambda.cs" />
+    <Compile Include="HypoLambdaLexer.cs" />
+    <Compile Include="HypoLambdaParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Strings.resx">
