@@ -1450,6 +1450,27 @@ v + u;
 
         #endregion
 
+        #region Examples
+
+        [Test]
+        public void Test_example_encapsulation()
+        {
+            var prog = @"
+class = lambda number: (
+    n = number;
+    lambda: (n = n + 1)
+);
+obj = class(10);
+obj();
+obj()
+";
+            var ll = new HypoLambda();
+            ll.Compile(prog);
+            var res = ll.Run();
+            Assert.AreEqual(12.0, res);
+        }
+        #endregion
+
         #region clases auxiliares
 
         class Aux
