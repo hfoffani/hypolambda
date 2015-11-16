@@ -4,6 +4,18 @@ A small functional programming language for .NET.
 
 The language runtime is embeddable, its AST is accesible and it compiles to portable pcode.
 
+
+### Example ###
+
+Calculate a factorial
+
+    f = lambda x:
+        (x*f(x-1)) if x > 1 else 1;
+    f(4)
+
+returns 24.0
+
+
 ### How do I get set up? ###
 
 * Check out the repository.
