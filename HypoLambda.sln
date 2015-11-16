@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LambdaLang", "LambdaLang\LambdaLang.csproj", "{F6CE6635-F872-4DF6-AA1A-C25E7DB4FE71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HypoLambda", "LambdaLang\HypoLambda.csproj", "{F6CE6635-F872-4DF6-AA1A-C25E7DB4FE71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LLconsole", "LLconsole\LLconsole.csproj", "{CE4E0281-121D-4A14-8C2F-5387E59E0C35}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HLconsole", "LLconsole\HLconsole.csproj", "{CE4E0281-121D-4A14-8C2F-5387E59E0C35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{63F00980-ACE3-4EFA-9FC6-C0A264CD6014}"
 EndProject

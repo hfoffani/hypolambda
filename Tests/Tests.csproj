@@ -38,9 +38,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\LambdaLang\LambdaLang.csproj">
+    <ProjectReference Include="..\LambdaLang\HypoLambda.csproj">
       <Project>{F6CE6635-F872-4DF6-AA1A-C25E7DB4FE71}</Project>
-      <Name>LambdaLang</Name>
+      <Name>HypoLambda</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
