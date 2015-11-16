@@ -65,11 +65,11 @@ namespace Tests
             Assert.AreEqual(25.0, Convert.ToDouble(exp.Run()));
         }
 
-        [Test, ExpectedException(typeof(System.ApplicationException))]
+        [Test]
         public void Prueba24_TestRecursiveDescent()
         {
             var exp = new HypoLambda();
-            exp.Compile("(2+*5.0");
+            Assert.Throws<ApplicationException>(()=> exp.Compile("(2+*5.0"));
         }
 
         [Test]
@@ -437,14 +437,14 @@ namespace Tests
 
         // tests para short-circuit.
         // el 1º es para asegurarnos que salta una excepcion.
-        [Test, ExpectedException(typeof(System.NullReferenceException))]
+        [Test]
         public void Prueba130_TestRecursiveDescent()
         {
             var exp = new HypoLambda();
             exp.Compile("x.X.A == 3");
             var x = new Aux();
             exp.SymbolTable["x"] = x;
-            Convert.ToDouble(exp.Run());
+            Assert.Throws<NullReferenceException>(() => Convert.ToDouble(exp.Run()));
         }
 
         // si hay short-circuit en AND no deberia haber excepcion.
@@ -1010,7 +1010,7 @@ recsum(5, 0)
 
         #region Errors
 
-        [Test, ExpectedException(typeof(StackOverflowException))]
+        [Test]
         public void Test_error_40()
         {
             var exp = new HypoLambda();
@@ -1021,7 +1021,7 @@ f = lambda: (
 f()
 ";
             exp.Compile(prog);
-            Convert.ToDouble(exp.Run());
+            Assert.Throws<StackOverflowException>(() => Convert.ToDouble(exp.Run()));
         }
 
         [Test]
@@ -1106,25 +1106,25 @@ v + u;
             Assert.Fail();
         }
 
-        [Test, ExpectedException(typeof(ApplicationException))]
+        [Test]
         public void Test_error_45()
         {
             var exp = new HypoLambda();
-            exp.Compile("3, 2");
+            Assert.Throws<ApplicationException>(() => exp.Compile("3, 2"));
         }
 
-        [Test, ExpectedException(typeof(ApplicationException))]
+        [Test]
         public void Test_error_46()
         {
             var exp = new HypoLambda();
-            exp.Compile("f(3; 2)");
+            Assert.Throws<ApplicationException>(() => exp.Compile("f(3; 2)"));
         }
 
-        [Test, ExpectedException(typeof(ApplicationException))]
+        [Test]
         public void Test_error_47()
         {
             var exp = new HypoLambda();
-            exp.Compile("f(a = 2)");
+            Assert.Throws<ApplicationException>(() => exp.Compile("f(a = 2)"));
         }
 
         #endregion
@@ -1446,79 +1446,6 @@ v + u;
             y2.B = 1;
             e2.SymbolTable["this"] = y2;
             Assert.AreEqual(15.0, Convert.ToDouble(e2.Run()));
-        }
-
-        /// <summary>
-        /// Prueba Serializacion
-        /// </summary>
-        [Test, Ignore]
-        public void Prueba98_Serializacion()
-        {
-            byte[] buffer;
-
-            var e1 = new HypoLambda();
-            e1.Compile("(this.A + this.B) * 5");
-            Aux y1 = new Aux();
-            y1.A = 2;
-            y1.B = 1;
-            e1.SymbolTable["this"] = y1;
-            Assert.AreEqual(15.0, Convert.ToDouble(e1.Run()));
-
-            // antes de serializar hay que desligar los objetos de la tabla
-            // de simbolos para que no los serialice.
-            List<string> keys = new List<string>(e1.SymbolTable.Keys);
-            foreach (string k in keys)
-                e1.SymbolTable[k] = null;
-
-            // serializacion
-            using (System.IO.MemoryStream ms = new System.IO.MemoryStream()) {
-                BinaryFormatter f = new BinaryFormatter();
-                f.Serialize(ms, e1);
-                buffer = ms.ToArray();
-            }
-            Assert.IsTrue(0 < buffer.Length, "no hay nada en el buffer.");
-
-            HypoLambda e2;
-            using (System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer)) {
-                BinaryFormatter f = new BinaryFormatter();
-                e2 = (HypoLambda)f.Deserialize(ms);
-            }
-
-            //Compruebo la deserealizacion.
-            Aux y2 = new Aux();
-            y2.A = 2;
-            y2.B = 1;
-            e2.SymbolTable["this"] = y2;
-            Assert.AreEqual(15.0, Convert.ToDouble(e2.Run()));
-        }
-
-        /// <summary>
-        /// Prueba Serializacion con error.
-        /// </summary>
-        [Test,
-            ExpectedException(typeof(SerializationException))]
-        public void Prueba99_SerializacionError()
-        {
-            byte[] buffer;
-
-            var e1 = new HypoLambda();
-
-            using (System.IO.MemoryStream ms = new System.IO.MemoryStream()) {
-                BinaryFormatter f = new BinaryFormatter();
-                f.Serialize(ms, e1);
-                buffer = ms.ToArray();
-            }
-            Assert.IsTrue(0 < buffer.Length, "no hay nada en el buffer.");
-
-            // meto un error en el objeto buffer.
-            buffer[200] = (byte)'X';
-
-            // leo.
-            using (System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer)) {
-                BinaryFormatter f = new BinaryFormatter();
-                f.Deserialize(ms);
-            }
-            Assert.Fail("Debio saltar error de serialización");
         }
 
         #endregion
