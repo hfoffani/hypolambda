@@ -1,21 +1,41 @@
+#Autosave files
+*~
 
-# /
-/LambdaLang.v12.suo
-/TestResults
+#build
+[Oo]bj/
+[Bb]in/
+packages/
+TestResults/
 
-# /LLconsole/
-/LLconsole/bin
-/LLconsole/obj
+# globs
+Makefile.in
+*.DS_Store
+*.sln.cache
+*.suo
+*.cache
+*.pidb
+*.userprefs
+*.usertasks
+config.log
+config.make
+config.status
+aclocal.m4
+install-sh
+autom4te.cache/
+*.user
+*.tar.gz
+tarballs/
+test-results/
+Thumbs.db
 
-# /LambdaLang/
-/LambdaLang/bin
-/LambdaLang/obj
+#Mac bundle stuff
+*.dmg
+*.app
 
-# /TestProject/
-/TestProject/bin
-/TestProject/obj
+#resharper
+*_Resharper.*
+*.Resharper
 
-/Tests/bin
-/Tests/obj
-/*.userprefs
-/packages
+#dotCover
+*.dotCover
+
