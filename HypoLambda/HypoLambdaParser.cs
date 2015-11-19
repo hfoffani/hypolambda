@@ -99,8 +99,7 @@ namespace HL
             }
         }
 
-        Nodo expresion_evaluada() {
-            Nodo nizq = factor();
+        Nodo call(Nodo nizq) {
             if (currenttoken.TokenType == TokenType.lparen) {
                 var tl = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
                 var bindings = new Nodo(tl);
@@ -111,10 +110,15 @@ namespace HL
                 expect(TokenType.rparen);
                 nexttoken();
                 var op = new Terminal(TokenType.eval, currenttoken.LN, currenttoken.CP);
-                Nodo n = new Nodo(op, bindings, nizq);
-                return n;
+                var deep = new Nodo(op, bindings, nizq);
+                return call(deep);
             } else
                 return nizq;
+        }
+
+        Nodo expresion_evaluada() {
+            Nodo nizq = factor();
+            return call(nizq);
         }
 
         Nodo factor_negado() {
