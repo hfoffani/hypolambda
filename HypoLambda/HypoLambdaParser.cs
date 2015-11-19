@@ -111,6 +111,7 @@ namespace HL
                 nexttoken();
                 var op = new Terminal(TokenType.eval, currenttoken.LN, currenttoken.CP);
                 var deep = new Nodo(op, bindings, nizq);
+                // keep consuming evaluations.
                 return call(deep);
             } else
                 return nizq;

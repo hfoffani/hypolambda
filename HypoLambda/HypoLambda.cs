@@ -120,7 +120,7 @@ namespace HL
 		public void FromPCODE(string pcode)
 		{
 			this.pcode = new List<Terminal>();
-			var ts = pcode.Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
+			var ts = pcode.Split(new char[] {'\r','\n'}, StringSplitOptions.RemoveEmptyEntries);
 			foreach (var t in ts) {
 				var parts = t.Split('|');
 				var ttype = (TokenType) Enum.Parse(typeof(TokenType), parts[0]);
