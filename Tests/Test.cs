@@ -1488,6 +1488,23 @@ obj()
             Assert.AreEqual(5.0, res);
         }
 
+        [Test]
+        public void Test_example_encapsulation_2()
+        {
+            var prog = @"
+cls = lambda: (
+    f = lambda: (3)
+);
+obj = cls();
+obj.f()
+            ";
+            var ll = new HypoLambda();
+            ll.Compile(prog);
+            Console.WriteLine(ll.prettyAST());
+            var res = ll.Run();
+            Assert.AreEqual(3.0, res);
+        }
+
         #endregion
 
         #region clases auxiliares
