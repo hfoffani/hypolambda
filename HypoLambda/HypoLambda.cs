@@ -413,6 +413,7 @@ namespace HL
                         if (lambda != null) {
                             var reslambda = lambdaeval(lambda, currentscope, binds, stackFrames);
                             pila.Push(reslambda);
+                            // debug_scope("after eval", currentscope);
                         }
                         break;
 
@@ -437,7 +438,7 @@ namespace HL
                         var ls = new lambdatuple();
                         ls.Body = pila.Pop() as IList<Terminal>;
                         ls.Head = pila.Pop() as string[];
-                        ls.Locals = currentscope;
+                        ls.Locals = new Dictionary<string, object>(currentscope);
                         pila.Push(ls);
                         break;
 
@@ -467,10 +468,26 @@ namespace HL
                     #endregion
                 }
             }
+            // debug_scope("before return", currentscope);
             if (pila.Count > 0)
                 return pila.Pop();
             else
                 return 0.0;
+        }
+
+        private void debug_scope(string label, Dictionary<string, object> scope)
+        {
+            Console.WriteLine(label);
+            foreach (var valsss in scope) {
+                Console.WriteLine(valsss.Key + " -> " + valsss.Value.ToString());
+                var lll = valsss.Value as lambdatuple;
+                if (lll != null) {
+                    foreach (var lllvalsss in lll.Locals) {
+                        Console.WriteLine("        " + lllvalsss.Key + " -> " + lllvalsss.Value.ToString());
+                    }
+                }
+            }
+            Console.WriteLine();
         }
 
         private List<Terminal> pcodebody(string label, IList<Terminal> pcode)
@@ -495,10 +512,11 @@ namespace HL
             if (lambda.Builtin != null) {
                 return _bultins[lambda.Builtin](binds, this, lambda.Locals, stackFrames);
             } else {
-                var newscope = new Dictionary<string, object>(lambda.Locals);
-                foreach (var enclosing in enclosingScope) {
-                    newscope[enclosing.Key] = enclosing.Value;
-                }
+                var newscope = lambda.Locals;
+                if (enclosingScope != newscope)
+                    foreach (var enclosing in enclosingScope) {
+                        newscope[enclosing.Key] = enclosing.Value;
+                    }
                 for (int j = 0; j < lambda.Head.Length; j++) {
                     if (j < binds.Count) {
                         var keyhead = lambda.Head[j];

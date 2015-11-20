@@ -1456,16 +1456,17 @@ v + u;
         public void Test_example_encapsulation()
         {
             var prog = @"
-class = lambda number: (
-    n = number;
+cls = lambda num: (
+    n = num;
     lambda: (n = n + 1)
 );
-obj = class(10);
+obj = cls(10);
 obj();
 obj()
 ";
             var ll = new HypoLambda();
             ll.Compile(prog);
+            // Console.WriteLine(ll.prettyAST());
             var res = ll.Run();
             Assert.AreEqual(12.0, res);
         }
