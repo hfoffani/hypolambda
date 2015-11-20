@@ -98,7 +98,7 @@ namespace HL
             if (pcode != null) {
                 var lambda = new lambdatuple();
                 lambda.Body = pcode;
-                return CalculateNPI2(lambda, null, 0);
+                return CalculateNPI2(lambda, 0);
             } else {
                 throw new ApplicationException("Can't execute a non valid program.");
             }
@@ -160,7 +160,7 @@ namespace HL
 
         #region evaluacion.
 
-        private object CalculateNPI2(lambdatuple closure, List<Dictionary<string, object>> locals, int stackFrames)
+        private object CalculateNPI2(lambdatuple closure, int stackFrames)
         {
             // los Convert.ToDouble son necesarios porque es posible que alguna
             // de las propiedades de objetos utilizados devuelvan int long o float.
@@ -168,11 +168,6 @@ namespace HL
 
             var proveedor = closure.Body;
             var pila = new Stack<object>();
-            if (locals == null) {
-                locals = new List<Dictionary<string, object>>();
-                locals.Add(new Dictionary<string, object>());
-            }
-            // var currentscope = locals[locals.Count - 1];
             var currentscope = closure.Locals;
 
             double a, b, res;
@@ -442,6 +437,7 @@ namespace HL
                         var ls = new lambdatuple();
                         ls.Body = pila.Pop() as IList<Terminal>;
                         ls.Head = pila.Pop() as string[];
+                        ls.Locals = currentscope;
                         pila.Push(ls);
                         break;
 
@@ -499,14 +495,17 @@ namespace HL
             if (lambda.Builtin != null) {
                 return _bultins[lambda.Builtin](binds, this, lambda.Locals, stackFrames);
             } else {
-                var newscope = new Dictionary<string, object>(enclosingScope);
+                var newscope = new Dictionary<string, object>(lambda.Locals);
+                foreach (var enclosing in enclosingScope) {
+                    newscope[enclosing.Key] = enclosing.Value;
+                }
                 for (int j = 0; j < lambda.Head.Length; j++) {
                     if (j < binds.Count) {
-                        var k = lambda.Head[j];
-                        if (newscope.ContainsKey(k)) {
-                            newscope[k] = binds[j];
+                        var keyhead = lambda.Head[j];
+                        if (newscope.ContainsKey(keyhead)) {
+                            newscope[keyhead] = binds[j];
                         } else {
-                            newscope.Add(k, binds[j]);
+                            newscope.Add(keyhead, binds[j]);
                         }
                     }
                 }
@@ -515,7 +514,7 @@ namespace HL
                 closure.Body = lambda.Body;
                 closure.Locals = newscope;
 
-                var reslambda = CalculateNPI2(closure, null, stackFrames + 1);
+                var reslambda = CalculateNPI2(closure, stackFrames + 1);
                 return reslambda;
             }
         }

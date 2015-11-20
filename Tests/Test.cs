@@ -1482,7 +1482,7 @@ obj()
             ";
             var ll = new HypoLambda();
             ll.Compile(prog);
-            Console.WriteLine(ll.prettyAST());
+            // Console.WriteLine(ll.prettyAST());
             var res = ll.Run();
             Assert.AreEqual(5.0, res);
         }
