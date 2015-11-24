@@ -200,7 +200,7 @@ namespace HL
             { "<", TokenType.lt },
             { "==",TokenType.eq },
             { "=",TokenType.assig },
-        };        
+        };
     }
 }
 

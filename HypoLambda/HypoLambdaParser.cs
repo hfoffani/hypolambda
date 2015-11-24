@@ -7,7 +7,8 @@ namespace HL
     {
         IEnumerator<Terminal> enu;
 
-        void nexttoken(IEnumerator<Terminal> enumerator) {
+        void nexttoken(IEnumerator<Terminal> enumerator)
+        {
             enu = enumerator;
             if (enu.MoveNext())
                 lookaheadtoken = enu.Current;
@@ -16,7 +17,8 @@ namespace HL
             nexttoken();
         }
 
-        void nexttoken() {
+        void nexttoken()
+        {
             currenttoken = lookaheadtoken;
             if (enu.MoveNext())
                 lookaheadtoken = enu.Current;
@@ -25,17 +27,20 @@ namespace HL
         }
 
         Terminal lookaheadtoken = null;
-        Terminal lookaheadone() {
+        Terminal lookaheadone()
+        {
             return lookaheadtoken;
         }
 
-        void error(string msg) {
+        void error(string msg)
+        {
             throw new ApplicationException(msg);
         }
 
         Terminal currenttoken;
 
-        void expect(TokenType s) {
+        void expect(TokenType s)
+        {
             if (currenttoken.TokenType != s) {
                 string msg = string.Format(
                     Strings.Expression_Unexpected_symbol_Waits_for_comes,
@@ -44,7 +49,8 @@ namespace HL
             }
         }
 
-        Nodo factor() {
+        Nodo factor()
+        {
             Nodo f = null;
             switch (currenttoken.TokenType) {
                 case TokenType.ident:
@@ -87,7 +93,8 @@ namespace HL
             return f;
         }
 
-        Nodo build_list() {
+        Nodo build_list()
+        {
             var f = expresion_lambda();
             if (currenttoken.TokenType == TokenType.comma) {
                 nexttoken();
@@ -99,7 +106,8 @@ namespace HL
             }
         }
 
-        Nodo call(Nodo nizq) {
+        Nodo call(Nodo nizq)
+        {
             if (currenttoken.TokenType == TokenType.lparen) {
                 var tl = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
                 var bindings = new Nodo(tl);
@@ -117,12 +125,14 @@ namespace HL
                 return nizq;
         }
 
-        Nodo expresion_evaluada() {
+        Nodo expresion_evaluada()
+        {
             Nodo nizq = factor();
             return call(nizq);
         }
 
-        Nodo factor_negado() {
+        Nodo factor_negado()
+        {
             Nodo nizq = null;
             if (currenttoken.TokenType == TokenType.not) {
                 Terminal op = currenttoken;
@@ -134,7 +144,8 @@ namespace HL
                 return expresion_evaluada();
         }
 
-        Nodo termino() {
+        Nodo termino()
+        {
             Nodo nizq = factor_negado();
             if (currenttoken.TokenType == TokenType.times || currenttoken.TokenType == TokenType.slash ||
                 currenttoken.TokenType == TokenType.perc) {
@@ -147,7 +158,8 @@ namespace HL
                 return nizq;
         }
 
-        Nodo expresion_suma() {
+        Nodo expresion_suma()
+        {
             Nodo nizq = termino();
             if (currenttoken.TokenType == TokenType.plus || currenttoken.TokenType == TokenType.minus) {
                 Terminal op = currenttoken;
@@ -159,9 +171,10 @@ namespace HL
                 return nizq;
         }
 
-        Nodo expresion_logica() {
+        Nodo expresion_logica()
+        {
             Nodo nizq = expresion_suma();
-            if (currenttoken.TokenType == TokenType.eq   || currenttoken.TokenType == TokenType.gt ||
+            if (currenttoken.TokenType == TokenType.eq || currenttoken.TokenType == TokenType.gt ||
                 currenttoken.TokenType == TokenType.gteq || currenttoken.TokenType == TokenType.lt ||
                 currenttoken.TokenType == TokenType.lteq || currenttoken.TokenType == TokenType.neq) {
                 Terminal op = currenttoken;
@@ -173,7 +186,8 @@ namespace HL
                 return nizq;
         }
 
-        Nodo expresion_andor() {
+        Nodo expresion_andor()
+        {
             Nodo nizq = expresion_logica();
             if (currenttoken.TokenType == TokenType.and || currenttoken.TokenType == TokenType.or) {
                 Terminal op = currenttoken;
@@ -185,7 +199,8 @@ namespace HL
                 return nizq;
         }
 
-        Nodo expresion_cond() {
+        Nodo expresion_cond()
+        {
             Nodo whentrue = expresion_andor();
             if (currenttoken.TokenType == TokenType.iff) {
                 nexttoken();
@@ -206,7 +221,8 @@ namespace HL
                 return whentrue;
         }
 
-        List<string> name_list() {
+        List<string> name_list()
+        {
             var names = new List<string>();
             if (currenttoken.TokenType == TokenType.ident) {
                 names.Add(currenttoken.Value.ToString());
@@ -219,7 +235,8 @@ namespace HL
             return names;
         }
 
-        List<string> name_list_parens() {
+        List<string> name_list_parens()
+        {
             var rparen = false;
             if (currenttoken.TokenType == TokenType.lparen) {
                 rparen = true;
@@ -233,7 +250,8 @@ namespace HL
             return nl;
         }
 
-        Nodo expresion_lambda() {
+        Nodo expresion_lambda()
+        {
             if (currenttoken.TokenType == TokenType.lambda) {
                 var op = currenttoken;
                 nexttoken();
@@ -260,7 +278,8 @@ namespace HL
             }
         }
 
-        Nodo expresion_list() {
+        Nodo expresion_list()
+        {
             var f = expresion_single();
             if (currenttoken.TokenType == TokenType.semicolon) {
                 nexttoken();
@@ -274,7 +293,8 @@ namespace HL
                 return f;
         }
 
-        Nodo asignacion() {
+        Nodo asignacion()
+        {
             var s = currenttoken.Value.ToString();
             nexttoken();
             expect(TokenType.assig);
@@ -285,7 +305,8 @@ namespace HL
             return new Nodo(op, l, r);
         }
 
-        Nodo expresion_single() {
+        Nodo expresion_single()
+        {
             if (currenttoken.TokenType == TokenType.ident && lookaheadone().TokenType == TokenType.assig) {
                 return asignacion();
             } else {
@@ -293,15 +314,18 @@ namespace HL
             }
         }
 
-        Nodo expresion() {
+        Nodo expresion()
+        {
             return expresion_list();
         }
 
-        private Terminal nilterminal() {
+        private Terminal nilterminal()
+        {
             return new Terminal(TokenType.NIL, null, currenttoken.LN, currenttoken.CP);
         }
 
-        private Nodo and_or_ast(Terminal op, Nodo nizq, Nodo nder) {
+        private Nodo and_or_ast(Terminal op, Nodo nizq, Nodo nder)
+        {
             Nodo n = null;
             switch (op.TokenType) {
                 case TokenType.and:
@@ -326,37 +350,42 @@ namespace HL
                     break;
             }
             return n;
-        }        
+        }
     }
 
-    class Nodo {
+    class Nodo
+    {
         private Terminal o;
         private Nodo izq;
         private Nodo der;
 
-        public Nodo(Terminal o) {
+        public Nodo(Terminal o)
+        {
             this.o = o;
         }
 
-        public Nodo(Terminal o, Nodo izq, Nodo der) {
+        public Nodo(Terminal o, Nodo izq, Nodo der)
+        {
             this.o = o;
             this.izq = izq;
             this.der = der;
         }
 
-        public Terminal Tag {
+        public Terminal Tag
+        {
             get { return this.o; }
         }
 
-        public Nodo Left {
+        public Nodo Left
+        {
             get { return this.izq; }
         }
 
-        public Nodo Right {
+        public Nodo Right
+        {
             get { return this.der; }
         }
     }
-
 
 }
 
