@@ -19,7 +19,9 @@ returns 24.0
 ### How do I get set up? ###
 
 * Check out the repository.
-* Open the solution with Xamarin Studio. The IDE should download all the necessary components.
+* Open the solution with Visual Studio. (Xamarin build is broken due to native
+unsupport of NUnit 3.0).
+* The IDE should download all the necessary components.
 * Compile and run the tests.
 * Run the console application.
 
