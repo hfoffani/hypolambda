@@ -7,6 +7,11 @@ namespace HL
     {
         IEnumerator<Terminal> enu;
 
+        private string newLabel()
+        {
+            return string.Format(labelFmt, labelNumber++);
+        }
+
         void nexttoken(IEnumerator<Terminal> enumerator)
         {
             enu = enumerator;
@@ -49,37 +54,37 @@ namespace HL
             }
         }
 
-        Nodo factor()
+        Node factor()
         {
-            Nodo f = null;
+            Node f = null;
             switch (currenttoken.TokenType) {
                 case TokenType.ident:
-                    f = new Nodo(currenttoken);
+                    f = new Node(currenttoken);
                     break;
                 case TokenType.number:
-                    f = new Nodo(currenttoken);
+                    f = new Node(currenttoken);
                     break;
                 case TokenType.str:
-                    f = new Nodo(currenttoken);
+                    f = new Node(currenttoken);
                     break;
                 case TokenType.lbrac:
                     nexttoken();
                     if (currenttoken.TokenType == TokenType.rbrac) {
                         var empty = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
-                        f = new Nodo(empty);
+                        f = new Node(empty);
                     } else
                         f = build_list();
                     expect(TokenType.rbrac);
                     break;
                 case TokenType.lparen:
                     nexttoken();
-                    f = expresion();
+                    f = expression();
                     expect(TokenType.rparen);
                     break;
                 case TokenType.lcurly:
                     nexttoken();
                     expect(TokenType.ident);
-                    f = new Nodo(currenttoken);
+                    f = new Node(currenttoken);
                     nexttoken();
                     expect(TokenType.rcurly);
                     break;
@@ -93,24 +98,24 @@ namespace HL
             return f;
         }
 
-        Nodo build_list()
+        Node build_list()
         {
-            var f = expresion_lambda();
+            var f = expression_lambda();
             if (currenttoken.TokenType == TokenType.comma) {
                 nexttoken();
-                return new Nodo(new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP), f, build_list());
+                return new Node(new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP), f, build_list());
             } else {
                 var empty = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
                 var oplist = new Terminal(TokenType.comma, currenttoken.LN, currenttoken.CP);
-                return new Nodo(oplist, f, new Nodo(empty));
+                return new Node(oplist, f, new Node(empty));
             }
         }
 
-        Nodo call(Nodo nizq)
+        Node call(Node nizq)
         {
             if (currenttoken.TokenType == TokenType.lparen) {
                 var tl = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
-                var bindings = new Nodo(tl);
+                var bindings = new Node(tl);
                 nexttoken();
                 if (currenttoken.TokenType != TokenType.rparen) {
                     bindings = build_list();
@@ -118,98 +123,98 @@ namespace HL
                 expect(TokenType.rparen);
                 nexttoken();
                 var op = new Terminal(TokenType.eval, currenttoken.LN, currenttoken.CP);
-                var deep = new Nodo(op, bindings, nizq);
+                var deep = new Node(op, bindings, nizq);
                 // keep consuming evaluations.
                 return call(deep);
             } else
                 return nizq;
         }
 
-        Nodo expresion_evaluada()
+        Node expression_evaluated()
         {
-            Nodo nizq = factor();
+            Node nizq = factor();
             return call(nizq);
         }
 
-        Nodo factor_negado()
+        Node factor_negated()
         {
-            Nodo nizq = null;
+            Node nizq = null;
             if (currenttoken.TokenType == TokenType.not) {
                 Terminal op = currenttoken;
                 nexttoken();
-                nizq = expresion_evaluada();
-                Nodo n = new Nodo(op, nizq, null);
+                nizq = expression_evaluated();
+                Node n = new Node(op, nizq, null);
                 return n;
             } else
-                return expresion_evaluada();
+                return expression_evaluated();
         }
 
-        Nodo termino()
+        Node term()
         {
-            Nodo nizq = factor_negado();
+            Node nizq = factor_negated();
             if (currenttoken.TokenType == TokenType.times || currenttoken.TokenType == TokenType.slash ||
                 currenttoken.TokenType == TokenType.perc) {
                 Terminal op = currenttoken;
                 nexttoken();
-                Nodo nder = termino();
-                Nodo n = new Nodo(op, nizq, nder);
+                Node nder = term();
+                Node n = new Node(op, nizq, nder);
                 return n;
             } else
                 return nizq;
         }
 
-        Nodo expresion_suma()
+        Node expression_sum()
         {
-            Nodo nizq = termino();
+            Node nizq = term();
             if (currenttoken.TokenType == TokenType.plus || currenttoken.TokenType == TokenType.minus) {
                 Terminal op = currenttoken;
                 nexttoken();
-                Nodo nder = expresion_suma();
-                Nodo n = new Nodo(op, nizq, nder);
+                Node nder = expression_sum();
+                Node n = new Node(op, nizq, nder);
                 return n;
             } else
                 return nizq;
         }
 
-        Nodo expresion_logica()
+        Node expression_logic()
         {
-            Nodo nizq = expresion_suma();
+            Node nizq = expression_sum();
             if (currenttoken.TokenType == TokenType.eq || currenttoken.TokenType == TokenType.gt ||
                 currenttoken.TokenType == TokenType.gteq || currenttoken.TokenType == TokenType.lt ||
                 currenttoken.TokenType == TokenType.lteq || currenttoken.TokenType == TokenType.neq) {
                 Terminal op = currenttoken;
                 nexttoken();
-                Nodo nder = expresion_logica();
-                Nodo n = new Nodo(op, nizq, nder);
+                Node nder = expression_logic();
+                Node n = new Node(op, nizq, nder);
                 return n;
             } else
                 return nizq;
         }
 
-        Nodo expresion_andor()
+        Node expression_andor()
         {
-            Nodo nizq = expresion_logica();
+            Node nizq = expression_logic();
             if (currenttoken.TokenType == TokenType.and || currenttoken.TokenType == TokenType.or) {
                 Terminal op = currenttoken;
                 nexttoken();
-                Nodo nder = expresion_andor();
-                Nodo n = and_or_ast(op, nizq, nder);
+                Node nder = expression_andor();
+                Node n = and_or_ast(op, nizq, nder);
                 return n;
             } else
                 return nizq;
         }
 
-        Nodo expresion_cond()
+        Node expression_cond()
         {
-            Nodo whentrue = expresion_andor();
+            Node whentrue = expression_andor();
             if (currenttoken.TokenType == TokenType.iff) {
                 nexttoken();
-                Nodo condition = expresion_andor();
+                Node condition = expression_andor();
                 expect(TokenType.els);
                 nexttoken();
-                Nodo whenfalse = expresion_cond();
+                Node whenfalse = expression_cond();
 
-                var n = new Nodo(new Terminal(TokenType.iff, currenttoken.LN, currenttoken.CP),
+                var n = new Node(new Terminal(TokenType.iff, currenttoken.LN, currenttoken.CP),
                     and_or_ast(new Terminal(TokenType.or, currenttoken.LN, currenttoken.CP),
                         and_or_ast(new Terminal(TokenType.and, currenttoken.LN, currenttoken.CP),
                             condition,
@@ -250,7 +255,7 @@ namespace HL
             return nl;
         }
 
-        Nodo expresion_lambda()
+        Node expression_lambda()
         {
             if (currenttoken.TokenType == TokenType.lambda) {
                 var op = currenttoken;
@@ -264,26 +269,26 @@ namespace HL
                 var lbljmp = newLabel();
                 var jmplabel = new Terminal(TokenType.label, lbljmp, ln, cp);
                 var jmp = new Terminal(TokenType.jmp, lbljmp, ln, cp);
-                var body = expresion_lambda();
+                var body = expression_lambda();
                 ln = currenttoken.LN; cp = currenttoken.CP;
                 var bodyop = new Terminal(TokenType.lambdabody, lbljmp, ln, cp);
-                return new Nodo(op,
-                    new Nodo(head),
-                    new Nodo(bodyop,
-                        new Nodo(jmp),
-                        new Nodo(jmplabel,
+                return new Node(op,
+                    new Node(head),
+                    new Node(bodyop,
+                        new Node(jmp),
+                        new Node(jmplabel,
                             body, null)));
             } else {
-                return expresion_cond();
+                return expression_cond();
             }
         }
 
-        Nodo expresion_list()
+        Node expression_list()
         {
-            var f = expresion_single();
+            var f = expression_single();
             if (currenttoken.TokenType == TokenType.semicolon) {
                 nexttoken();
-                return new Nodo(new Terminal(TokenType.semicolon, currenttoken.LN, currenttoken.CP), f, expresion_list());
+                return new Node(new Terminal(TokenType.semicolon, currenttoken.LN, currenttoken.CP), f, expression_list());
             } else if (currenttoken.TokenType == TokenType.comma) {
                 var msg = string.Format(Strings.Expression_Syntax_error,
                     currenttoken.LN, currenttoken.CP);
@@ -293,30 +298,30 @@ namespace HL
                 return f;
         }
 
-        Nodo asignacion()
+        Node assignment()
         {
             var s = currenttoken.Value.ToString();
             nexttoken();
             expect(TokenType.assig);
             var op = new Terminal(TokenType.assig, s, currenttoken.LN, currenttoken.CP);
             nexttoken();
-            var r = new Nodo(new Terminal(TokenType.identlocal, s, currenttoken.LN, currenttoken.CP));
-            var l = expresion_single();
-            return new Nodo(op, l, r);
+            var r = new Node(new Terminal(TokenType.identlocal, s, currenttoken.LN, currenttoken.CP));
+            var l = expression_single();
+            return new Node(op, l, r);
         }
 
-        Nodo expresion_single()
+        Node expression_single()
         {
             if (currenttoken.TokenType == TokenType.ident && lookaheadone().TokenType == TokenType.assig) {
-                return asignacion();
+                return assignment();
             } else {
-                return expresion_lambda();
+                return expression_lambda();
             }
         }
 
-        Nodo expresion()
+        Node expression()
         {
-            return expresion_list();
+            return expression_list();
         }
 
         private Terminal nilterminal()
@@ -324,51 +329,51 @@ namespace HL
             return new Terminal(TokenType.NIL, null, currenttoken.LN, currenttoken.CP);
         }
 
-        private Nodo and_or_ast(Terminal op, Nodo nizq, Nodo nder)
+        private Node and_or_ast(Terminal op, Node nizq, Node nder)
         {
-            Nodo n = null;
+            Node n = null;
             switch (op.TokenType) {
                 case TokenType.and:
                     var lbljmpzero = newLabel();
-                    n = new Nodo(op,
+                    n = new Node(op,
                         nizq,
-                        new Nodo(nilterminal(),
-                            new Nodo(new Terminal(TokenType.jmpzero, lbljmpzero, currenttoken.LN, currenttoken.CP)),
-                            new Nodo(nilterminal(),
+                        new Node(nilterminal(),
+                            new Node(new Terminal(TokenType.jmpzero, lbljmpzero, currenttoken.LN, currenttoken.CP)),
+                            new Node(nilterminal(),
                                 nder,
-                                new Nodo(new Terminal(TokenType.label, lbljmpzero, currenttoken.LN, currenttoken.CP)))));
+                                new Node(new Terminal(TokenType.label, lbljmpzero, currenttoken.LN, currenttoken.CP)))));
                     break;
                 case TokenType.or:
                     var lbljmpnotz = newLabel();
-                    n = new Nodo(op,
+                    n = new Node(op,
                         nizq,
-                        new Nodo(nilterminal(),
-                            new Nodo(new Terminal(TokenType.jmpnotz, lbljmpnotz, currenttoken.LN, currenttoken.CP)),
-                            new Nodo(nilterminal(),
+                        new Node(nilterminal(),
+                            new Node(new Terminal(TokenType.jmpnotz, lbljmpnotz, currenttoken.LN, currenttoken.CP)),
+                            new Node(nilterminal(),
                                 nder,
-                                new Nodo(new Terminal(TokenType.label, lbljmpnotz, currenttoken.LN, currenttoken.CP)))));
+                                new Node(new Terminal(TokenType.label, lbljmpnotz, currenttoken.LN, currenttoken.CP)))));
                     break;
             }
             return n;
         }
     }
 
-    class Nodo
+    class Node
     {
         private Terminal o;
-        private Nodo izq;
-        private Nodo der;
+        private Node left;
+        private Node right;
 
-        public Nodo(Terminal o)
+        public Node(Terminal o)
         {
             this.o = o;
         }
 
-        public Nodo(Terminal o, Nodo izq, Nodo der)
+        public Node(Terminal o, Node izq, Node der)
         {
             this.o = o;
-            this.izq = izq;
-            this.der = der;
+            this.left = izq;
+            this.right = der;
         }
 
         public Terminal Tag
@@ -376,14 +381,14 @@ namespace HL
             get { return this.o; }
         }
 
-        public Nodo Left
+        public Node Left
         {
-            get { return this.izq; }
+            get { return this.left; }
         }
 
-        public Nodo Right
+        public Node Right
         {
-            get { return this.der; }
+            get { return this.right; }
         }
     }
 

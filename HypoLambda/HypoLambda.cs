@@ -154,12 +154,6 @@ namespace HL
 
         #endregion
 
-        private string newLabel()
-        {
-            // return Guid.NewGuid().ToString();
-            return string.Format(labelFmt, labelNumber++);
-        }
-
         #region evaluation.
 
         private object CalculateNPI2(lambdatuple closure, int stackFrames)
@@ -679,12 +673,12 @@ namespace HL
             this._evalOnlyOneSymbol = evalOnlyOneSymbol;
             var lexerStream = Lexer(expStr);
             nexttoken(lexerStream.GetEnumerator());
-            ast = expresion();
+            ast = expression();
             var r = new RecorreArbol();
             pcode = r.PostOrden(ast, null).ToList();
         }
 
-        private StringBuilder tree2string(Nodo n, StringBuilder prefix, bool isTail, StringBuilder sb)
+        private StringBuilder tree2string(Node n, StringBuilder prefix, bool isTail, StringBuilder sb)
         {
             if (n.Right != null) {
                 tree2string(n.Right, new StringBuilder().Append(prefix).Append(isTail ? "│   " : "    "), false, sb);
@@ -696,7 +690,7 @@ namespace HL
             return sb;
         }
 
-        private String tree2string(Nodo n)
+        private String tree2string(Node n)
         {
             return tree2string(n, new StringBuilder(), true, new StringBuilder()).ToString();
         }
@@ -721,7 +715,7 @@ namespace HL
 
         bool _evalOnlyOneSymbol = false;
 
-        Nodo ast = null;
+        Node ast = null;
 
         IList<Terminal> pcode = null;
         Dictionary<string, Terminal> reservedwords = new Dictionary<string, Terminal>();
@@ -780,7 +774,7 @@ namespace HL
     class RecorreArbol
     {
 
-        public IEnumerable<Terminal> PostOrden(Nodo root, Action<object> visiting)
+        public IEnumerable<Terminal> PostOrden(Node root, Action<object> visiting)
         {
             if (root != null) {
                 foreach (var l in PostOrden(root.Left, visiting))
