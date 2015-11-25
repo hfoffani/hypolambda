@@ -666,9 +666,9 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("(lambda: 2+3)()");
-            Console.WriteLine();
-            Console.WriteLine(exp.prettyAST());
-            Console.WriteLine();
+            // Console.WriteLine();
+            // Console.WriteLine(exp.prettyAST());
+            // Console.WriteLine();
             Assert.AreEqual(5.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -873,7 +873,7 @@ f()
             var exp = new HypoLambda();
             var prog = "f = lambda a: (43+1); f()";
             exp.Compile(prog);
-            Console.WriteLine(exp.prettyAST());
+            // Console.WriteLine(exp.prettyAST());
             Assert.AreEqual(44.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -986,8 +986,8 @@ recsum(5)
 ";
             var exp = new HypoLambda();
             exp.Compile(prog);
-            Console.WriteLine(exp.prettyAST());
-            Console.WriteLine(exp.prettyPCODE());
+            // Console.WriteLine(exp.prettyAST());
+            // Console.WriteLine(exp.prettyPCODE());
             Assert.AreEqual(15.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -1001,8 +1001,8 @@ recsum(5, 0)
 ";
             var exp = new HypoLambda();
             exp.Compile(prog);
-            Console.WriteLine(exp.prettyAST());
-            Console.WriteLine(exp.prettyPCODE());
+            // Console.WriteLine(exp.prettyAST());
+            // Console.WriteLine(exp.prettyPCODE());
             Assert.AreEqual(15.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -1341,7 +1341,7 @@ v + u;
         {
             var exp = new HypoLambda();
             exp.Compile("l = [1,2,3]");
-            Console.WriteLine(exp.prettyAST());
+            // Console.WriteLine(exp.prettyAST());
             var l = exp.Run() as IList<object>;
 
             Assert.IsNotNull(l);
@@ -1519,7 +1519,7 @@ obj.f()
             ";
             var ll = new HypoLambda();
             ll.Compile(prog);
-            Console.WriteLine(ll.prettyAST());
+            // Console.WriteLine(ll.prettyAST());
             var res = ll.Run();
             Assert.AreEqual(3.0, res);
         }
@@ -1538,7 +1538,7 @@ obj.v
             ";
             var ll = new HypoLambda();
             ll.Compile(prog);
-            Console.WriteLine(ll.prettyAST());
+            // Console.WriteLine(ll.prettyAST());
             var res = ll.Run();
             Assert.AreEqual(4.0, res);
         }
