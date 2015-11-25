@@ -1492,11 +1492,10 @@ obj()
         public void Test_example_closure_2()
         {
             var prog = @"
-add = lambda: (
+add = (lambda: (
     counter = 2;
     lambda: (counter = counter + 1)
-)();
-
+))();
 add();
 add()
             ";
