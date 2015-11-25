@@ -1472,7 +1472,7 @@ obj()
         }
 
         [Test]
-        public void Test_example_closure()
+        public void Test_example_closure_1()
         {
             var prog = @"
                 f = lambda x:
@@ -1486,6 +1486,25 @@ obj()
             // Console.WriteLine(ll.prettyAST());
             var res = ll.Run();
             Assert.AreEqual(5.0, res);
+        }
+
+        [Test]
+        public void Test_example_closure_2()
+        {
+            var prog = @"
+add = lambda: (
+    counter = 2;
+    lambda: (counter = counter + 1)
+)();
+
+add();
+add()
+            ";
+            var ll = new HypoLambda();
+            ll.Compile(prog);
+            // Console.WriteLine(ll.prettyAST());
+            var res = ll.Run();
+            Assert.AreEqual(4.0, res);
         }
 
         [Test]
