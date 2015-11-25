@@ -69,7 +69,7 @@ unsupport of NUnit 3.0).
     ...
     result = p + 5
 
-Futures may be a better and simple abstractions.
+Futures may be a better and simpler abstractions.
 
 
 ### Who do I talk to? ###
