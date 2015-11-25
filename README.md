@@ -15,6 +15,17 @@ Calculate a factorial
 
 returns 24.0
 
+Closures are supported:
+
+    add = (lambda: (
+        counter = 2;
+        lambda: (counter = counter + 1)
+    ))();
+    add();
+    add()
+
+returns 4.0. The `()` in the fourth line creates the closure.
+
 
 ### How do I get set up? ###
 
