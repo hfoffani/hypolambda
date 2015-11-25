@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 namespace HL
 {
     /// <summary>
-    /// Permite evaluar expresiones.
+    /// A Functional Language.
     /// </summary>
     public partial class HypoLambda
     {
@@ -31,9 +31,9 @@ namespace HL
         #region Constructors
 
         /// <summary>
-        /// Constructor generico para usar el parser recursivo descendente.
+        /// Constructor.
         /// </summary>
-        /// <param name="expStr">Expresion a compilar.</param>
+        /// <param name="expStr">Expression to compile.</param>
         public HypoLambda(string expStr)
             : this()
         {
@@ -41,7 +41,7 @@ namespace HL
         }
 
         /// <summary>
-        /// Constructor generico para usar el parser recursivo descendente.
+        /// Constructor.
         /// </summary>
         public HypoLambda()
         {
@@ -60,7 +60,7 @@ namespace HL
         #region Properties, Accesors and Modifiers
 
         /// <summary>
-        /// Tabla de símbolos.
+        /// Symbol table.
         /// </summary>
         public Dictionary<string, object> SymbolTable
         {
@@ -72,14 +72,12 @@ namespace HL
         #region Public Methods
 
         /// <summary>
-        /// Inicializa la expresión.
+        /// Compiles an expression.
         /// </summary>
         /// <remarks>
-        /// <para>Hace un análsis sintáctico recursivo descendente
-        /// construyendo un árbol sintáctico (AST) y generando un PCODE.
-        /// Completa la
-        /// tabla de símbolos <see cref="Expression.SymbolTable"/></para>
-        /// <include file='Expression.doc' path='ExpressionSintax' />
+        /// <para>Parse an expression using a recursive-descending
+        /// parser, buidls an abstract syntactic tree and generates a PCODE.
+        /// Completes the <see cref="Expression.SymbolTable"/></para>
         /// </remarks>
         /// <param name="expStr">Expresion.</param>
         public void Compile(string expStr)
@@ -88,10 +86,9 @@ namespace HL
         }
 
         /// <summary>
-        /// Resuelve la expresión.
+        /// Run the expression.
         /// </summary>
-        /// <returns>El resultado, que puede ser un <see cref="System.Double"/> o
-        /// un <see cref="System.String"/></returns>
+        /// <returns>The result.</returns>
         public object Run()
         {
             LastError = "";
@@ -105,7 +102,7 @@ namespace HL
         }
 
         /// <summary>
-        /// Devuelve la lista de identificadores de la expresión.
+        /// Obtains the list of identifiers of the expression.
         /// </summary>
         public IEnumerable<string> GetIdentifiers()
         {
@@ -119,7 +116,10 @@ namespace HL
         /// </summary>
         public string LastError { get; private set; }
 
-
+        /// <summary>
+        /// Creates an expression from a given pcode.
+        /// </summary>
+        /// <param name="pcode">A pcode.</param>
         public void FromPCODE(string pcode)
         {
             this.pcode = new List<Terminal>();
@@ -135,6 +135,10 @@ namespace HL
             }
         }
 
+        /// <summary>
+        /// Obtains the pcode corresponding to this instance.
+        /// </summary>
+        /// <returns>A pcode.</returns>
         public string ToPCODE()
         {
             var sb = new StringBuilder();
@@ -150,15 +154,13 @@ namespace HL
 
         #endregion
 
-        #region HMF recursivo descendente
-
         private string newLabel()
         {
             // return Guid.NewGuid().ToString();
             return string.Format(labelFmt, labelNumber++);
         }
 
-        #region evaluacion.
+        #region evaluation.
 
         private object CalculateNPI2(lambdatuple closure, int stackFrames)
         {
@@ -602,7 +604,7 @@ namespace HL
 
         #endregion
 
-        #region aux. p/ manejo de espacio de nombres.
+        #region namespace managing.
 
         private object getValue(string name, Dictionary<string, object> locals)
         {
@@ -727,11 +729,9 @@ namespace HL
 
         #endregion
 
-        #endregion
-
     }
 
-    #region HMF classes
+    #region auxiliary classes
 
     enum TokenType
     {
