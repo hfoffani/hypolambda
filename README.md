@@ -29,12 +29,18 @@ returns 4.0. The `()` in the fourth line creates the closure.
 
 ### How do I get set up? ###
 
+* You will need either Visual Studio o Xamarin Studio.
 * Check out the repository.
-* Open the solution with Visual Studio. (Xamarin build is broken due to native
-unsupport of NUnit 3.0).
+* Open the solution with Visual Studio.
 * The IDE should download all the necessary components.
 * Compile and run the tests.
 * Run the console application.
+
+You can build and run the tests in OSX or Linux using the Makefile
+in the command line shell.
+
+Running the tests under Xamarin Studio is currently not supported
+because the IDE doesn't integrate the NUnit console version 3.
 
 
 ### Grammar ###
