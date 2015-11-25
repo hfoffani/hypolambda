@@ -61,7 +61,7 @@ unsupport of NUnit 3.0).
 
 ### Future work ###
 
-#### Asynchronous evaluations.
+Asynchronous evaluations.
 
 The `async` keyword transforms a lambda expression into a promise.
 The fulfillment of the future value is implicit, blocking is
@@ -73,6 +73,9 @@ delayed until the actual is required.
     ...
     result = future_val + 5
 
+Namespaces or dictionaries.
+
+Comments in code.
 
 
 ### Who do I talk to? ###
