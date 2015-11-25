@@ -111,7 +111,7 @@ namespace HL
             }
         }
 
-        Node call(Node nizq)
+        Node call(Node nleft)
         {
             if (currenttoken.TokenType == TokenType.lparen) {
                 var tl = new Terminal(TokenType.list, currenttoken.LN, currenttoken.CP);
@@ -123,27 +123,27 @@ namespace HL
                 expect(TokenType.rparen);
                 nexttoken();
                 var op = new Terminal(TokenType.eval, currenttoken.LN, currenttoken.CP);
-                var deep = new Node(op, bindings, nizq);
+                var deep = new Node(op, bindings, nleft);
                 // keep consuming evaluations.
                 return call(deep);
             } else
-                return nizq;
+                return nleft;
         }
 
         Node expression_evaluated()
         {
-            Node nizq = factor();
-            return call(nizq);
+            Node nleft = factor();
+            return call(nleft);
         }
 
         Node factor_negated()
         {
-            Node nizq = null;
+            Node nleft = null;
             if (currenttoken.TokenType == TokenType.not) {
                 Terminal op = currenttoken;
                 nexttoken();
-                nizq = expression_evaluated();
-                Node n = new Node(op, nizq, null);
+                nleft = expression_evaluated();
+                Node n = new Node(op, nleft, null);
                 return n;
             } else
                 return expression_evaluated();
@@ -151,57 +151,57 @@ namespace HL
 
         Node term()
         {
-            Node nizq = factor_negated();
+            Node nleft = factor_negated();
             if (currenttoken.TokenType == TokenType.times || currenttoken.TokenType == TokenType.slash ||
                 currenttoken.TokenType == TokenType.perc) {
                 Terminal op = currenttoken;
                 nexttoken();
-                Node nder = term();
-                Node n = new Node(op, nizq, nder);
+                Node nright = term();
+                Node n = new Node(op, nleft, nright);
                 return n;
             } else
-                return nizq;
+                return nleft;
         }
 
         Node expression_sum()
         {
-            Node nizq = term();
+            Node nleft = term();
             if (currenttoken.TokenType == TokenType.plus || currenttoken.TokenType == TokenType.minus) {
                 Terminal op = currenttoken;
                 nexttoken();
-                Node nder = expression_sum();
-                Node n = new Node(op, nizq, nder);
+                Node nright = expression_sum();
+                Node n = new Node(op, nleft, nright);
                 return n;
             } else
-                return nizq;
+                return nleft;
         }
 
         Node expression_logic()
         {
-            Node nizq = expression_sum();
+            Node nleft = expression_sum();
             if (currenttoken.TokenType == TokenType.eq || currenttoken.TokenType == TokenType.gt ||
                 currenttoken.TokenType == TokenType.gteq || currenttoken.TokenType == TokenType.lt ||
                 currenttoken.TokenType == TokenType.lteq || currenttoken.TokenType == TokenType.neq) {
                 Terminal op = currenttoken;
                 nexttoken();
-                Node nder = expression_logic();
-                Node n = new Node(op, nizq, nder);
+                Node nright = expression_logic();
+                Node n = new Node(op, nleft, nright);
                 return n;
             } else
-                return nizq;
+                return nleft;
         }
 
         Node expression_andor()
         {
-            Node nizq = expression_logic();
+            Node nleft = expression_logic();
             if (currenttoken.TokenType == TokenType.and || currenttoken.TokenType == TokenType.or) {
                 Terminal op = currenttoken;
                 nexttoken();
-                Node nder = expression_andor();
-                Node n = and_or_ast(op, nizq, nder);
+                Node nright = expression_andor();
+                Node n = and_or_ast(op, nleft, nright);
                 return n;
             } else
-                return nizq;
+                return nleft;
         }
 
         Node expression_cond()
@@ -329,28 +329,28 @@ namespace HL
             return new Terminal(TokenType.NIL, null, currenttoken.LN, currenttoken.CP);
         }
 
-        private Node and_or_ast(Terminal op, Node nizq, Node nder)
+        private Node and_or_ast(Terminal op, Node nleft, Node nright)
         {
             Node n = null;
             switch (op.TokenType) {
                 case TokenType.and:
                     var lbljmpzero = newLabel();
                     n = new Node(op,
-                        nizq,
+                        nleft,
                         new Node(nilterminal(),
                             new Node(new Terminal(TokenType.jmpzero, lbljmpzero, currenttoken.LN, currenttoken.CP)),
                             new Node(nilterminal(),
-                                nder,
+                                nright,
                                 new Node(new Terminal(TokenType.label, lbljmpzero, currenttoken.LN, currenttoken.CP)))));
                     break;
                 case TokenType.or:
                     var lbljmpnotz = newLabel();
                     n = new Node(op,
-                        nizq,
+                        nleft,
                         new Node(nilterminal(),
                             new Node(new Terminal(TokenType.jmpnotz, lbljmpnotz, currenttoken.LN, currenttoken.CP)),
                             new Node(nilterminal(),
-                                nder,
+                                nright,
                                 new Node(new Terminal(TokenType.label, lbljmpnotz, currenttoken.LN, currenttoken.CP)))));
                     break;
             }
