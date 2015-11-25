@@ -59,17 +59,20 @@ unsupport of NUnit 3.0).
     lambda_exp :=   "lambda" ( "(" var_name ("," var_name)* ")" ) ":" single_exp
 
 
-### In my plans ###
+### Future work ###
 
 #### Asynchronous evaluations.
 
-    f = lambda x: x + 2;
-    g = async f;
-    p = g(3);
-    ...
-    result = p + 5
+The `async` keyword transforms a lambda expression into a promise.
+The fulfillment of the future value is implicit, blocking is
+delayed until the actual is required.
 
-Futures may be a better and simpler abstractions.
+    a_function = lambda x: x + 2;
+    a_promise = async a_function;
+    future_val = a_promise(3);
+    ...
+    result = future_val + 5
+
 
 
 ### Who do I talk to? ###
