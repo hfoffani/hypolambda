@@ -59,6 +59,18 @@ unsupport of NUnit 3.0).
     lambda_exp :=   "lambda" ( "(" var_name ("," var_name)* ")" ) ":" single_exp
 
 
+### In my plans ###
+
+#### Asynchronous evaluations.
+
+    f = lambda x: x + 2;
+    g = async f;
+    p = g(3);
+    ...
+    result = p + 5
+
+Futures may be a better and simple abstractions.
+
 
 ### Who do I talk to? ###
 
