@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LambdaLang")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("HypoLambda")]
+[assembly: AssemblyDescription("A small functional programming language for .NET.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LambdaLang")]
+[assembly: AssemblyCompany("Hernán M. Foffani")]
+[assembly: AssemblyProduct("HypoLambda")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

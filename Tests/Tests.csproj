@@ -38,15 +38,15 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\HypoLambda\HypoLambda.csproj">
-      <Project>{F6CE6635-F872-4DF6-AA1A-C25E7DB4FE71}</Project>
-      <Name>HypoLambda</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HypoLambda\HypoLambda.csproj">
+      <Project>{f6ce6635-f872-4df6-aa1a-c25e7db4fe71}</Project>
+      <Name>HypoLambda</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
