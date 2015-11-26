@@ -2,7 +2,18 @@
 
 A small functional programming language for .NET.
 
+Its syntax is based on Python but whitespaces are ignored. Everything is an expression.
 The language runtime is embeddable, its AST is accesible and it compiles to portable pcode.
+There's an REPL you can play with and the project includes lots of unit tests.
+
+
+### Why? ###
+
+Though I do not recommend using it to develop full applications it's very appropiate
+as a template or customization language for a .NET application.
+
+HL has a very small footprint which lets you embed it in any kind of .NET project
+including mobile ones.
 
 
 ### Example ###
