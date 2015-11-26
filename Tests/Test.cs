@@ -28,14 +28,14 @@ using HL;
 namespace Tests
 {
     /// <summary>
-    /// Test de la clase <see cref="ECC.Lib.Expression"/>
+    /// Tests of <see cref="HypoLambda"/>
     /// </summary>
     [TestFixture]
     public class TS_Expression
     {
         #region Tests
 
-        #region expresiones algebraicas
+        #region algebraic expressions
 
         [Test]
         public void Test_19()
@@ -166,7 +166,7 @@ namespace Tests
 
         #endregion
 
-        #region expresiones logicas cadenas
+        #region logic expressions strings
 
         [Test]
         public void Test_40()
@@ -260,7 +260,7 @@ namespace Tests
 
         #endregion
 
-        #region expresiones logicas numeros
+        #region logic expressions numbers
 
         [Test]
         public void Test_50()
@@ -618,7 +618,7 @@ namespace Tests
 
         #endregion
 
-        #region expresiones varias
+        #region other expressions
 
         [Test]
         public void Test_80()
@@ -1146,7 +1146,7 @@ v + u;
 
         #endregion
 
-        #region cadenas
+        #region strings
 
         [Test]
         public void Test_90()
@@ -1293,7 +1293,7 @@ v + u;
 
         #endregion
 
-        #region objetos
+        #region objects
 
         [Test]
         public void Test_180()
@@ -1440,7 +1440,7 @@ v + u;
 
         #endregion
 
-        #region serializacion
+        #region serialization
 
         [Test]
         public void Test_ToFrom_PCode()
@@ -1562,7 +1562,7 @@ obj.v
 
         #endregion
 
-        #region clases auxiliares
+        #region auxiliaries
 
         class Aux
         {
