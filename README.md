@@ -37,13 +37,14 @@ Closures are supported:
 
 returns 4.0. The `()` in the fourth line creates the closure.
 
-Run HL within a .NET program:
+Run HL within a .NET program and interact with it:
 
     var exp = new HypoLambda();
-    exp.Compile("\"A\" * 3");
+    exp.SymbolTable["A"] = "a";
+    exp.Compile("A * 3");
     var result = exp.Run()
 
-result contains "AAA".
+result contains "aaa".
 
 
 ### How do I get set up? ###
