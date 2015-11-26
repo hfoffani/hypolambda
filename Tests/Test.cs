@@ -38,7 +38,7 @@ namespace Tests
         #region expresiones algebraicas
 
         [Test]
-        public void Prueba19_TestRecursiveDescent()
+        public void Test_19()
         {
             var exp = new HypoLambda();
             exp.Compile("(2+3\r\n)*\n5");
@@ -46,7 +46,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba20_TestRecursiveDescent()
+        public void Test_20()
         {
             var exp = new HypoLambda();
             exp.Compile("(2+3)*5");
@@ -54,7 +54,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba21_TestRecursiveDescent()
+        public void Test_21()
         {
             var exp = new HypoLambda();
             exp.Compile("(i+3)*5");
@@ -63,7 +63,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba22_TestRecursiveDescent()
+        public void Test_22()
         {
             var exp = new HypoLambda();
             exp.Compile("(a.A+3)*5");
@@ -75,7 +75,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba23_TestRecursiveDescent()
+        public void Test_23()
         {
             var exp = new HypoLambda();
             exp.Compile("(2.0+3.0)*5.0");
@@ -83,14 +83,14 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba24_TestRecursiveDescent()
+        public void Test_24()
         {
             var exp = new HypoLambda();
             Assert.Throws<ApplicationException>(()=> exp.Compile("(2+*5.0"));
         }
 
         [Test]
-        public void Prueba25_TestRecursiveDescent()
+        public void Test_25()
         {
             var exp = new HypoLambda();
             exp.Compile("(A+B)*5", true);
@@ -102,7 +102,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba26_TestRecursiveDescent()
+        public void Test_26()
         {
             var exp = new HypoLambda();
             exp.Compile("(this.A+this.B)*5");
@@ -114,7 +114,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba27_TestRecursiveDescent()
+        public void Test_27()
         {
             var exp = new HypoLambda();
             exp.Compile("(A+B)*5");
@@ -124,7 +124,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba28_TestRecursiveDescent()
+        public void Test_28()
         {
             var exp = new HypoLambda();
             exp.Compile("3/0");
@@ -132,7 +132,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba29_TestRecursiveDescent()
+        public void Test_29()
         {
             var exp = new HypoLambda();
             exp.Compile("({A.X}+{A.Y})*5");
@@ -143,7 +143,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba30_TestRecursiveDescent()
+        public void Test_30()
         {
             var exp = new HypoLambda();
             exp.Compile("({A.X}+{A.Y}) == (this.X + this.Y)");
@@ -154,7 +154,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba31_TestRecursiveDescent()
+        public void Test_31()
         {
             var exp = new HypoLambda();
             exp.Compile("t2.Ticks - t1.Ticks");
@@ -169,7 +169,7 @@ namespace Tests
         #region expresiones logicas cadenas
 
         [Test]
-        public void Prueba40_TestRecursiveDescent()
+        public void Test_40()
         {
             var exp = new HypoLambda();
             exp.Compile("A>B");
@@ -179,7 +179,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba41_TestRecursiveDescent()
+        public void Test_41()
         {
             var exp = new HypoLambda();
             exp.Compile("A==B");
@@ -189,7 +189,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba42_TestRecursiveDescent()
+        public void Test_42()
         {
             var exp = new HypoLambda();
             exp.Compile("A<B");
@@ -199,7 +199,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba43_TestRecursiveDescent()
+        public void Test_43()
         {
             var exp = new HypoLambda();
             exp.Compile("A>=B");
@@ -209,7 +209,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba45_TestRecursiveDescent()
+        public void Test_45()
         {
             var exp = new HypoLambda();
             exp.Compile("A!=B");
@@ -219,7 +219,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba46_TestRecursiveDescent()
+        public void Test_46()
         {
             var exp = new HypoLambda();
             exp.Compile("(A<B)");
@@ -229,7 +229,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba47_TestRecursiveDescent()
+        public void Test_47()
         {
             var exp = new HypoLambda();
             exp.Compile("not (A<B)");
@@ -239,7 +239,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba48_TestRecursiveDescent()
+        public void Test_48()
         {
             var exp = new HypoLambda();
             exp.Compile("not (A!=B)");
@@ -249,7 +249,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba112_TestRecursiveDescent()
+        public void Test_112()
         {
             var exp = new HypoLambda();
             exp.Compile("A and not B");
@@ -263,7 +263,7 @@ namespace Tests
         #region expresiones logicas numeros
 
         [Test]
-        public void Prueba50_TestRecursiveDescent()
+        public void Test_50()
         {
             var exp = new HypoLambda();
             exp.Compile("A>B");
@@ -273,7 +273,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba51_TestRecursiveDescent()
+        public void Test_51()
         {
             var exp = new HypoLambda();
             exp.Compile("A==B");
@@ -283,7 +283,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba52_TestRecursiveDescent()
+        public void Test_52()
         {
             var exp = new HypoLambda();
             exp.Compile("A<B");
@@ -293,7 +293,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba53_TestRecursiveDescent()
+        public void Test_53()
         {
             var exp = new HypoLambda();
             exp.Compile("A>=B");
@@ -303,7 +303,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba55_TestRecursiveDescent()
+        public void Test_55()
         {
             var exp = new HypoLambda();
             exp.Compile("A!=B");
@@ -313,7 +313,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba56_TestRecursiveDescent()
+        public void Test_56()
         {
             var exp = new HypoLambda();
             exp.Compile("(A<B)");
@@ -323,7 +323,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba57_TestRecursiveDescent()
+        public void Test_57()
         {
             var exp = new HypoLambda();
             exp.Compile("not (A<B)");
@@ -333,7 +333,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba58_TestRecursiveDescent()
+        public void Test_58()
         {
             var exp = new HypoLambda();
             exp.Compile("not A");
@@ -342,7 +342,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba60_TestRecursiveDescent()
+        public void Test_60()
         {
             var exp = new HypoLambda();
             exp.Compile("(A > B) and (A > B)");
@@ -352,7 +352,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba61_TestRecursiveDescent()
+        public void Test_61()
         {
             var exp = new HypoLambda();
             exp.Compile("(A > B) and (A < B)");
@@ -362,7 +362,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba62_TestRecursiveDescent()
+        public void Test_62()
         {
             var exp = new HypoLambda();
             exp.Compile("(A < B) or (A < B)");
@@ -372,7 +372,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba63_TestRecursiveDescent()
+        public void Test_63()
         {
             var exp = new HypoLambda();
             exp.Compile("(A < B) or (A > B)");
@@ -382,7 +382,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba64_TestRecursiveDescent()
+        public void Test_64()
         {
             var exp = new HypoLambda();
             exp.Compile("not ((A < B) or (A < B))");
@@ -392,7 +392,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba65_TestRecursiveDescent()
+        public void Test_65()
         {
             var exp = new HypoLambda();
             exp.Compile("(not 0) * 2");
@@ -404,7 +404,7 @@ namespace Tests
         #region if expression
 
         [Test]
-        public void Prueba70_TestRecursiveDescent()
+        public void Test_70()
         {
             var exp = new HypoLambda();
             exp.Compile("3 if 1 else 4");
@@ -412,7 +412,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba71_TestRecursiveDescent()
+        public void Test_71()
         {
             var exp = new HypoLambda();
             exp.Compile("3 if 0 else 4");
@@ -420,7 +420,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba72_TestRecursiveDescent()
+        public void Test_72()
         {
             var exp = new HypoLambda();
             exp.Compile("3 if not 0 else 4");
@@ -428,7 +428,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba73_TestRecursiveDescent()
+        public void Test_73()
         {
             var exp = new HypoLambda();
             exp.Compile("3 if \"A\" == \"A\" else 4");
@@ -436,7 +436,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba74_TestRecursiveDescent()
+        public void Test_74()
         {
             var exp = new HypoLambda();
             exp.Compile("3 if \"A\" != \"A\" else 4");
@@ -444,7 +444,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba75_TestRecursiveDescent()
+        public void Test_75()
         {
             var exp = new HypoLambda();
             exp.Compile("\"fail\" if (A != \"A\") else \"ok\"");
@@ -455,7 +455,7 @@ namespace Tests
         // tests para short-circuit.
         // el 1º es para asegurarnos que salta una excepcion.
         [Test]
-        public void Prueba130_TestRecursiveDescent()
+        public void Test_130()
         {
             var exp = new HypoLambda();
             exp.Compile("x.X.A == 3");
@@ -466,7 +466,7 @@ namespace Tests
 
         // si hay short-circuit en AND no deberia haber excepcion.
         [Test]
-        public void Prueba131_TestRecursiveDescent()
+        public void Test_131()
         {
             var exp = new HypoLambda("0 and x.X.A == 3");
             var x = new Aux();
@@ -476,7 +476,7 @@ namespace Tests
 
         // si hay short-circuit en OR no deberia haber excepcion.
         [Test]
-        public void Prueba132_TestRecursiveDescent()
+        public void Test_132()
         {
             var exp = new HypoLambda("1 or x.X.A == 3");
             var x = new Aux();
@@ -486,7 +486,7 @@ namespace Tests
 
         // si hay short-circuit en IFF-TRUE no deberia haber excepcion.
         [Test]
-        public void Prueba133_TestRecursiveDescent()
+        public void Test_133()
         {
             var exp = new HypoLambda("5 if 1 else x.X.A");
             var x = new Aux();
@@ -496,7 +496,7 @@ namespace Tests
 
         // si hay short-circuit en IFF-FALSE no deberia haber excepcion.
         [Test]
-        public void Prueba134_TestRecursiveDescent()
+        public void Test_134()
         {
             var exp = new HypoLambda("x.X.A if 0 else 5");
             var x = new Aux();
@@ -505,56 +505,56 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba140_TestRecursiveDescent()
+        public void Test_140()
         {
             var exp = new HypoLambda("1 and \"x\" and 3");
             Assert.AreEqual(3.0, Convert.ToDouble(exp.Run()));
         }
 
         [Test]
-        public void Prueba141_TestRecursiveDescent()
+        public void Test_141()
         {
             var exp = new HypoLambda("0 or \"\" or 3");
             Assert.AreEqual(3.0, Convert.ToDouble(exp.Run()));
         }
 
         [Test]
-        public void Prueba142_TestRecursiveDescent()
+        public void Test_142()
         {
             var exp = new HypoLambda("3 and 0");
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
         [Test]
-        public void Prueba143_TestRecursiveDescent()
+        public void Test_143()
         {
             var exp = new HypoLambda("3 and not 0");
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
         [Test]
-        public void Prueba144_TestRecursiveDescent()
+        public void Test_144()
         {
             var exp = new HypoLambda("0 or not 3");
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
         [Test]
-        public void Prueba150_TestRecursiveDescent()
+        public void Test_150()
         {
             var exp = new HypoLambda("\"y\" and 3 and \"x\"");
             Assert.AreEqual("x", exp.Run());
         }
 
         [Test]
-        public void Prueba151_TestRecursiveDescent()
+        public void Test_151()
         {
             var exp = new HypoLambda("0 or \"\" or \"x\"");
             Assert.AreEqual("x", exp.Run());
         }
 
         [Test]
-        public void Prueba160_TestRecursiveDescent()
+        public void Test_160()
         {
             var exp = new HypoLambda("not ( X and Y )");
 
@@ -572,7 +572,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba161_TestRecursiveDescent()
+        public void Test_161()
         {
             var exp = new HypoLambda("not X or not Y");
 
@@ -591,7 +591,7 @@ namespace Tests
 
         // de Expression.doc
         [Test]
-        public void Prueba170_TestRecursiveDescent()
+        public void Test_170()
         {
             var exp = new HypoLambda("1 if this.S else 1/this.S");
 
@@ -603,7 +603,7 @@ namespace Tests
 
         // de Expression.doc
         [Test]
-        public void Prueba171_TestRecursiveDescent()
+        public void Test_171()
         {
             var exp = new HypoLambda("this.A and (10 / this.A) > 0");
 
@@ -621,7 +621,7 @@ namespace Tests
         #region expresiones varias
 
         [Test]
-        public void Prueba80_TestRecursiveDescent()
+        public void Test_80()
         {
             var exp = new HypoLambda();
             exp.Compile("1 + 2 if 3 > 4 else 5 - 6");
@@ -629,7 +629,7 @@ namespace Tests
         }
 
         [Test]
-        public void Prueba81_TestRecursiveDescent()
+        public void Test_81()
         {
             var exp = new HypoLambda();
             exp.Compile("A + B if C > D else E - F");
@@ -1149,7 +1149,7 @@ v + u;
         #region cadenas
 
         [Test]
-        public void Prueba90_TestRecursiveDescent()
+        public void Test_90()
         {
             var exp = new HypoLambda();
             exp.Compile("\"Hola\"");
@@ -1157,7 +1157,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba91_TestRecursiveDescent()
+        public void Test_91()
         {
             var exp = new HypoLambda();
             exp.Compile("\"A\" * 3");
@@ -1165,7 +1165,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba92_TestRecursiveDescent()
+        public void Test_92()
         {
             var exp = new HypoLambda();
             exp.Compile("\"A\" + \"B\"");
@@ -1173,7 +1173,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba93_TestRecursiveDescent()
+        public void Test_93()
         {
             var exp = new HypoLambda();
             exp.Compile("  \"Hola \\\"Juan\\\"!\"  ");
@@ -1181,7 +1181,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba94_TestRecursiveDescent()
+        public void Test_94()
         {
             var ocul = System.Threading.Thread.CurrentThread.CurrentCulture;
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("es-ES");
@@ -1197,7 +1197,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba95_TestRecursiveDescent()
+        public void Test_95()
         {
             var exp = new HypoLambda();
             exp.Compile(" \"Ahora: {0:dd/M/yyyy}\" % now ");
@@ -1206,7 +1206,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba96_TestRecursiveDescent()
+        public void Test_96()
         {
             var exp = new HypoLambda();
             exp.Compile(" ( \"Punto = ({0};{{0}})\" % x ) % y");
@@ -1216,7 +1216,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba97_TestRecursiveDescent()
+        public void Test_97()
         {
             var exp = new HypoLambda();
             exp.Compile("\"Hola \" + ( \"amigo\" if {x} == 2 else \"enemigo\")");
@@ -1225,7 +1225,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba100_TestRecursiveDescent()
+        public void Test_100()
         {
             var e1 = new HypoLambda();
             e1.Compile("5 if this.S == this.T else 4");
@@ -1237,7 +1237,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba101_TestRecursiveDescent()
+        public void Test_101()
         {
             var e1 = new HypoLambda();
             e1.Compile("5 if this.S else 4");
@@ -1248,7 +1248,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba102_TestRecursiveDescent()
+        public void Test_102()
         {
             var e1 = new HypoLambda();
             e1.Compile("5 if this.S else 4");
@@ -1259,7 +1259,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba103_TestRecursiveDescent()
+        public void Test_103()
         {
             var e1 = new HypoLambda();
             e1.Compile("5 if not this.S else 4");
@@ -1270,7 +1270,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba104_TestRecursiveDescent()
+        public void Test_104()
         {
             var e1 = new HypoLambda();
             e1.Compile("5 if this.S and this.S == \"X\" else 4");
@@ -1281,7 +1281,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba105_TestRecursiveDescent()
+        public void Test_105()
         {
             var e1 = new HypoLambda();
             e1.Compile("5 if this.S and this.S != \"\" else 4");
@@ -1296,7 +1296,7 @@ v + u;
         #region objetos
 
         [Test]
-        public void Prueba180_TestRecursiveDescent()
+        public void Test_180()
         {
             var e1 = new HypoLambda();
             e1.Compile("this.A1.A * this.A2.B");
@@ -1311,7 +1311,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba181_TestRecursiveDescent()
+        public void Test_181()
         {
             var e1 = new HypoLambda();
             e1.Compile("X.X.S", true);
@@ -1325,7 +1325,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba182_TestRecursiveDescent()
+        public void Test_182()
         {
             var e1 = new HypoLambda();
             e1.Compile("this.X.X.S");
@@ -1338,7 +1338,7 @@ v + u;
         }
 
         [Test]
-        public void Prueba183_TestRecursiveDescent()
+        public void Test_183()
         {
             var e1 = new HypoLambda("a1.X.X.S");
             var a1 = new Aux();
