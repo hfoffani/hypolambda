@@ -18,7 +18,7 @@ including mobile ones.
 
 ### Example ###
 
-Calculate a factorial
+Calculate a factorial:
 
     f = lambda x:
         (x*f(x-1)) if x > 1 else 1;
@@ -36,6 +36,14 @@ Closures are supported:
     add()
 
 returns 4.0. The `()` in the fourth line creates the closure.
+
+Run HL within a .NET program:
+
+    var exp = new HypoLambda();
+    exp.Compile("\"A\" * 3");
+    var result = exp.Run()
+
+result contains "AAA".
 
 
 ### How do I get set up? ###
