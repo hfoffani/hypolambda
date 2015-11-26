@@ -1,5 +1,7 @@
 ﻿How To publish in Nuget.
 
+Under the directory HypoLambda:
+
 nuget pack HypoLambda.csproj
 nuget push *.nupkg
 
