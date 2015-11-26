@@ -1,0 +1,7 @@
+﻿How To publish in Nuget.
+
+nuget pack HypoLambda.csproj
+nuget push *.nupkg
+
+Only once:
+    nuget setApiKey Your-API-Key
