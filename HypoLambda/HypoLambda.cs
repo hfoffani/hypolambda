@@ -22,16 +22,10 @@ using System.Reflection;
 
 using System.Linq;
 
-#if DEBUG
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("Tests")]
-#endif
-
 namespace HL
 {
     /// <summary>
-    /// A Functional Language.
+    /// A Small Functional Language.
     /// </summary>
     public partial class HypoLambda
     {
@@ -93,12 +87,32 @@ namespace HL
         /// <remarks>
         /// <para>Parse an expression using a recursive-descending
         /// parser, buidls an abstract syntactic tree and generates a PCODE.
-        /// Completes the <see cref="Expression.SymbolTable"/></para>
+        /// Completes the <see cref="HypoLambda.SymbolTable"/></para>
         /// </remarks>
         /// <param name="expStr">Expresion.</param>
         public void Compile(string expStr)
         {
             this.Compile(expStr, false);
+        }
+
+        /// <summary>
+        /// Compiles an expression.
+        /// </summary>
+        /// <remarks>
+        /// <para>Parse an expression using a recursive-descending
+        /// parser, buidls an abstract syntactic tree and generates a PCODE.
+        /// Completes the <see cref="HypoLambda.SymbolTable"/></para>
+        /// </remarks>
+        /// <param name="expStr">Expresion.</param>
+        /// <param name="evalOnlyOneSymbol">There's only one external object.</param>
+        public void Compile(string expStr, bool evalOnlyOneSymbol)
+        {
+            this._evalOnlyOneSymbol = evalOnlyOneSymbol;
+            var lexerStream = Lexer(expStr);
+            nexttoken(lexerStream.GetEnumerator());
+            ast = expression();
+            var r = new RecorreArbol();
+            pcode = r.PostOrden(ast, null).ToList();
         }
 
         /// <summary>
@@ -682,17 +696,7 @@ namespace HL
         }
         #endregion
 
-        #region analisis sintactico.
-
-        internal void Compile(string expStr, bool evalOnlyOneSymbol)
-        {
-            this._evalOnlyOneSymbol = evalOnlyOneSymbol;
-            var lexerStream = Lexer(expStr);
-            nexttoken(lexerStream.GetEnumerator());
-            ast = expression();
-            var r = new RecorreArbol();
-            pcode = r.PostOrden(ast, null).ToList();
-        }
+        #region sintax analysis.
 
         private StringBuilder tree2string(Node n, StringBuilder prefix, bool isTail, StringBuilder sb)
         {
