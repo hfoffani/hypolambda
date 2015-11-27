@@ -81,8 +81,8 @@ namespace HL
                     } else {
                         // variables.
                         string root = getRootSymbol(token);
-                        if (!this.symbolTable.ContainsKey(root))
-                            this.symbolTable.Add(root, null);
+                        if (!this.externals.ContainsKey(root))
+                            this.externals.Add(root, null);
                         yield return new Terminal(TokenType.ident, token, lnum, cpos);
                     }
                     input = input.Substring(token.Length); cpos += token.Length;

@@ -31,7 +31,7 @@ namespace HL
     {
         #region Fields
 
-        private Dictionary<string, object> symbolTable;
+        private Dictionary<string, object> externals;
 
         private int labelNumber = 1;
         private string labelFmt = "LBL_{0:D4}";
@@ -55,7 +55,7 @@ namespace HL
         /// </summary>
         public HypoLambda()
         {
-            this.symbolTable = new Dictionary<string, object>();
+            this.externals = new Dictionary<string, object>();
 
             this.reservedwords.Add("not", new Terminal(TokenType.not, 0, 0));
             this.reservedwords.Add("and", new Terminal(TokenType.and, 0, 0));
@@ -72,10 +72,15 @@ namespace HL
         /// <summary>
         /// Symbol table.
         /// </summary>
-        public Dictionary<string, object> SymbolTable
+        public Dictionary<string, object> Externals
         {
-            get { return this.symbolTable; }
+            get { return this.externals; }
         }
+
+        /// <summary>
+        /// Obtains the last error message.
+        /// </summary>
+        public string ErrorMessage { get; private set; }
 
         #endregion
 
@@ -87,7 +92,7 @@ namespace HL
         /// <remarks>
         /// <para>Parse an expression using a recursive-descending
         /// parser, buidls an abstract syntactic tree and generates a PCODE.
-        /// Completes the <see cref="HypoLambda.SymbolTable"/></para>
+        /// Completes the <see cref="HypoLambda.Externals"/></para>
         /// </remarks>
         /// <param name="expStr">Expresion.</param>
         public void Compile(string expStr)
@@ -101,7 +106,7 @@ namespace HL
         /// <remarks>
         /// <para>Parse an expression using a recursive-descending
         /// parser, buidls an abstract syntactic tree and generates a PCODE.
-        /// Completes the <see cref="HypoLambda.SymbolTable"/></para>
+        /// Completes the <see cref="HypoLambda.Externals"/></para>
         /// </remarks>
         /// <param name="expStr">Expresion.</param>
         /// <param name="evalOnlyOneSymbol">There's only one external object.</param>
@@ -111,8 +116,8 @@ namespace HL
             var lexerStream = Lexer(expStr);
             nexttoken(lexerStream.GetEnumerator());
             ast = expression();
-            var r = new RecorreArbol();
-            pcode = r.PostOrden(ast, null).ToList();
+            var r = new VisitTree();
+            pcode = r.PostOrder(ast, null).ToList();
         }
 
         /// <summary>
@@ -121,7 +126,7 @@ namespace HL
         /// <returns>The result.</returns>
         public object Run()
         {
-            LastError = "";
+            ErrorMessage = "";
             if (pcode != null) {
                 var lambda = new lambdatuple();
                 lambda.Body = pcode;
@@ -132,9 +137,9 @@ namespace HL
         }
 
         /// <summary>
-        /// Obtains the list of identifiers of the expression.
+        /// Obtains all the names.
         /// </summary>
-        public IEnumerable<string> GetIdentifiers()
+        public IEnumerable<string> GetNames()
         {
             foreach (var t in pcode)
                 if (t.TokenType == TokenType.ident)
@@ -142,15 +147,10 @@ namespace HL
         }
 
         /// <summary>
-        /// Obtains the last error message.
-        /// </summary>
-        public string LastError { get; private set; }
-
-        /// <summary>
         /// Creates an expression from a given pcode.
         /// </summary>
         /// <param name="pcode">A pcode.</param>
-        public void FromPCODE(string pcode)
+        public void FromPortablePCODE(string pcode)
         {
             this.pcode = new List<Terminal>();
             var ts = pcode.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -169,7 +169,7 @@ namespace HL
         /// Obtains the pcode corresponding to this instance.
         /// </summary>
         /// <returns>A pcode.</returns>
-        public string ToPCODE()
+        public string ToPortablePCODE()
         {
             var sb = new StringBuilder();
             foreach (var t in this.pcode) {
@@ -205,8 +205,8 @@ namespace HL
 
                 #region check recursion depth.
                 if (stackFrames > 500) {
-                    LastError = string.Format(Strings.Expression_MaxRecursionDepth, t.LN, t.CP);
-                    throw new StackOverflowException(LastError);
+                    ErrorMessage = string.Format(Strings.Expression_MaxRecursionDepth, t.LN, t.CP);
+                    throw new StackOverflowException(ErrorMessage);
                 }
                 #endregion
 
@@ -281,7 +281,7 @@ namespace HL
                         b = Convert.ToDouble(pila.Pop());
                         a = Convert.ToDouble(pila.Pop());
                         if (b == 0.0) {
-                            LastError = string.Format(Strings.Expression_ZeroDivisionError, t.LN, t.CP);
+                            ErrorMessage = string.Format(Strings.Expression_ZeroDivisionError, t.LN, t.CP);
                         }
                         res = a / b;
                         pila.Push(res);
@@ -646,7 +646,7 @@ namespace HL
                 name = "this." + name;
             }
             string sym = getRootSymbol(name);
-            object o = this.symbolTable[sym];
+            object o = this.externals[sym];
 
             string trail = getTrailSymbols(name);
             if (trail == string.Empty)
@@ -791,15 +791,15 @@ namespace HL
         NIL
     }
 
-    class RecorreArbol
+    class VisitTree
     {
 
-        public IEnumerable<Terminal> PostOrden(Node root, Action<object> visiting)
+        public IEnumerable<Terminal> PostOrder(Node root, Action<object> visiting)
         {
             if (root != null) {
-                foreach (var l in PostOrden(root.Left, visiting))
+                foreach (var l in PostOrder(root.Left, visiting))
                     yield return l;
-                foreach (var r in PostOrden(root.Right, visiting))
+                foreach (var r in PostOrder(root.Right, visiting))
                     yield return r;
 
                 if (visiting != null)

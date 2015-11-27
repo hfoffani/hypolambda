@@ -36,8 +36,8 @@ namespace HL
 				exp.Compile(program);
 				var res = exp.Run();
 				Console.WriteLine(">>> " + val2string(res));
-				if (exp.LastError != "") {
-					Console.WriteLine(exp.LastError);
+				if (exp.ErrorMessage != "") {
+					Console.WriteLine(exp.ErrorMessage);
 				}
 			} catch (Exception e) {
 				Console.WriteLine();

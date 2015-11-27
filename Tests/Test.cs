@@ -58,8 +58,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("(i+3)*5");
-            Assert.AreEqual(1, exp.SymbolTable.Count);
-            Assert.IsTrue(exp.SymbolTable.ContainsKey("i"));
+            Assert.AreEqual(1, exp.Externals.Count);
+            Assert.IsTrue(exp.Externals.ContainsKey("i"));
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace Tests
             Aux y = new Aux();
             y.A = 2;
             y.B = 1;
-            exp.SymbolTable["a"] = y;
+            exp.Externals["a"] = y;
             Assert.AreEqual(25.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -97,7 +97,7 @@ namespace Tests
             Aux y = new Aux();
             y.A = 2;
             y.B = 1;
-            exp.SymbolTable["this"] = y;
+            exp.Externals["this"] = y;
             Assert.AreEqual(15.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -109,7 +109,7 @@ namespace Tests
             Aux y = new Aux();
             y.A = 2;
             y.B = 1;
-            exp.SymbolTable["this"] = y;
+            exp.Externals["this"] = y;
             Assert.AreEqual(15.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -118,8 +118,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("(A+B)*5");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(15.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -137,8 +137,8 @@ namespace Tests
             var exp = new HypoLambda();
             exp.Compile("({A.X}+{A.Y})*5");
             var A = new { X = 2.0, Y = 1.0 };
-            exp.SymbolTable["A"] = A;
-            exp.SymbolTable["this"] = A;
+            exp.Externals["A"] = A;
+            exp.Externals["this"] = A;
             Assert.AreEqual(15.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -148,8 +148,8 @@ namespace Tests
             var exp = new HypoLambda();
             exp.Compile("({A.X}+{A.Y}) == (this.X + this.Y)");
             var A = new { X = 2.0, Y = 1.0 };
-            exp.SymbolTable["A"] = A;
-            exp.SymbolTable["this"] = A;
+            exp.Externals["A"] = A;
+            exp.Externals["this"] = A;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -159,8 +159,8 @@ namespace Tests
             var exp = new HypoLambda();
             exp.Compile("t2.Ticks - t1.Ticks");
             var now = System.DateTime.Now;
-            exp.SymbolTable["t1"] = now;
-            exp.SymbolTable["t2"] = now;
+            exp.Externals["t1"] = now;
+            exp.Externals["t2"] = now;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -173,8 +173,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A>B");
-            exp.SymbolTable["A"] = "a";
-            exp.SymbolTable["B"] = "b";
+            exp.Externals["A"] = "a";
+            exp.Externals["B"] = "b";
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -183,8 +183,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A==B");
-            exp.SymbolTable["A"] = "a";
-            exp.SymbolTable["B"] = "b";
+            exp.Externals["A"] = "a";
+            exp.Externals["B"] = "b";
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -193,8 +193,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A<B");
-            exp.SymbolTable["A"] = "a";
-            exp.SymbolTable["B"] = "b";
+            exp.Externals["A"] = "a";
+            exp.Externals["B"] = "b";
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -203,8 +203,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A>=B");
-            exp.SymbolTable["A"] = "a";
-            exp.SymbolTable["B"] = "b";
+            exp.Externals["A"] = "a";
+            exp.Externals["B"] = "b";
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -213,8 +213,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A!=B");
-            exp.SymbolTable["A"] = "a";
-            exp.SymbolTable["B"] = "b";
+            exp.Externals["A"] = "a";
+            exp.Externals["B"] = "b";
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -223,8 +223,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("(A<B)");
-            exp.SymbolTable["A"] = "a";
-            exp.SymbolTable["B"] = "b";
+            exp.Externals["A"] = "a";
+            exp.Externals["B"] = "b";
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -233,8 +233,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("not (A<B)");
-            exp.SymbolTable["A"] = "a";
-            exp.SymbolTable["B"] = "b";
+            exp.Externals["A"] = "a";
+            exp.Externals["B"] = "b";
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -243,8 +243,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("not (A!=B)");
-            exp.SymbolTable["A"] = "a";
-            exp.SymbolTable["B"] = "b";
+            exp.Externals["A"] = "a";
+            exp.Externals["B"] = "b";
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -253,8 +253,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A and not B");
-            exp.SymbolTable["A"] = "a";
-            exp.SymbolTable["B"] = null;
+            exp.Externals["A"] = "a";
+            exp.Externals["B"] = null;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -267,8 +267,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A>B");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -277,8 +277,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A==B");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -287,8 +287,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A<B");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -297,8 +297,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A>=B");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -307,8 +307,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A!=B");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -317,8 +317,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("(A<B)");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -327,8 +327,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("not (A<B)");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -337,7 +337,7 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("not A");
-            exp.SymbolTable["A"] = 2.0;
+            exp.Externals["A"] = 2.0;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -346,8 +346,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("(A > B) and (A > B)");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -356,8 +356,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("(A > B) and (A < B)");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -366,8 +366,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("(A < B) or (A < B)");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -376,8 +376,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("(A < B) or (A > B)");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -386,8 +386,8 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("not ((A < B) or (A < B))");
-            exp.SymbolTable["A"] = 2.0;
-            exp.SymbolTable["B"] = 1.0;
+            exp.Externals["A"] = 2.0;
+            exp.Externals["B"] = 1.0;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -448,7 +448,7 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("\"fail\" if (A != \"A\") else \"ok\"");
-            exp.SymbolTable["A"] = "A";
+            exp.Externals["A"] = "A";
             Assert.AreEqual("ok", exp.Run());
         }
 
@@ -460,7 +460,7 @@ namespace Tests
             var exp = new HypoLambda();
             exp.Compile("x.X.A == 3");
             var x = new Aux();
-            exp.SymbolTable["x"] = x;
+            exp.Externals["x"] = x;
             Assert.Throws<NullReferenceException>(() => Convert.ToDouble(exp.Run()));
         }
 
@@ -470,7 +470,7 @@ namespace Tests
         {
             var exp = new HypoLambda("0 and x.X.A == 3");
             var x = new Aux();
-            exp.SymbolTable["x"] = x;
+            exp.Externals["x"] = x;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -480,7 +480,7 @@ namespace Tests
         {
             var exp = new HypoLambda("1 or x.X.A == 3");
             var x = new Aux();
-            exp.SymbolTable["x"] = x;
+            exp.Externals["x"] = x;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -490,7 +490,7 @@ namespace Tests
         {
             var exp = new HypoLambda("5 if 1 else x.X.A");
             var x = new Aux();
-            exp.SymbolTable["x"] = x;
+            exp.Externals["x"] = x;
             Assert.AreEqual(5.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -500,7 +500,7 @@ namespace Tests
         {
             var exp = new HypoLambda("x.X.A if 0 else 5");
             var x = new Aux();
-            exp.SymbolTable["x"] = x;
+            exp.Externals["x"] = x;
             Assert.AreEqual(5.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -558,16 +558,16 @@ namespace Tests
         {
             var exp = new HypoLambda("not ( X and Y )");
 
-            exp.SymbolTable["X"] = 2;
-            exp.SymbolTable["Y"] = 3;
+            exp.Externals["X"] = 2;
+            exp.Externals["Y"] = 3;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
 
-            exp.SymbolTable["X"] = 0;
-            exp.SymbolTable["Y"] = 3;
+            exp.Externals["X"] = 0;
+            exp.Externals["Y"] = 3;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
 
-            exp.SymbolTable["X"] = 2;
-            exp.SymbolTable["Y"] = 0;
+            exp.Externals["X"] = 2;
+            exp.Externals["Y"] = 0;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -576,16 +576,16 @@ namespace Tests
         {
             var exp = new HypoLambda("not X or not Y");
 
-            exp.SymbolTable["X"] = 2;
-            exp.SymbolTable["Y"] = 3;
+            exp.Externals["X"] = 2;
+            exp.Externals["Y"] = 3;
             Assert.AreEqual(0.0, Convert.ToDouble(exp.Run()));
 
-            exp.SymbolTable["X"] = 0;
-            exp.SymbolTable["Y"] = 3;
+            exp.Externals["X"] = 0;
+            exp.Externals["Y"] = 3;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
 
-            exp.SymbolTable["X"] = 2;
-            exp.SymbolTable["Y"] = 0;
+            exp.Externals["X"] = 2;
+            exp.Externals["Y"] = 0;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -597,7 +597,7 @@ namespace Tests
 
             var aux = new Aux();
             aux.S = "AAA";
-            exp.SymbolTable["this"] = aux;
+            exp.Externals["this"] = aux;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
         }
 
@@ -609,7 +609,7 @@ namespace Tests
 
             var aux = new Aux();
             aux.A = 5.0;
-            exp.SymbolTable["this"] = aux;
+            exp.Externals["this"] = aux;
             Assert.AreEqual(1.0, Convert.ToDouble(exp.Run()));
 
             aux.A = 0.0;
@@ -633,12 +633,12 @@ namespace Tests
         {
             var exp = new HypoLambda();
             exp.Compile("A + B if C > D else E - F");
-            exp.SymbolTable["A"] = 1.0;
-            exp.SymbolTable["B"] = 2.0;
-            exp.SymbolTable["C"] = 3.0;
-            exp.SymbolTable["D"] = 4.0;
-            exp.SymbolTable["E"] = 5.0;
-            exp.SymbolTable["F"] = 6.0;
+            exp.Externals["A"] = 1.0;
+            exp.Externals["B"] = 2.0;
+            exp.Externals["C"] = 3.0;
+            exp.Externals["D"] = 4.0;
+            exp.Externals["E"] = 5.0;
+            exp.Externals["F"] = 6.0;
             Assert.AreEqual(-1, Convert.ToDouble(exp.Run()));
         }
 
@@ -1078,7 +1078,7 @@ v/u
 ";
             exp.Compile(prog);
             Convert.ToDouble(exp.Run());
-            Assert.AreEqual(error, exp.LastError);
+            Assert.AreEqual(error, exp.ErrorMessage);
         }
 
         [Test]
@@ -1188,7 +1188,7 @@ v + u;
 
             var exp = new HypoLambda();
             exp.Compile(" \"A = {0:##.#}\" % a ");
-            exp.SymbolTable["a"] = 100.0 / 3.0;
+            exp.Externals["a"] = 100.0 / 3.0;
             var res = exp.Run();
 
             System.Threading.Thread.CurrentThread.CurrentCulture = ocul;
@@ -1201,7 +1201,7 @@ v + u;
         {
             var exp = new HypoLambda();
             exp.Compile(" \"Ahora: {0:dd/M/yyyy}\" % now ");
-            exp.SymbolTable["now"] = new System.DateTime(2010, 3, 31, 14, 55, 58);
+            exp.Externals["now"] = new System.DateTime(2010, 3, 31, 14, 55, 58);
             Assert.AreEqual("Ahora: 31/3/2010", exp.Run());
         }
 
@@ -1210,8 +1210,8 @@ v + u;
         {
             var exp = new HypoLambda();
             exp.Compile(" ( \"Punto = ({0};{{0}})\" % x ) % y");
-            exp.SymbolTable["x"] = 1.0;
-            exp.SymbolTable["y"] = 2.0;
+            exp.Externals["x"] = 1.0;
+            exp.Externals["y"] = 2.0;
             Assert.AreEqual("Punto = (1;2)", exp.Run());
         }
 
@@ -1220,7 +1220,7 @@ v + u;
         {
             var exp = new HypoLambda();
             exp.Compile("\"Hola \" + ( \"amigo\" if {x} == 2 else \"enemigo\")");
-            exp.SymbolTable["x"] = 1.0;
+            exp.Externals["x"] = 1.0;
             Assert.AreEqual("Hola enemigo", exp.Run());
         }
 
@@ -1232,7 +1232,7 @@ v + u;
             Aux y1 = new Aux();
             y1.S = null;
             y1.T = "X";
-            e1.SymbolTable["this"] = y1;
+            e1.Externals["this"] = y1;
             Assert.AreEqual(4.0, Convert.ToDouble(e1.Run()));
         }
 
@@ -1243,7 +1243,7 @@ v + u;
             e1.Compile("5 if this.S else 4");
             Aux y1 = new Aux();
             y1.S = " ";
-            e1.SymbolTable["this"] = y1;
+            e1.Externals["this"] = y1;
             Assert.AreEqual(5.0, Convert.ToDouble(e1.Run()));
         }
 
@@ -1254,7 +1254,7 @@ v + u;
             e1.Compile("5 if this.S else 4");
             Aux y1 = new Aux();
             y1.S = "";
-            e1.SymbolTable["this"] = y1;
+            e1.Externals["this"] = y1;
             Assert.AreEqual(4.0, Convert.ToDouble(e1.Run()));
         }
 
@@ -1265,7 +1265,7 @@ v + u;
             e1.Compile("5 if not this.S else 4");
             Aux y1 = new Aux();
             y1.S = null;
-            e1.SymbolTable["this"] = y1;
+            e1.Externals["this"] = y1;
             Assert.AreEqual(5.0, Convert.ToDouble(e1.Run()));
         }
 
@@ -1276,7 +1276,7 @@ v + u;
             e1.Compile("5 if this.S and this.S == \"X\" else 4");
             Aux y1 = new Aux();
             y1.S = null;
-            e1.SymbolTable["this"] = y1;
+            e1.Externals["this"] = y1;
             Assert.AreEqual(4.0, Convert.ToDouble(e1.Run()));
         }
 
@@ -1287,7 +1287,7 @@ v + u;
             e1.Compile("5 if this.S and this.S != \"\" else 4");
             Aux y1 = new Aux();
             y1.S = "X";
-            e1.SymbolTable["this"] = y1;
+            e1.Externals["this"] = y1;
             Assert.AreEqual(5.0, Convert.ToDouble(e1.Run()));
         }
 
@@ -1306,7 +1306,7 @@ v + u;
             var a2 = new Aux();
             a2.A = 4;
             a2.B = 5;
-            e1.SymbolTable["this"] = new { A1 = a1, A2 = a2 };
+            e1.Externals["this"] = new { A1 = a1, A2 = a2 };
             Assert.AreEqual(20.0, Convert.ToDouble(e1.Run()));
         }
 
@@ -1320,7 +1320,7 @@ v + u;
             a1.X = new Aux();
             a1.X.X = new Aux();
             a1.X.X.S = "Hola";
-            e1.SymbolTable["this"] = a1;
+            e1.Externals["this"] = a1;
             Assert.AreEqual("Hola", e1.Run());
         }
 
@@ -1333,7 +1333,7 @@ v + u;
             a1.X = new Aux();
             a1.X.X = new Aux();
             a1.X.X.S = "Hola";
-            e1.SymbolTable["this"] = a1;
+            e1.Externals["this"] = a1;
             Assert.AreEqual("Hola", e1.Run());
         }
 
@@ -1345,7 +1345,7 @@ v + u;
             a1.X = new Aux();
             a1.X.X = new Aux();
             a1.X.X.S = "Hola";
-            e1.SymbolTable["a1"] = a1;
+            e1.Externals["a1"] = a1;
             Assert.AreEqual("Hola", e1.Run());
         }
 
@@ -1450,18 +1450,18 @@ v + u;
             Aux y1 = new Aux();
             y1.A = 2;
             y1.B = 1;
-            e1.SymbolTable["this"] = y1;
+            e1.Externals["this"] = y1;
             Assert.AreEqual(15.0, Convert.ToDouble(e1.Run()));
 
-            var pc1 = e1.ToPCODE();
+            var pc1 = e1.ToPortablePCODE();
 
             var e2 = new HypoLambda();
-            e2.FromPCODE(pc1);
+            e2.FromPortablePCODE(pc1);
             //Compruebo la deserealizacion.
             Aux y2 = new Aux();
             y2.A = 2;
             y2.B = 1;
-            e2.SymbolTable["this"] = y2;
+            e2.Externals["this"] = y2;
             Assert.AreEqual(15.0, Convert.ToDouble(e2.Run()));
         }
 
