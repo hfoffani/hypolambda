@@ -737,7 +737,7 @@ namespace HL
 
         Node ast = null;
 
-        IList<Terminal> pcode = null;
+        IList<Terminal> pcode = new List<Terminal>();
         Dictionary<string, Terminal> reservedwords = new Dictionary<string, Terminal>();
 
 
