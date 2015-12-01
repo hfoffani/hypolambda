@@ -18,11 +18,7 @@
 using NUnit.Framework;
 using System;
 using System.Globalization;
-
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-
 using System.Linq;
 
 using HL;
