@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
+using System.Linq;
+
 using HL;
 
 namespace Tests
@@ -1463,6 +1465,21 @@ v + u;
             y2.B = 1;
             e2.Externals["this"] = y2;
             Assert.AreEqual(15.0, Convert.ToDouble(e2.Run()));
+        }
+
+        #endregion
+
+        #region other apis
+
+        [Test]
+        public void Test_GetNames()
+        {
+            var hl = new HypoLambda("A + B");
+            var names = hl.GetNames().ToList();
+
+            Assert.AreEqual(2, names.Count);
+            Assert.IsTrue(names.Contains("A"));
+            Assert.IsTrue(names.Contains("B"));
         }
 
         #endregion
