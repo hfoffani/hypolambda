@@ -117,6 +117,7 @@ Comments in code.
 
 ### Who do I talk to? ###
 
-* For any doubt or inquiry post an issue or tweet me at http://twitter.com/herchu
+For questions or requests post an issue here or tweet me at
+[@herchu](http://twitter.com/herchu)
 
 
