@@ -2,6 +2,7 @@
 
 Under the directory HypoLambda:
 
+del *.nupkg
 nuget pack HypoLambda.csproj
 nuget push *.nupkg
 
