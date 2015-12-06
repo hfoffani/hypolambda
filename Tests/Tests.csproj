@@ -29,11 +29,10 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=3.0.5797.27539, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.0.0\lib\net40\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.3.0.1\lib\net40\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Test.cs" />
@@ -44,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HypoLambda\HypoLambda.csproj">
-      <Project>{f6ce6635-f872-4df6-aa1a-c25e7db4fe71}</Project>
+      <Project>{F6CE6635-F872-4DF6-AA1A-C25E7DB4FE71}</Project>
       <Name>HypoLambda</Name>
     </ProjectReference>
   </ItemGroup>
