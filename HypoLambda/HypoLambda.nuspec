@@ -1,18 +1,44 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <id>HypoLambda</id>
+    <version>0.2.4</version>
+    <title>A small functional programming language for .NET.</title>
+    <authors>Hernán M. Foffani</authors>
+    <owners>Hernán M. Foffani</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
-    <!-- <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl> -->
+    <projectUrl>https://github.com/hfoffani/HypoLambda</projectUrl> 
     <!-- <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl> -->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>Published on Nuget!</releaseNotes>
+    <summary>
+A small functional programming language for .NET.
+
+Its syntax is based on Python but whitespaces are ignored. Everything is an expression.
+The language runtime is embeddable, its AST is accesible and it compiles to portable pcode.
+There's an REPL you can play with and the project includes lots of unit tests.
+    </summary>
+    <description>
+A small functional programming language for .NET.
+
+Its syntax is based on Python but whitespaces are ignored. Everything is an expression.
+The language runtime is embeddable, its AST is accesible and it compiles to portable pcode.
+There's an REPL you can play with and the project includes lots of unit tests.
+
+Example of factorial:
+f = lambda x:
+    (x*f(x-1)) if x > 1 else 1;
+f(4)
+returns 24.0
+
+See details, examples and instructions in the project site.
+    </description>
+    <releaseNotes>
+    Publish to Github. Build in Mono OSX.
+    </releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>functional programming lambda language</tags>
   </metadata>
+  <files>
+    <file src="bin/Debug/HypoLambda.dll" target="lib" /> 
+  </files>
 </package>

@@ -16,8 +16,8 @@ build:
 test: build
 	MONO_PATH=$(MONOPATH) $(MONO) $(NUNITCONSOLE) $(TESTRES) Tests/Tests.csproj
 	
-pack: test
+nupkg: test
 	(cd HypoLambda && \
-	rm HypoLambda.*.nupkg && \
+	rm -f HypoLambda.*.nupkg && \
 	$(NUGET) pack HypoLambda.nuspec )
 
