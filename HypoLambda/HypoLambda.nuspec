@@ -2,8 +2,8 @@
 <package >
   <metadata>
     <id>HypoLambda</id>
-    <version>0.2.4</version>
-    <title>A small functional programming language for .NET.</title>
+    <version>0.2.5</version>
+    <title>HypoLambda</title>
     <authors>Hernán M. Foffani</authors>
     <owners>Hernán M. Foffani</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
