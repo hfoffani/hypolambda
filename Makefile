@@ -21,3 +21,6 @@ nupkg: test
 	rm -f HypoLambda.*.nupkg && \
 	$(NUGET) pack HypoLambda.nuspec )
 
+publish:
+	(cd HypoLambda && \
+	$(NUGET) push HypoLambda.*.nupkg )
