@@ -98,11 +98,17 @@ because the IDE doesn't integrate the NUnit console version 3.
 
 ### Future work ###
 
-Asynchronous evaluations.
+For HL to take on serious tasks it will need to support:
 
-The `async` keyword transforms a lambda expression into a promise.
-The fulfillment of the future value is implicit, blocking is
-delayed until the actual is required.
+* Objects or dictionaries or maybe namespaces?
+* Comments in code.
+* Tail recursion and loops implemented as tail recursions.
+
+#### Asynchronous evaluations.
+
+An `async` keyword that transforms a lambda expression into a promise.
+The fulfillment of the future value would be implicit and blocking
+delayed until the actual value is required.
 
     a_function = lambda x: x + 2;
     a_promise = async a_function;
@@ -110,9 +116,13 @@ delayed until the actual is required.
     ...
     result = future_val + 5
 
-Namespaces or dictionaries.
+#### Other planned features ####
 
-Comments in code.
+* Compressed (or binary) pcode.
+* Restricted execution environment. (CPU, Memory and I/O)
+* Rewrite the parser as shift-reduce.
+
+Of course, I'm open to suggestions...
 
 
 ### License ###
