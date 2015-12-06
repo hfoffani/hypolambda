@@ -7,8 +7,8 @@
     <ProjectGuid>{CE4E0281-121D-4A14-8C2F-5387E59E0C35}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LLconsole</RootNamespace>
-    <AssemblyName>LLconsole</AssemblyName>
+    <RootNamespace>HL</RootNamespace>
+    <AssemblyName>HLconsole</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
