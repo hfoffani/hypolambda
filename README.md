@@ -2,17 +2,17 @@
 
 A small functional programming language for .NET.
 
-Its syntax is based on Python but whitespaces are ignored. Everything is an expression.
-The language runtime is embeddable, its AST is accesible and it compiles to portable pcode.
-There's an REPL you can play with and the project includes lots of unit tests.
+Its syntax is based on Python, but whitespaces are ignored. Everything is an expression.
+The language runtime is embeddable, its AST is accesible, and it compiles to portable pcode.
+There's a REPL you can play with, and the project includes lots of unit tests.
 
 
 ### Why? ###
 
-Though I do not recommend using it to develop full applications it's very appropiate
+Though I do not recommend using it to develop full applications, it's very appropriate
 as a template or customization language for a .NET application.
 
-HL has a very small footprint which lets you embed it in any kind of .NET project
+HL has a tiny footprint which lets you embed it in any kind of .NET project
 including mobile ones.
 
 
@@ -106,9 +106,9 @@ For HL to take on serious tasks it will need to support:
 
 #### Asynchronous evaluations.
 
-An `async` keyword that transforms a lambda expression into a promise.
-The fulfillment of the future value would be implicit and blocking
-delayed until the actual value is required.
+Provide an `async` keyword that transforms a lambda expression
+into a promise. The fulfillment of the future value would be
+implicit and blocking delayed until the actual value is required.
 
     a_function = lambda x: x + 2;
     a_promise = async a_function;
@@ -127,7 +127,7 @@ Of course, I'm open to suggestions...
 
 ### License ###
 
-This project is publish under the
+This project is published under the
 [Apache License](http://www.apache.org/licenses/LICENSE-2.0).
 
 
