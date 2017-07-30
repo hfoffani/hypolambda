@@ -3,7 +3,7 @@
 A small functional programming language for .NET.
 
 Its syntax is based on Python, but whitespaces are ignored. Everything is an expression.
-The language runtime is embeddable, its AST is accesible, and it compiles to portable pcode.
+The language runtime is embeddable, its AST is accessible, and it compiles to portable pcode.
 There's a REPL you can play with, and the project includes lots of unit tests.
 
 
@@ -100,9 +100,10 @@ because the IDE doesn't integrate the NUnit console version 3.
 
 For HL to take on serious tasks it will need to support:
 
-* Objects or dictionaries or maybe namespaces?
-* Comments in code.
-* Tail recursion and loops implemented as tail recursions.
+* Add objects or dictionaries or maybe namespaces?
+* Include comments in code.
+* Implement tail recursion.
+* Apply tail recursion to loops.
 
 #### Asynchronous evaluations.
 
