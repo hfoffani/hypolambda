@@ -1,4 +1,4 @@
-# HypoLambda #
+# HypoLambda
 
 A small functional programming language for .NET.
 
@@ -7,7 +7,7 @@ The language runtime is embeddable, its AST is accessible, and it compiles to po
 There's a REPL you can play with, and the project includes lots of unit tests.
 
 
-### Why? ###
+### Why?
 
 Though I do not recommend using it to develop full applications, it's very appropriate
 as a template or customization language for a .NET application.
@@ -16,7 +16,7 @@ HL has a tiny footprint which lets you embed it in any kind of .NET project
 including mobile ones.
 
 
-### Example ###
+### Example
 
 Calculate a factorial:
 
@@ -47,7 +47,7 @@ Run HL within a .NET program and interact with it:
 result contains "aaa".
 
 
-### How do I get set up? ###
+### How do I get set up?
 
 * You will need either Visual Studio o Xamarin Studio.
 * Check out the repository.
@@ -63,7 +63,7 @@ Running the tests under Xamarin Studio is currently not supported
 because the IDE doesn't integrate the NUnit console version 3.
 
 
-### Grammar ###
+### Grammar
 
     expression :=   single_exp ( ";" single_exp )*
 
@@ -96,7 +96,7 @@ because the IDE doesn't integrate the NUnit console version 3.
     lambda_exp :=   "lambda" ( "(" var_name ("," var_name)* ")" ) ":" single_exp
 
 
-### Future work ###
+### Future work
 
 For HL to take on serious tasks it will need to support:
 
@@ -105,7 +105,7 @@ For HL to take on serious tasks it will need to support:
 * Implement tail recursion.
 * Apply tail recursion to loops.
 
-#### Asynchronous evaluations.
+#### Asynchronous evaluations
 
 Provide an `async` keyword that transforms a lambda expression
 into a promise. The fulfillment of the future value would be
@@ -117,7 +117,7 @@ implicit and blocking delayed until the actual value is required.
     ...
     result = future_val + 5
 
-#### Other planned features ####
+#### Other planned features
 
 * Compressed (or binary) pcode.
 * Restricted execution environment. (CPU, Memory and I/O)
@@ -126,7 +126,7 @@ implicit and blocking delayed until the actual value is required.
 Of course, I'm open to suggestions...
 
 
-### License ###
+### License
 
 This project is published under the
 [Apache License](http://www.apache.org/licenses/LICENSE-2.0).
@@ -136,7 +136,7 @@ This project is published under the
 I gratefully honor Pull Requests.
 Please, consider formatting the code with K&R style and four spaces tabs.
 
-### Who do I talk to? ###
+### Who do I talk to?
 
 For questions or requests post an issue here or tweet me at
 [@herchu](http://twitter.com/herchu)
