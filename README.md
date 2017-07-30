@@ -101,7 +101,7 @@ because the IDE doesn't integrate the NUnit console version 3.
 For HL to take on serious tasks it will need to support:
 
 * Add objects or dictionaries or maybe namespaces?
-* Include comments in code.
+* Include comments in the code.
 * Implement tail recursion.
 * Apply tail recursion to loops.
 
