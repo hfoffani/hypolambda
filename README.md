@@ -130,6 +130,10 @@ Of course, I'm open to suggestions...
 This project is published under the
 [Apache License](http://www.apache.org/licenses/LICENSE-2.0).
 
+### Contributions
+
+I gratefully honor Pull Requests.
+Please, consider formatting the code with K&R style and four spaces tabs.
 
 ### Who do I talk to? ###
 
