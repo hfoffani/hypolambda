@@ -49,6 +49,11 @@ result contains "aaa".
 
 ### How do I get set up?
 
+The easiest way is to add HypoLambda to your .NET project
+using Nuget.
+
+If you want to try a console build HypoLambda:
+
 * You will need either Visual Studio o Xamarin Studio.
 * Check out the repository.
 * Open the solution with Visual Studio.
