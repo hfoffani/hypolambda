@@ -4,8 +4,8 @@ MONO=/Library/Frameworks/Mono.framework/Versions/Current/bin/mono
 NUNITCONSOLE=packages/NUnit.Console.3.*/tools/nunit3-console.exe
 TESTRES=--noresult
 
-XAMARINDIR="/Applications/Xamarin Studio.app"
-MDTOOL=$(XAMARINDIR)/Contents/MacOS/mdtool
+XAMARINDIR="/Applications/Visual Studio.app"
+MDTOOL=$(XAMARINDIR)/Contents/MacOS/vstool
 
 NUGET=nuget
 

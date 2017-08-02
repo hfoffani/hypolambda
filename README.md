@@ -54,7 +54,8 @@ using Nuget.
 
 If you want to try a console build HypoLambda:
 
-* You will need either Visual Studio o Xamarin Studio.
+* You will need Visual Studio. You can use the Community
+  Editions (either from Microsoft or Xamarin).
 * Check out the repository.
 * Open the solution with Visual Studio.
 * The IDE should download all the necessary components.
@@ -62,10 +63,8 @@ If you want to try a console build HypoLambda:
 * Run the console application.
 
 You can build and run the tests in OSX or Linux using the Makefile
-in the command line shell.
-
-Running the tests under Xamarin Studio is currently not supported
-because the IDE doesn't integrate the NUnit console version 3.
+in the command line shell although the tests fails to run from
+the Makefile.
 
 
 ### Grammar
