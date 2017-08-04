@@ -972,6 +972,14 @@ factorial_of_v()
             Assert.AreEqual(24.0, Convert.ToDouble(exp.Run()));
         }
 
+        [Test]
+        public void Test_lambda_eff ()
+        {
+            var exp = new HypoLambda ();
+            exp.Compile ("f = ƒ: 2+v; v = 3; f()");
+            Assert.AreEqual (5.0, Convert.ToDouble (exp.Run ()));
+        }
+
 
         #endregion
 

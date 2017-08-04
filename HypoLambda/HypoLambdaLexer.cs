@@ -216,7 +216,7 @@ namespace HL
             { "<=",TokenType.lteq },
             { "<", TokenType.lt },
             { "==",TokenType.eq },
-            { "=",TokenType.assig },
+            { "=", TokenType.assig },
         };
     }
 }
