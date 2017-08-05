@@ -64,6 +64,7 @@ namespace HL
             this.reservedwords.Add("else", new Terminal(TokenType.els, 0, 0));
             this.reservedwords.Add("lambda", new Terminal(TokenType.lambda, 0, 0));
             this.reservedwords.Add ("ƒ", new Terminal (TokenType.lambda, 0, 0));
+            this.reservedwords.Add ("λ", new Terminal (TokenType.lambda, 0, 0));
         }
 
         #endregion

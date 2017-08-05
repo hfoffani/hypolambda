@@ -980,6 +980,13 @@ factorial_of_v()
             Assert.AreEqual (5.0, Convert.ToDouble (exp.Run ()));
         }
 
+        [Test]
+        public void Test_lambda_greek ()
+        {
+            var exp = new HypoLambda ();
+            exp.Compile ("f = λ: 2+v; v = 3; f()");
+            Assert.AreEqual (5.0, Convert.ToDouble (exp.Run ()));
+        }
 
         #endregion
 
