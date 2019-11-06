@@ -1,6 +1,6 @@
 # HypoLambda
 
-A small functional programming language for .NET.
+A very compact functional programming language for .NET.
 
 Its syntax is based on Python, but whitespaces are ignored. Everything is an expression.
 The language runtime is embeddable, its AST is accessible, and it compiles to portable pcode.
